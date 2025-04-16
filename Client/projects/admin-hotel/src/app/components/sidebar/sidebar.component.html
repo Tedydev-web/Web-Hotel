@@ -1,0 +1,121 @@
+<div class="leftside-menu">
+
+  <!-- LOGO -->
+  <a href="index.html" class="logo text-center logo-light">
+      <span class="logo-lg">
+          <img src="assets/images/logo.png" alt="" height="26">
+      </span>
+      <span class="logo-sm">
+          <img src="assets/images/logo_sm.png" alt="" height="26">
+      </span>
+  </a>
+
+  <!-- LOGO -->
+  <a href="index.html" class="logo text-center logo-dark">
+      <span class="logo-lg">
+          <img src="assets/images/logo-dark.png" alt="" height="16">
+      </span>
+      <span class="logo-sm">
+          <img src="assets/images/logo_sm_dark.png" alt="" height="16">
+      </span>
+  </a>
+
+  <div class="h-100" id="leftside-menu-container" data-simplebar="">
+
+      <!--- Sidemenu -->
+      <ul class="side-nav">
+
+          <li class="side-nav-title side-nav-item">Navigation</li>
+
+          <li class="side-nav-item">
+              <a data-bs-toggle="collapse"  routerLinkActive="active" routerLink="/dashboard" aria-expanded="false" aria-controls="sidebarDashboards" class="side-nav-link">
+                  <i class="uil-home-alt"></i>
+                  <!-- <span class="badge bg-success float-end">4</span> -->
+                  <span> Dashboards </span>
+              </a>
+
+          </li>
+
+          <li class="side-nav-title side-nav-item">Options</li>
+
+          <li class="side-nav-item" routerLinkActive="active">
+              <a routerLink="/room" class="side-nav-link">
+                  <i class="uil-calender"></i>
+                  <span> Rooms </span>
+              </a>
+          </li>
+          
+          <li class="side-nav-item" routerLinkActive="active">
+              <a routerLink="/booking" class="side-nav-link">
+                  <i class="dripicons-to-do"></i>
+                  <span> Reservations </span>
+              </a>
+          </li>
+          <li class="side-nav-item" routerLinkActive="active">
+              <a routerLink="/reservation" class="side-nav-link">
+                  <i class=" dripicons-box"></i>
+                  <span> Booking </span>
+              </a>
+          </li>
+          <li class="side-nav-item" routerLinkActive="active">
+              <a routerLink="/blog" class="side-nav-link">
+                  <i class="dripicons-blog"></i>
+                  <span> Blogs </span>
+              </a>
+          </li>
+          <li class="side-nav-item" routerLinkActive="active">
+              <a routerLink="/room-booked" class="side-nav-link">
+                  <i class="dripicons-conversation"></i>
+                  <span> Room Serving </span>
+              </a>
+          </li>
+
+          <li class="side-nav-item active">
+              <a routerLinkActive="active" data-bs-toggle="collapse" href="#sidebarEcommerce" aria-expanded="false" aria-controls="sidebarEcommerce" class="side-nav-link">
+                  <i class="dripicons-view-thumb"></i>
+                  <span> Managements</span>
+                  <span class="menu-arrow"></span>
+              </a>
+              <div class="collapse" id="sidebarEcommerce">
+                  <ul class="side-nav-second-level" >
+                      <li routerLinkActive="active" *ngIf="roleValue == 'Admin'">
+                          <a  routerLink="/roomtype">Room Type</a>
+                      </li>
+                      <li routerLinkActive="active" *ngIf="roleValue == 'Admin'">
+                          <a  routerLink="/typeservice"> Attached Service</a>
+                      </li>
+                      <li routerLinkActive="active" >
+                        <a  routerLink="/roomservice">Room Service</a>
+                      </li>
+                      <li routerLinkActive="active">
+                          <a  routerLink="/customer">Customer</a>
+                      </li>
+                      <li routerLinkActive="active" *ngIf="roleValue == 'Admin'" >
+                        <a  routerLink="/employee">Employee</a>
+                      </li>
+                      <li routerLinkActive="active"  *ngIf="roleValue == 'Admin'" >
+                          <a routerLink="/discount">Discount</a>
+                      </li>
+                      <li routerLinkActive="active" >
+                        <a routerLink="/invoice">Invoice</a>
+                      </li>
+                      
+                      <li routerLinkActive="active" *ngIf="roleValue == 'Admin'" >
+                        <a routerLink="/salary">Salary</a>
+                      </li>
+                      <li routerLinkActive="active" *ngIf="roleValue == 'Admin'">
+                        <a routerLink="/role">Roles</a>
+                      </li>
+                  </ul>
+              </div>
+          </li>
+
+        
+      </ul>
+
+      <!-- Help Box -->
+     
+  </div>
+  <!-- Sidebar -left -->
+
+</div>

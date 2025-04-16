@@ -1,0 +1,74 @@
+
+
+
+                    <!-- form -->
+                    <form [formGroup]="signupForm" action="#">
+                        <div class="mb-2">
+                            <label for="fullname" class="form-label">User Name</label>
+                            <input class="form-control" formControlName="userName" type="text" id="fullname" placeholder="Enter your name" required
+                            [ngClass]="{ 'is-invalid':  f['userName'].errors && f['userName'].touched  }">
+
+
+                            <div *ngIf=" f['userName'].errors && f['userName'].touched " class="invalid-feedback">
+                                <div *ngIf="f['userName'].errors['required']">First Name is required</div>
+                                <div *ngIf="f['userName'].errors['pattern']">First Name must not contain space</div>
+                              </div>
+
+
+                        </div>
+                        <div class="mb-2">
+                            <label for="emailaddress" class="form-label">Email address</label>
+                            <input class="form-control" formControlName="email" type="text" id="emailaddress" required placeholder="Enter your email"
+                            [ngClass]="{ 'is-invalid':  f['email'].errors && f['email'].touched  }">
+
+                            <div *ngIf=" f['email'].errors && f['email'].touched " class="invalid-feedback">
+                                <div *ngIf="f['email'].errors['required']">Email is required</div>
+                                <div *ngIf="f['email'].errors['email']">Email must be a valid email address</div>
+                              </div>
+
+
+                        </div>
+                        <div class="mb-2">
+                            <label for="password" class="form-label">Password</label>
+                            <input class="form-control" formControlName="password" type="password" required id="password" placeholder="Enter your password"
+                            
+                            [ngClass]="{ 'is-invalid':  f['password'].errors && f['password'].touched  }">
+
+                            <div class="icon toggle-password">
+                                <i (click)="OnClick()" style="margin-left: -30px; cursor: pointer;">
+                                  <i class="fa fa-eye" aria-hidden="true" *ngIf="show"></i>
+                                  <i class="fa fa-eye-slash" aria-hidden="true" *ngIf="!show"></i>
+                                </i>
+                              </div>
+                              <div *ngIf=" f['password'].errors && f['password'].touched " class="invalid-feedback">
+                                <div class="" *ngIf="f['password'].errors['required']">
+                                  Password is required.
+                                </div>
+                                <div class="" *ngIf="f['password'].errors['required']">
+                                  Password must be at least 8 characters.
+                                </div>
+                                <div class="" *ngIf="f['password'].errors['pattern']">
+                                  At least one letter and one number.
+                                </div>
+            
+                              </div>
+                        </div>
+                        <div class="mb-2">
+                            <label for="password" class="form-label">Confirm Password</label>
+                            <input class="form-control" formControlName="confirmPassword" type="password" required id="password" placeholder="Enter confirm your password"
+                            [ngClass]="{ 'is-invalid':  f['confirmPassword'].errors && f['confirmPassword'].touched  }"
+                            required>
+
+                            <div *ngIf=" f['confirmPassword'].errors && f['confirmPassword'].touched " class="invalid-feedback">
+                                <div class="inputerror" *ngIf="f['confirmPassword'].errors['passwordMismatch']">
+                                  Password not match!
+                                </div>
+                              <div *ngIf="f['confirmPassword'].errors['pattern']">It must not contain space</div>
+                            </div>
+                        </div>
+                       
+                        <div class="mb-0 d-grid text-center">
+
+                                <button class="btn btn-primary" (click)="onSubmit()" type="submit"><i class="mdi mdi-account-circle"></i> Create </button>
+                        </div>
+                    </form>

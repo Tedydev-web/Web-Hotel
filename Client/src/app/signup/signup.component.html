@@ -1,0 +1,129 @@
+<section class="l-area padding-top-100 padding-bottom-100">
+  <div class="container login-container p-0 signup-container">
+    <div class="login-wrapper login-shadow bg-white">
+      <div class="login-wrapper-flex">
+        <div class="login-wrapper-contents">
+          <a href=""><img src="assets/img/logo.png" alt="">
+          </a>
+          <img src="assets/img/single-page/login2.png" alt="img">
+        </div>
+        <div class="login-wrapper-contents login-padding">
+          <h2 class="single-title"> Sign up! </h2>
+          <form class="login-wrapper-form custom-form padding-top-20" [formGroup]="signup" (ngSubmit)="onSubmit()">
+            <div class="single-input mt-3">
+              <label class="label-title mb-3"> User Name </label>
+              <input class="form-control" type="text" formControlName="userName" placeholder="Type User Name"
+                [ngClass]="{ 'is-invalid':  f['userName'].errors && f['userName'].touched  }">
+
+              <div *ngIf=" f['userName'].errors && f['userName'].touched " class="invalid-feedback">
+                <div *ngIf="f['userName'].errors['required']">First Name is required</div>
+                <div *ngIf="f['userName'].errors['pattern']">First Name must not contain space</div>
+              </div>
+
+
+            </div>
+            <div class="single-input mt-3">
+              <label class="label-title mb-3"> Email </label>
+              <input class="form--control" id="email" formControlName="email" type="text" placeholder=" Email "
+                [ngClass]="{ 'is-invalid':  f['email'].errors && f['email'].touched  }" />
+              <div *ngIf=" f['email'].errors && f['email'].touched " class="invalid-feedback">
+                <div *ngIf="f['email'].errors['required']">Email is required</div>
+                <div *ngIf="f['email'].errors['email']">Email must be a valid email address</div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <div class="single-input mt-3">
+                  <label class="label-title mb-3"> Full Name </label>
+                  <input class="form-control" type="name" id="name" formControlName="name" placeholder="Type Full Name"
+                    [ngClass]="{ 'is-invalid':  f['name'].errors && f['name'].touched  }" />
+                  <div *ngIf=" f['name'].errors && f['name'].touched " class="invalid-feedback">
+                    <div *ngIf="f['name'].errors['required']">Full Name is required</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col">
+                <div class="single-input mt-3">
+                  <label class="label-title mb-3"> Phone Number </label>
+                  <input class="form-control" type="text" formControlName="phoneNumber" id="phone"
+                    placeholder="Enter 10 digit phone Number"
+                    [ngClass]="{ 'is-invalid':  f['phoneNumber'].errors && f['phoneNumber'].touched   }">
+                  <div *ngIf=" f['phoneNumber'].errors && f['phoneNumber'].touched " class="invalid-feedback">
+                    <div *ngIf="f['phoneNumber'].errors['required']">
+                      Phone Number is required.
+                    </div>
+                    <div *ngIf="f['phoneNumber'].errors['pattern']">
+                      Please Follow your pattern: Enter 10 digit phone Number.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <div class="single-input mt-3">
+                  <label class="label-title mb-3"> Create Password </label>
+                  <input class="form--control" [type]="password" type="password" formControlName="password"
+                    placeholder="Type Password"
+                    [ngClass]="{ 'is-invalid':  f['password'].errors && f['password'].touched  }">
+                  <div class="icon toggle-password">
+                    <i (click)="OnClick()" style="margin-left: -30px; cursor: pointer;">
+                      <i class="fa fa-eye" aria-hidden="true" *ngIf="show"></i>
+                      <i class="fa fa-eye-slash" aria-hidden="true" *ngIf="!show"></i>
+                    </i>
+                  </div>
+                  <div *ngIf=" f['password'].errors && f['password'].touched " class="invalid-feedback">
+                    <div class="" *ngIf="f['password'].errors['required']">
+                      Password is required.
+                    </div>
+                    <div class="" *ngIf="f['password'].errors['required']">
+                      Password must be at least 8 characters.
+                    </div>
+                    <div class="" *ngIf="f['password'].errors['pattern']">
+                      At least one letter and one number.
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+              <div class="col">
+                <div class="single-input mt-3">
+                  <label class="label-title mb-3"> Confirm Password </label>
+                  <input class="form--control" [type]="password" type="password" formControlName="confirmPassword"
+                    placeholder="Confirm Password"
+                    [ngClass]="{ 'is-invalid':  f['confirmPassword'].errors && f['confirmPassword'].touched  }"
+                    required>
+
+
+                  <div *ngIf=" f['confirmPassword'].errors && f['confirmPassword'].touched " class="invalid-feedback">
+                    <div class="inputerror" *ngIf="f['confirmPassword'].errors['passwordMismatch']">
+                      Password not match!
+                    </div>
+                  <div *ngIf="f['confirmPassword'].errors['pattern']">It must not contain space</div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+            <div class="checkbox-inline mt-3">
+              <input class="check-input" type="checkbox" id="check15">
+              <label class="checkbox-label" for="check15"> By creating an account, you agree to the <a class="color-one"
+                  href="javascript:void(0)"> terms of service </a> and <a class="color-one" href="javascript:void(0)">
+                  Conditions </a>,
+                and <a class="color-one" href="javascript:void(0)"> privacy policy </a> </label>
+            </div>
+            <button class="submit-btn w-100 mt-3 disabled" [disabled]="signup.invalid" type="submit" id="signup"> Sign
+              Up Now </button>
+            <span class="account color-light mt-3"> Already have an account? <a class="color-one" routerLink="/login">
+                Login </a> </span>
+          </form>
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<app-spinner></app-spinner>

@@ -1,0 +1,50 @@
+<li class="dropdown notification-list">
+  <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false"
+    aria-expanded="false">
+    <i class="dripicons-bell noti-icon"></i>
+    <span class="noti-icon-badge"></span>
+  </a>
+  <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated dropdown-lg">
+    <!-- item-->
+    <div class="dropdown-item noti-title">
+      <h5 class="m-0">
+        <span class="float-end">
+          <a href="javascript: void(0);" class="text-dark">
+            <small>Clear All</small>
+          </a>
+        </span>Notification
+      </h5>
+    </div>
+    <div style="max-height: 230px;" data-simplebar="">
+      <span *ngFor="let item of items_nof">
+        <a href="javascript:void(0);" class="dropdown-item notify-item">
+          <div class="row">
+            <div class="col-2" style="position: relative;">
+              <div class="notify-icon bg-primary" style="position: absolute; top: calc(50% - 18px); margin: 0">
+                <i class="mdi mdi-comment-account-outline"></i>
+              </div>
+            </div>
+            <div class="col-8 p-0">
+              <h5 class="notify-details" style="margin-bottom: 6px;">{{item.title}}</h5>
+              <p class="user-msg" style="margin-bottom: 6px;">{{item.description}}</p>
+              <p class="text-muted mb-0 user-msg">
+                <small>1 minute ago</small>
+              </p>
+            </div>
+            <div class="col-2" style="position: relative;">
+              <div class="notify-icon bg-primary" style="position: absolute; top: calc(50% - 18px); margin: 0">
+                <i class="mdi mdi-comment-account-outline"></i>
+              </div>
+            </div>
+          </div>
+        </a>
+      </span>
+    </div>
+
+    <!-- All-->
+    <a href="javascript:void(0);" class="dropdown-item text-center text-primary notify-item notify-all">
+      View All
+    </a>
+
+  </div>
+</li>

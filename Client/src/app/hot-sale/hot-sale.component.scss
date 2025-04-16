@@ -1,0 +1,198 @@
+.employee-container {
+  margin: 80px 0;
+}
+
+.row-sale {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.discountprice {
+  text-decoration: line-through;
+}
+
+.sale-heading{
+  margin-top: 4rem;
+}
+
+.sale{
+  position: absolute;
+  width: 57px;
+  height: 34px;
+  background: #edcb50;
+  border-radius: 15px;
+  top: 2rem;
+  left: 0;
+}
+.sale p{
+  font-size: 1rem;
+}
+.employee {
+  flex: 1;
+  border-radius: 20px;
+  width: 400px;
+  background-color: rgb(255, 255, 255);
+  margin: 10px auto;
+  display: block;
+  overflow: hidden;
+  height: 400px;
+  border-radius: 10px;
+  -webkit-box-shadow: 0px 0px 31px -19px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 0px 0px 31px -19px rgba(0, 0, 0, 0.75);
+  box-shadow: 0px 0px 31px -19px rgba(0, 0, 0, 0.75);
+  margin: 0 25px 0 25px;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 15px 25px, rgba(0, 0, 0, 0.05) 0px 5px 10px;
+}
+
+.employee:hover>.employee-image {
+  margin-top: -180px;
+}
+
+.employee-image {
+  background-color: #fff;
+  height: 420px;
+  width: 100%;
+  transition: 0.5s;
+}
+
+.employee-image img {
+  height: 100%;
+}
+
+.employee-name {
+  margin-top: 1rem;
+  color: #fff;
+  font-weight: bold;
+  padding: 10px;
+}
+
+.employee-name h1 {
+  font-size: 30px;
+}
+
+.employee-name span {
+  font-size: 20px;
+  color: rgb(0, 157, 255);
+  padding: 0px;
+}
+
+.employee-social-link ul li {
+  position: relative;
+  bottom: -120px;
+}
+
+.employee-social-link ul {
+  text-align: center;
+  list-style: none;
+}
+.btn-wrapper a :hover{
+  color: #fff;
+}
+.employee-social-link ul li {
+  display: inline-block;
+  margin: 10px;
+  padding: 10px;
+  border-radius: 50%;
+  line-height: 0.1;
+  margin-left: -5px;
+}
+
+.employee-social-link i {
+  font-size: 15px;
+  color: #fff;
+  animation-name: rotate-icon;
+
+}
+
+.employee-social-link ul li:nth-child(1) {
+  transition: 1.0s;
+}
+
+.employee-social-link ul li:nth-child(2) {
+  transition: 1.3s;
+}
+
+.employee-social-link ul li:nth-child(3) {
+  transition: 1.6s;
+}
+
+.employee-social-link ul li:nth-child(4) {
+  transition: 1.9s;
+}
+
+.employee-social-link ul li:nth-child(5) {
+  transition: 2.2s;
+}
+
+.employee:hover>.employee-details .employee-social-link ul li {
+  bottom: 250px;
+}
+
+.star-sale {
+  position:sticky;
+  width: 7rem;
+  margin: -20px;
+  margin-left: 15.5rem;
+  top: 2rem;
+  background-color: antiquewhite;
+  box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
+}
+
+
+// slider animation
+
+
+button.hot-sale-btn{
+
+  /* CSS */
+    background-image: linear-gradient(#37d4ec, #0d70ea);
+    border: 0;
+    font-size: 2rem;
+    box-shadow: rgba(0, 0, 0, .3) 0 5px 15px;
+    box-sizing: border-box;
+    color: #fff;
+    cursor: pointer;
+    font-family: Montserrat,sans-serif;
+    font-size: .9em;
+    margin: 5px;
+    padding: 10px 18;
+    text-align: center;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+}
+
+
+.slide-next {
+  animation: slideNext 0.5s ease forwards;
+}
+
+.slide-previous {
+  animation: slidePrevious 0.5s ease forwards;
+}
+
+@keyframes slideNext {
+  0% {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slidePrevious {
+  0% {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}

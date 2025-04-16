@@ -1,0 +1,198 @@
+<div class="wrapper">
+    <app-sidebar></app-sidebar>
+    <div class="content-page">
+        <div class="content">
+            <app-header></app-header>
+            <div class="container-fluid">
+                <!-- start page title -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="page-title-box">
+                            <div class="page-title-right">
+                                <ol class="breadcrumb m-0">
+                                    <li class="breadcrumb-item"><a href="javascript: void(0);">Beyond</a></li>
+                                    <li class="breadcrumb-item"><a href="javascript: void(0);">Managements</a></li>
+                                    <li class="breadcrumb-item active">Room Service Type</li>
+                                </ol>
+                            </div>
+                            <h4 class="page-title">Room Service Type</h4>
+                        </div>
+                    </div>
+                </div>
+                <!-- end page title -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row mb-2">
+                                    <div class="col-xl-8">
+                                        <div class="row gy-2 gx-2 align-items-center justify-content-xl-start justify-content-between">
+                                            <div class="col-auto">
+                                                <label for="inputPassword2" class="visually-hidden">Search</label>
+                                                <input type="search" [(ngModel)]="searchTerm" class="form-control" id="inputPassword2"
+                                                    placeholder="Search...">
+
+                                                </div>
+                                                <div class="col-auto">
+                                                    <button type="submit" class="btn btn-primary" (click)="searchBookings()">Search</button>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <button type="button" class="btn btn-secondary" (click)="clearSearch()">Clear</button>
+                                                  </div>
+                                          
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-4">
+                                        <div class="text-xl-end mt-xl-0 mt-2">
+                                            <button type="button" data-bs-toggle="modal" data-bs-target="#modal-detail"
+                                                class="btn btn-danger mb-2 me-2"><i class="mdi mdi-basket me-1"></i> Add
+                                                New</button>
+                                        </div>
+                                    </div><!-- end col-->
+                                </div>
+
+                                <div class="table-responsive">
+                                    <table class="table table-centered mb-0">
+                                        <thead class="table-light align-middle text-center">
+                                            <tr>
+                                               
+                                                <!-- <th>Picture</th> -->
+                                                <th>Room service type</th>
+                                                <th>Price</th>
+                                                <th>Amount</th>
+                                                <th>Price discount</th>
+                                                <th>Action
+                                                <th>
+                                            </tr>
+                                        </thead>
+                                        <tbody *ngFor="let item of roomType  | filter: searchTerm; let i = index "  (click)="toggleSelection(item.id)"
+                                            class="align-middle text-center">
+                                            <tr>
+                                                <!-- <td><img src={{item.picture}} alt=""></td> -->
+                                                <td><span class="text-body fw-bold">{{item.name}}</span> </td>
+                                                <td>{{item.price | vndCurrency}}</td>
+                                                <td>{{item.amount }}</td>
+                                                <td>{{item.priceDiscount }}</td>
+                                                <td>
+                                                    <a href="javascript:void(0);" class="action-icon"
+                                                        data-bs-toggle="modal" data-bs-target="#modal-detail2">
+                                                        <i class=" mdi mdi-update"></i></a>
+                                                    <a (click)="deleteService(item.id)" class="action-icon"><i class="mdi mdi-delete"></i></a>
+                                                </td>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal detail -->
+<div id="modal-detail" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-top modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="topModalLabel">Add room service type</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" [formGroup]="serviceForm2">
+                    <div class="row mb-3">
+                        <label for="inputEmail3" class="col-3 col-form-label">Name service</label>
+                        <div class="col-9">
+                            <input type="text" formControlName="name" class="form-control" id="inputEmail3"
+                                placeholder="Name service">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="inputEmail3" class="col-3 col-form-label">Price</label>
+                        <div class="col-9">
+                            <input type="text" formControlName="price" class="form-control" id="inputEmail3"
+                                placeholder="Price">
+                        </div>
+                    </div>
+                    <div class="row mb-9">
+                        <label for="inputEmail3" class="col-3 col-form-label">Amount</label>
+                        <div class="col-3">
+                            <input type="text"  maxlength="500"  formControlName="amount" class="form-control" id="inputEmail3"
+                                placeholder="Amount">
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row mb-9">
+                        <label for="serviceImage" class="col-3 col-form-label">Image</label>
+                        <div class="col-9">
+                            <input type="file" id="serviceImage" class="form-control"
+                                (change)="uploadFileDetail($event)" formControlName="picture">
+                        </div>
+                    </div>
+                    <div class="row mb-9">
+                        <div *ngIf="imagePreviewUrl">
+                            <img [src]="imagePreviewUrl" alt="Preview Image">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button (click)="createRoomType(serviceForm2)" type="submit" class="btn btn-info">Add </button>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="modal-detail2" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-top modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="topModalLabel">Update room service type</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" [formGroup]="serviceForm2">
+                    <div class="row mb-3">
+                        <label for="inputEmail3" class="col-3 col-form-label">Name service</label>
+                        <div class="col-9">
+                            <input type="text" formControlName="name" class="form-control" id="inputEmail3"
+                                placeholder="Name service">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="inputEmail3" class="col-3 col-form-label">Price</label>
+                        <div class="col-9">
+                            <input type="text" formControlName="price" class="form-control" id="inputEmail3"
+                                placeholder="Price">
+                        </div>
+                    </div>
+                    <div class="row mb-9">
+                        <label for="inputEmail3" class="col-3 col-form-label">Amount</label>
+                        <div class="col-3">
+                            <input type="text" formControlName="amount" class="form-control" id="inputEmail3"
+                                placeholder="Amount">
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row mb-9">
+                        <label for="serviceImage" class="col-3 col-form-label">Image</label>
+                        <div class="col-9">
+                            <input type="file" id="serviceImage" class="form-control"
+                                (change)="uploadFileDetail($event)" formControlName="picture">
+                        </div>
+                    </div>
+                    <div class="row mb-9">
+                        <div *ngIf="imagePreviewUrl">
+                            <img [src]="imagePreviewUrl" alt="Preview Image">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button (click)="updateRoomType(serviceForm2)" type="submit" class="btn btn-info">Add </button>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

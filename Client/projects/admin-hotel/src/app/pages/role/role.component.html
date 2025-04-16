@@ -1,0 +1,230 @@
+<div class="wrapper">
+    <app-sidebar></app-sidebar>
+    <div class="content-page">
+      <div class="content">
+        <app-header></app-header>
+        <div class="container-fluid">
+          <!-- start page title -->
+          <div class="row">
+            <div class="col-12">
+              <div class="page-title-box">
+                <div class="page-title-right">
+                  <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Beyond</a></li>
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Managements</a></li>
+                    <li class="breadcrumb-item active">Roles</li>
+                  </ol>
+                </div>
+                <h4 class="page-title">Roles</h4>
+              </div>
+            </div>
+          </div>
+          <!-- end page title -->
+          <div class="row">
+            <div class="col-12">
+              <div class="card">
+                <div class="card-body">
+                  <div class="row mb-2">
+                    
+                      <div class="col-xl-12">
+                        <div class="text-xl-end mt-xl-0 mt-2">
+                          <button type="button" data-bs-toggle="modal" (click)="clearModal()" data-bs-target="#modal-detail" class="btn btn-danger mb-2 me-2"><i class="mdi mdi-basket me-1"></i> Add New Role</button>
+                        </div>
+                    </div><!-- end col-->
+                  </div>
+  
+                  <div class="table-responsive">
+                    <table class="table table-centered mb-0">
+                      <thead class="table-light align-middle text-center">
+                        <tr>
+                          <th style="width: 20px;">
+                            <div class="form-check">
+                              <input type="checkbox" class="form-check-input" id="customCheck1">
+                              <label class="form-check-label" for="customCheck1">&nbsp;</label>
+                            </div>
+                         </th>
+                          <th>Name</th>
+                          <th>normalizedName</th>
+                         
+                          <th style="width: 135px;">Action<th>
+                          </tr>
+                      </thead>
+                      <tbody *ngFor="let item of roomType | filter: searchTerm, let i = index" class="align-middle text-center">
+                        <tr>
+                          <td>
+                            <div class="form-check">
+                              <input type="checkbox" class="form-check-input" id="customCheck2">
+                              <label class="form-check-label" for="customCheck2">&nbsp;</label>
+                            </div>
+                          </td>
+                          <th>{{item.name}}</th>
+                          <th>{{item.normalizedName}}</th>
+                          <td>
+                            <a href="javascript:void(0);" class="action-icon"  (click)="loadModal(item.id)" data-bs-toggle="modal" data-bs-target="#modal-detail2">
+                              <i class=" mdi mdi-update"></i></a>
+                              <a class="action-icon" (click)="deleteDiscount(item.id)" ><i class="mdi mdi-delete"></i></a>
+                          </td>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Modal detail -->
+  <div id="modal-detail" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-top modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title" id="topModalLabel">Add room service</h4>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+        </div>
+        <div class="modal-body">
+          <form class="form-horizontal" [formGroup]="serviceForm">
+            <div class="row mb-3">
+                <label for="inputEmail3" class="col-3 col-form-label">Discount Code</label>
+                <div class="col-9">
+                    <input type="text" formControlName="discountCode" class="form-control" id="discountCode" placeholder="">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="inputEmail3" class="col-3 col-form-label">Name</label>
+                <div class="col-9">
+                    <input type="name" formControlName="name" class="form-control" id="icon" placeholder="">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="inputEmail3" class="col-3 col-form-label">Percents</label>
+                <div class="col-9">
+                    <input type="text" formControlName="discountPercent" class="form-control" id="description" placeholder="">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="inputEmail3" class="col-3 col-form-label">Amount</label>
+                <div class="col-9">
+                    <input type="number" formControlName="amountUse" class="form-control" id="description" placeholder="">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="inputEmail3" class="col-3 col-form-label">Start Date</label>
+                <div class="col-9">
+                    <input type="date" formControlName="startAt" class="form-control" id="description" placeholder="">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="inputEmail3" class="col-3 col-form-label">Expire Date</label>
+                <div class="col-9">
+                    <input type="date" formControlName="endAt" class="form-control" id="description" placeholder="">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="inputEmail3" class="col-3 col-form-label">Discount Type </label>
+                <div class="col-9">
+                    <!-- <input type="number" formControlName="discountTypeId" class="form-control" id="description" placeholder=""> -->
+                    <select class="form-select mr-sm-2"  (change)="onServiceSelectionChange($event)">
+                        <option *ngFor="let service of discount" [value]="service.id">{{ service.name }}</option>
+                      </select>
+                  </div>
+            </div>
+            <div class="row md-4">
+                <label for="inputEmail3" class="col-3 col-form-label">Permament</label>
+                <div class="col-md-4">
+                  <select class="form-select mr-sm-2" formControlName="isPermanent" id="IsActive" name="IsActive">
+                    <option [ngValue]="true">Active</option>
+                    <option [ngValue]="false">Inactive</option>
+                  </select>
+                </div>
+            </div>
+  
+            <div class="justify-content-end row">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button (click)="createRoomType(serviceForm)" type="submit" class="btn btn-info">Add</button>
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Modal update detail -->
+  <div id="modal-detail2" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-top modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title" id="topModalLabel">Update room type</h4>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+        </div>
+        <div class="modal-body">
+          <form class="form-horizontal" [formGroup]="serviceForm">
+            <div class="row mb-3">
+                <label for="inputEmail3" class="col-3 col-form-label">Discount Code</label>
+                <div class="col-9">
+                    <input type="text" formControlName="discountCode" class="form-control" id="discountCode" placeholder="">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="inputEmail3" class="col-3 col-form-label">Name</label>
+                <div class="col-9">
+                    <input type="name" formControlName="name" class="form-control" id="icon" placeholder="">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="inputEmail3" class="col-3 col-form-label">Percents</label>
+                <div class="col-9">
+                    <input type="text" formControlName="discountPercent" class="form-control" id="description" placeholder="">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="inputEmail3" class="col-3 col-form-label">Amount</label>
+                <div class="col-9">
+                    <input type="number" formControlName="amountUse" class="form-control" id="description" placeholder="">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="inputEmail3" class="col-3 col-form-label">Start Date</label>
+                <div class="col-9">
+                    <input type="date" formControlName="startAt" class="form-control" id="description" placeholder="">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="inputEmail3" class="col-3 col-form-label">Expire Date</label>
+                <div class="col-9">
+                    <input type="date" formControlName="endAt" class="form-control" id="description" placeholder="">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="inputEmail3" class="col-3 col-form-label">Discount Type</label>
+                <div class="col-9">
+                  <select class="form-select mr-sm-2"  (change)="onServiceSelectionChange($event)">
+                      <option *ngFor="let service of discount" [value]="service.id">{{ service.name }}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row md-4">
+                <label for="inputEmail3" class="col-3 col-form-label">Permament</label>
+                <div class="col-md-4">
+                  <select class="form-select mr-sm-2" formControlName="isPermanent" id="IsActive" name="IsActive">
+                    <option [ngValue]="true">Active</option>
+                    <option [ngValue]="false">Inactive</option>
+                  </select>
+                </div>
+            </div>
+  
+            <div class="justify-content-end row">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" (click)="update(serviceForm)" class="btn btn-info" data-bs-dismiss="modal">Add</button>
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  

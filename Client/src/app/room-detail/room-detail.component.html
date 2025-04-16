@@ -1,0 +1,357 @@
+<app-spinner></app-spinner>
+<app-header></app-header>
+<div class="breadcrumb-area breadcrumb-padding">
+  <div class="container custom-container-one">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="breadcrumb-contents">
+          <h4 class="breadcrumb-contents-title"> Hotel Details </h4>
+          <ul class="breadcrumb-contents-list list-style-none">
+            <li class="breadcrumb-contents-list-item"> <a href="index.html" class="breadcrumb-contents-list-item-link">
+                Home </a>
+            </li>
+            <li class="breadcrumb-contents-list-item"> <a href="listing.html"
+                class="breadcrumb-contents-list-item-link"> Hotels
+              </a> </li>
+            <li class="breadcrumb-contents-list-item"> Hotel Details </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="hotel-details-area section-bg-2">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-xl-8 col-lg-7">
+        <div class="details-left-wrapper">
+          <div class="details-contents bg-white radius-10">
+            <div class="details-contents-header">
+              <img *ngIf="room!=undefined" [src]="room.roomPicture==undefined?'':room.roomPicture" alt="Room Image">
+            </div>
+            <div class="details-contents-header">
+              <div class="row mt-2 slider">
+                <div class="col-11 ">
+                  <div class="global-slick-init attraction-slider nav-style-one nav-color-two slider-inner-margin"
+                    data-infinite="true" data-arrows="true" data-dots="false" data-slidesToShow="4"
+                    data-swipeToSlide="true" data-autoplay="true" data-autoplaySpeed="2500"
+                    data-prevArrow='<div class="prev-icon radius-parcent-50"><i class="las la-angle-left"></i></div>'
+                    data-nextArrow='<div class="next-icon radius-parcent-50"><i class="las la-angle-right"></i></div>'
+                    data-responsive='[{"breakpoint": 1400,"settings": {"slidesToShow": 4}},{"breakpoint": 1200,"settings": {"slidesToShow": 3}},{"breakpoint": 992,"settings": {"slidesToShow": 3}},{"breakpoint": 768,"settings": {"slidesToShow": 2}},{"breakpoint": 576, "settings": {"slidesToShow": 1} }]'>
+
+                    <div class="attraction-item">
+                      <!-- Các phần tử trong slider -->
+                      <div class="attraction-item1">
+                        <div class="single-attraction-two radius-20" *ngIf="imageUrls">
+                          <div class="single-attraction-two-thumb">
+                            <a href="{{imageUrls[0]==null?'':imageUrls[0]}}" class="gallery-popup">
+                              <img [src]="imageUrls[0]==null?'':imageUrls[0]" alt="img">
+                            </a>
+                          </div>
+                          <div class="single-attraction-two-contents"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="attraction-item">
+                      <!-- Các phần tử trong slider -->
+                      <div class="attraction-item1" *ngIf="imageUrls">
+                        <div class="single-attraction-two radius-20">
+                          <div class="single-attraction-two-thumb">
+                            <a href="{{imageUrls[1]==null?'':imageUrls[1]}}" class="gallery-popup">
+                              <img [src]="imageUrls[1]==null?'':imageUrls[1]" alt="img">
+                            </a>
+                          </div>
+                          <div class="single-attraction-two-contents"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="attraction-item">
+                      <!-- Các phần tử trong slider -->
+                      <div class="attraction-item1" *ngIf="imageUrls">
+                        <div class="single-attraction-two radius-20">
+                          <div class="single-attraction-two-thumb">
+                            <a href="{{imageUrls[2]==null?'':imageUrls[2]}}" class="gallery-popup">
+                              <img [src]="imageUrls[2]==null?'':imageUrls[2]" alt="img">
+                            </a>
+                          </div>
+                          <div class="single-attraction-two-contents"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="attraction-item">
+                      <!-- Các phần tử trong slider -->
+                      <div class="attraction-item1" *ngIf="imageUrls">
+                        <div class="single-attraction-two radius-20">
+                          <div class="single-attraction-two-thumb">
+                            <a href="{{imageUrls[3]==null?'':imageUrls[3]}}" class="gallery-popup">
+                              <img [src]="imageUrls[3]==null?'':imageUrls[3]" alt="img">
+                            </a>
+                          </div>
+                          <div class="single-attraction-two-contents"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="attraction-item">
+                      <!-- Các phần tử trong slider -->
+                      <div class="attraction-item1" *ngIf="imageUrls">
+                        <div class="single-attraction-two radius-20">
+                          <div class="single-attraction-two-thumb">
+                            <a href="{{imageUrls[4]==null?'':imageUrls[4]}}" class="gallery-popup">
+                              <img [src]="imageUrls[4]==null?'':imageUrls[4]" alt="img">
+                            </a>
+                          </div>
+                          <div class="single-attraction-two-contents"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="attraction-item">
+                      <!-- Các phần tử trong slider -->
+                      <div class="attraction-item1" *ngIf="imageUrls">
+                        <div class="single-attraction-two radius-20">
+                          <div class="single-attraction-two-thumb">
+                            <a href="{{imageUrls[5]==null?'':imageUrls[5]}}" class="gallery-popup">
+                              <img [src]="imageUrls[5]==null?'':imageUrls[5]" alt="img">
+                            </a>
+                          </div>
+                          <div class="single-attraction-two-contents"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="attraction-item">
+                      <!-- Các phần tử trong slider -->
+                      <div class="attraction-item1" *ngIf="imageUrls">
+                        <div class="single-attraction-two radius-20">
+                          <div class="single-attraction-two-thumb">
+                            <a href="{{imageUrls[6]==null?'':imageUrls[6]}}" class="gallery-popup">
+                              <img [src]="imageUrls[6]==null?'':imageUrls[6]" alt="img">
+                            </a>
+                          </div>
+                          <div class="single-attraction-two-contents"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="attraction-item">
+                      <!-- Các phần tử trong slider -->
+                      <div class="attraction-item1" *ngIf="imageUrls">
+                        <div class="single-attraction-two radius-20">
+                          <div class="single-attraction-two-thumb">
+                            <a href="{{imageUrls[7]==null?'':imageUrls[7]}}" class="gallery-popup">
+                              <img [src]="imageUrls[7]==null?'':imageUrls[7]" alt="img">
+                            </a>
+                          </div>
+                          <div class="single-attraction-two-contents"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="attraction-item">
+                      <!-- Các phần tử trong slider -->
+                      <div class="attraction-item1" *ngIf="imageUrls">
+                        <div class="single-attraction-two radius-20">
+                          <div class="single-attraction-two-thumb">
+                            <a href="{{imageUrls[8]==null?'':imageUrls[8]}}" class="gallery-popup">
+                              <img [src]="imageUrls[8]==null?'':imageUrls[8]" alt="img">
+                            </a>
+                          </div>
+                          <div class="single-attraction-two-contents"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="attraction-item">
+                      <!-- Các phần tử trong slider -->
+                      <div class="attraction-item1" *ngIf="imageUrls">
+                        <div class="single-attraction-two radius-20">
+                          <div class="single-attraction-two-thumb">
+                            <a href="{{imageUrls[9]==null?'':imageUrls[9]}}" class="gallery-popup">
+                              <img [src]="imageUrls[9]==null?'':imageUrls[9]" alt="img">
+                            </a>
+                          </div>
+                          <div class="single-attraction-two-contents"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="attraction-item">
+                      <!-- Các phần tử trong slider -->
+                      <div class="attraction-item1" *ngIf="imageUrls">
+                        <div class="single-attraction-two radius-20">
+                          <div class="single-attraction-two-thumb">
+                            <a href="{{imageUrls[10]==null?'':imageUrls[10]}}" class="gallery-popup">
+                              <img [src]="imageUrls[10]==null?'':imageUrls[10]" alt="img">
+                            </a>
+                          </div>
+                          <div class="single-attraction-two-contents"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="hotel-view-contents" *ngIf="room!=undefined">
+              <div class="hotel-view-contents-header">
+                <span *ngIf="room!=undefined" class="hotel-view-contents-review"> <i class="las la-star"></i> {{room.starSum}}
+                  <span class="hotel-view-contents-review-count"> ({{room.starAmount}} votings) </span> </span>
+                <h3 *ngIf="room!=undefined" class="hotel-view-contents-title"> {{room.roomTypeName}} </h3>
+                <div class="hotel-view-contents-location mt-2">
+                </div>
+              </div>
+              <div class="hotel-view-contents-middle">
+                <div class="hotel-view-contents-flex">
+                  <div class="hotel-view-contents-icon d-flex gap-1" *ngFor="let item of room.serviceAttachs">
+                    <span> <i class="{{item.icon}}"></i> </span>
+                    <p class="hotel-view-contents-icon-title flex-fill"> {{item.name}} </p>
+                  </div>
+
+                </div>
+              </div>
+              <div class="hotel-view-contents-bottom">
+                <div class="hotel-view-contents-bottom-flex">
+                  <div class="hotel-view-contents-bottom-contents">
+                    <h4 class="hotel-view-contents-bottom-title"> {{room.discountPrice == 0 ? room.currentPrice :
+                      room.discountPrice | vndCurrency}} <sub>/Night</sub> </h4>
+                    <p class="hotel-view-contents-bottom-para"> ({{room.peopleNumber}} Persons, {{room.numberOfSimpleBed}} Beds, 1
+                      Nights) </p>
+                  </div>
+                  <div class="btn-wrapper">
+                    <a href="javascript:void(0)" (click)="bookingRoom()" class="cmn-btn btn-bg-1 btn-small"> Reserve
+                      Now </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="details-contents-tab" *ngIf="room!=undefined">
+              <ul class="tabs details-tab details-tab-border">
+                <li class="active" data-tab="about"> About </li>
+                <li data-tab="reviews"> Reviews </li>
+              </ul>
+              <div id="about" class="tab-content-item active">
+                <div class="about-tab-contents">
+                  <p class="about-tab-contents-para"> {{room.description}} </p>
+                  <p class="about-tab-contents-para"> {{room.description}}</p>
+
+                </div>
+              </div>
+              <div id="reviews" class="tab-content-item">
+                <div class="review-tab-contents">
+                  <div class="review-tab-contents-single">
+                    <div class="review-tab-contents-author mt-4">
+                      <div class="single-reservation-btn">
+                        <a class="btn btn-primary" (click)="openDialog()" class="dash-btn btn-small-2"> Rate Now </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="hotel-view bg-white radius-20 mt-4 mb-4">
+            <div class="hotel-details-widget hotel-details-widget-padding widget bg-white radius-10">
+              <div class="details-sidebar">
+                <div class="details-sidebar-offer center-text radius-10">
+                  <div class="details-sidebar-offer-shapes">
+                    <img src="assets/img/single-page/offer_shapes.png" alt="shapes">
+                  </div>
+                  <div class="details-sidebar-offer-thumb">
+                    <img src="assets/img/single-page/offer.png" alt="">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-4 col-lg-5">
+        <div class="">
+          <div class="hotel-details-widget hotel-details-widget-padding widget bg-white radius-10">
+            <div class="details-sidebar">
+              <div class="details-sidebar-dropdown custom-form">
+                <form action="#" [formGroup]="formReservation">
+                  <div class="single-input mt-3">
+                    <label class="details-sidebar-dropdown-title col-3"> Check In </label>
+                    <mat-form-field style="margin-left: 1px; "  appearance="fill">
+                      <input  matInput [matDatepicker]="picker2" style="border-radius: 20px;" formControlName="checkIn">
+                      <mat-datepicker-toggle matIconSuffix  [for]="picker2"></mat-datepicker-toggle>
+                      <mat-datepicker #picker2></mat-datepicker>
+                    </mat-form-field>
+                  </div>
+                  <div class="single-input mt-3">
+                    <label class="details-sidebar-dropdown-title col-3"> Check Out </label>
+                    <mat-form-field appearance="fill">
+                      <input style="  margin-left: 16px;" matInput [matDatepicker]="picker3" formControlName="checkOut">
+                      <mat-datepicker-toggle matIconSuffix [for]="picker3"></mat-datepicker-toggle>
+                      <mat-datepicker #picker3></mat-datepicker>
+                    </mat-form-field>
+                  </div>
+                  <div class="details-sidebar-quantity pt-4">
+                    <div class="details-sidebar-quantity-flex">
+                      <div class="details-sidebar-quantity-item">
+                        <label class="details-sidebar-dropdown-title"> Guest </label>
+                          <input
+                          class="form--control form-control input" placeholder="Guest" tabindex="0" type="text" style="padding: 14px 16px;" formControlName="numberOfPeople">
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+              <div class="btn-wrapper mt-4">
+                <a class="cmn-btn btn-bg-1 btn-small" (click)="bookingRoom()"> Reserve now </a>
+              </div>
+            </div>
+          </div>
+          <div class="hotel-details-widget hotel-details-widget-padding widget bg-white radius-10">
+            <div class="details-sidebar">
+              <div class="details-sidebar-offer center-text radius-10">
+                <div class="details-sidebar-offer-shapes">
+                  <img src="assets/img/single-page/offer_shapes.png" alt="shapes">
+                </div>
+                <div class="details-sidebar-offer-thumb">
+                  <img src="assets/img/single-page/offer.png" alt="">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="hotel-details-widget hotel-details-widget-padding widget bg-white radius-10">
+            <div class="details-sidebar">
+              <div class="details-sidebar-offer center-text radius-10">
+                <div class="details-sidebar-offer-shapes">
+                  <img src="assets/img/single-page/offer_shapes.png" alt="shapes">
+                </div>
+                <div class="details-sidebar-offer-thumb">
+                  <img src="assets/img/single-page/offer.png" alt="">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="hotel-details-widget hotel-details-widget-padding widget bg-white radius-10">
+            <div class="details-sidebar">
+              <div class="details-sidebar-offer center-text radius-10">
+                <div class="details-sidebar-offer-shapes">
+                  <img src="assets/img/single-page/offer_shapes.png" alt="shapes">
+                </div>
+                <div class="details-sidebar-offer-thumb">
+                  <img src="assets/img/single-page/offer.png" alt="">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="hotel-details-widget hotel-details-widget-padding widget bg-white radius-10">
+            <div class="details-sidebar">
+              <div class="details-sidebar-offer center-text radius-10">
+                <div class="details-sidebar-offer-shapes">
+                  <img src="assets/img/single-page/offer_shapes.png" alt="shapes">
+                </div>
+                <div class="details-sidebar-offer-thumb">
+                  <img src="assets/img/single-page/offer.png" alt="">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <app-footer></app-footer>
+  <script type='text/javascript' defer
+    src='https://bytesed.com/wp-content/plugins/contact-form-7/modules/recaptcha/index.js?ver=5.7.3'
+    id='wpcf7-recaptcha-js'></script>
+
+  <!-- Modal -->

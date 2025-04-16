@@ -1,0 +1,169 @@
+<app-header></app-header>
+
+<div class="breadcrumb-area breadcrumb-padding">
+  <div class="container custom-container-one">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="breadcrumb-contents">
+          <h4 class="breadcrumb-contents-title"> Payment </h4>
+          <ul class="breadcrumb-contents-list list-style-none">
+            <li class="breadcrumb-contents-list-item"> <a href="index.html"
+                class="breadcrumb-contents-list-item-link"> Home </a> </li>
+            <li class="breadcrumb-contents-list-item"> Payment </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="body-overlay"></div>
+<div class="dashboard-area section-bg-2">
+  <div class="container">
+    <div class="dashboard-contents-wrapper">
+      <div class="dashboard-icon">
+        <div class="sidebar-icon">
+          <i class="las la-bars"></i>
+        </div>
+      </div>
+      <app-left-content></app-left-content>
+      <div class="dashboard-right-contents mt-4 mt-lg-0 mb-lg-5">
+
+        <div class="dashboard-reservation mb-5" *ngFor="let item of paymentInfo; let i = index ;">
+          <div class="single-reservation bg-white base-padding  open">
+            <div class="single-reservation-expandIcon"> <i class="las la-angle-down"></i> </div>
+            <div class="single-reservation-head">
+              <div class="single-reservation-flex">
+                <div class="single-reservation-content">
+                  <h5 class="single-reservation-content-title"> Reservation ID </h5>
+                  <span class="single-reservation-content-id"> {{item.id}} </span>
+                </div>
+                <div class="single-reservation-btn">
+                  <a href="javascript:void(0)" class="dash-btn btn-completed"> Completed </a>
+                </div>
+              </div>
+            </div>
+            <div class="single-reservation-inner">
+              <div class="single-reservation-item">
+                <div class="single-reservation-name">
+                  <h5 class="single-reservation-name-title">{{item.name}} </h5>
+                  <p class="single-reservation-name-para"><b>
+                    {{item.phoneNumber}}
+                  </b>,  <b>
+                    {{item.address}}
+                  </b>
+                  </p>
+                </div>
+              </div>
+              <div class="single-reservation-item">
+                <div class="single-reservation-details">
+                  <div class="single-reservation-details-item">
+                    <span class="single-reservation-details-subtitle"> Check in </span>
+                    <h5 class="single-reservation-details-title"> {{item.startDate |  date:"HH:mm"}}, {{item.createdAt | date: "MMM d"}} </h5>
+                  </div>
+                  <div class="single-reservation-details-item">
+                    <span class="single-reservation-details-subtitle"> Check Out </span>
+                    <h5 class="single-reservation-details-title"> {{item.endDate |  date:"HH:mm"}}, {{item.endDate | date: "MMM d"}} </h5>
+                  </div>
+                  <div class="single-reservation-details-item">
+                    <span class="single-reservation-details-subtitle"> Guests & Rooms </span>
+                    <h5 class="single-reservation-details-title"> 4 Adults, 2 Children, 3 Rooms </h5>
+                  </div>
+                  <div class="single-reservation-details-item">
+                    <span class="single-reservation-details-subtitle"> Booked </span>
+                    <h5 class="single-reservation-details-title"> {{item.createdAt | date: "MMM d"}} </h5>
+                  </div>
+                </div>
+              </div>
+              <div class="single-reservation-item">
+                <div class="single-reservation-flex">
+                  <div class="single-reservation-content">
+                    <h5 class="single-reservation-content-title"> Total Bill </h5>
+                    <span class="single-reservation-content-price"> {{item.reservationPayment.priceTotal | vndCurrency }} </span>
+                  </div>
+                  <div class="single-reservation-logoPrice" *ngIf=" item.reservationPayment.orderType === 'momo_wallet'">
+                    <span class="single-reservation-logoPrice-thumb">
+                      <img src="../../assets/img/logo-momo-inkythuatso/logo-momo-png-1.png" alt="img">
+                    </span>
+                    <span class="single-reservation-logoPrice-code"> ***9320 </span>
+                  </div>
+                  <div class="single-reservation-logoPrice" *ngIf=" item.reservationPayment.orderType !== 'momo_wallet'">
+                    <span class="single-reservation-logoPrice-thumb">
+                      <img src="../../assets/img/vnpay-logo-inkythuatso/vnpay-logo-inkythuatso (2)-01.png" alt="img">
+                    </span>
+                    <span class="single-reservation-logoPrice-code"> ***9320 </span>
+                  </div>
+                </div>
+              </div>
+              <div class="single-reservation-item">
+                <div class="single-reservation-flex">
+                  <div class="single-reservation-name">
+                    <h5 class="single-reservation-name-title"> Beyond Hotel </h5>
+                    <p class="single-reservation-name-para"> 254 Nguyen Van Linh St., Hai Chau, Da Nang </p>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <!-- <div class="row mt-5 mb-5 justify-center">
+          <div class="col">
+            <div class="pagination-wrapper">
+              <ul class="pagination-list list-style-none">
+                <li class="pagination-list-item-prev">
+                  <a href="javascript:void(0)" class="pagination-list-item-button"> Prev </a>
+                </li>
+                <li class="pagination-list-item">
+                  <a href="javascript:void(0)" class="pagination-list-item-link"> 1 </a>
+                </li>
+                <li class="pagination-list-item">
+                  <a href="javascript:void(0)" class="pagination-list-item-link"> 2 </a>
+                </li>
+                <li class="pagination-list-item">
+                  <a href="javascript:void(0)" class="pagination-list-item-link"> 3 </a>
+                </li>
+                <li class="pagination-list-item">
+                  <a href="javascript:void(0)" class="pagination-list-item-link"> 4 </a>
+                </li>
+                <li class="pagination-list-item active">
+                  <a href="javascript:void(0)" class="pagination-list-item-link"> 5 </a>
+                </li>
+                <li class="pagination-list-item-next">
+                  <a href="javascript:void(0)" class="pagination-list-item-button"> Next </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div> -->
+      </div>
+    </div>
+  </div>
+
+
+
+<div class="popup-overlay"></div>
+<div class="popup-fixed">
+  <div class="popup-contents popup-cancell-modal">
+    <h2 class="popup-contents-title"> Why do you want to cancel? </h2>
+    <div class="popup-contents-select">
+      <label class="popup-contents-select-label"> Choose a reason </label>
+      <div class="js-select">
+        <select>
+          <option value="1">Don't want to Book</option>
+          <option value="2">Booked Accidentally</option>
+          <option value="3">Don't want to Book</option>
+        </select>
+      </div>
+    </div>
+    <div class="popup-contents-btn flex-btn">
+      <a href="javascript:void(0)" class="dash-btn popup-close"> <i class="las la-arrow-left"></i> Go Back </a>
+      <a href="javascript:void(0)" class="dash-btn btn-cancelled popup-close"> Cancel </a>
+    </div>
+  </div>
+</div>
+
+<app-footer></app-footer>
+

@@ -1,0 +1,26 @@
+<div class="dashboard-left-content">
+  <div class="dashboard-close-main">
+    <div class="close-bars"> <i class="las la-times"></i> </div>
+    <div class="dashboard-bottom">
+      <ul class="dashboard-list list-style-none">
+        <li class="list" routerLinkActive="active">
+          <a (click)="storeLoad()" routerLinkActive="list active" routerLink="/paymentdetail"> <i class="las la-briefcase"></i> Payments </a>
+        </li>
+        <li class="list has-children  open show" routerLinkActive="active">
+          <a href="javascript:void(0)"> <i class="las la-user-circle"></i> Profile </a>
+          <ul class="submenu list-style-none">
+            <li class="list"> <a routerLinkActive="list active" [routerLinkActiveOptions]="{exact:
+              true}" routerLink="/user-profile"> Profile </a> </li>
+            <li class="list"> <a routerLinkActive="list active" routerLink="/edit-profile"> Edit Profile </a> </li>
+            <li class="list"> <a routerLinkActive="list active" routerLink="/password-change"> Password Change </a>
+            </li>
+          </ul>
+        </li>
+
+        <li class="list">
+          <a (click)="logout()"> <i class="las la-sign-out-alt"></i> Log Out </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

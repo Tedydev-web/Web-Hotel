@@ -1,0 +1,83 @@
+<app-header></app-header>
+
+
+
+<div class="breadcrumb-area breadcrumb-padding">
+  <div class="container custom-container-one">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="breadcrumb-contents">
+          <h4 class="breadcrumb-contents-title"> Blog Page </h4>
+          <ul class="breadcrumb-contents-list list-style-none">
+            <li class="breadcrumb-contents-list-item"> <a href="index.html"
+                class="breadcrumb-contents-list-item-link"> Home </a> </li>
+            <li class="breadcrumb-contents-list-item"> Blog </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<section class="blog-area section-bg-1 pat-100 pab-100">
+  <div class="container">
+    <div class="row gy-5" *ngIf="blogs$  | async as blogPost">
+      <!-- <pre>
+
+      {{blogPost | json}}
+      </pre> -->
+      <div id class="col-xxl-4 col-lg-4 col-md-6" *ngFor="let blog of blogPost.items"  >
+        <div class="single-blog" >
+          <div class="single-blog-thumbs">
+            <a  [routerLink]="['/blog-detail',removeBlogsPrefix(blog.sys.id)]"> <img class="lazyloads" [src]="blog.fields.imageBlog.fields.file.url" alt=""> </a>
+            <div class="single-blog-thumbs-date">
+              <a href="javascript:void(0)"> <span class="date"> {{blog.fields.dateCreate | date}} </span> <span class="month"> Jun </span> </a>
+            </div>
+          </div>
+          <div class="single-blog-contents mt-3">
+            <div class="single-blog-contents-tags mt-3">
+              <span class="single-blog-contents-tags-item">
+                <a href="javascript:void(0)"> <i class="las la-tag"></i> {{blog.fields.author}} </a>
+              </span>
+              <span class="single-blog-contents-tags-item"> <a href="javascript:void(0)"> 22 Comments </a> </span>
+            </div>
+            <h4 class="single-blog-contents-title mt-3"> <a [routerLink]="['/blog-detail',removeBlogsPrefix(blog.sys.id)]"> {{blog.fields.shortTitle}} </a> </h4>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="row mt-5">
+      <div class="col">
+        <div class="pagination-wrapper">
+          <ul class="pagination-list list-style-none">
+            <li class="pagination-list-item-prev">
+              <a href="javascript:void(0)" class="pagination-list-item-button"> Prev </a>
+            </li>
+            <li class="pagination-list-item active">
+              <a href="javascript:void(0)" class="pagination-list-item-link"> 1 </a>
+            </li>
+            <li class="pagination-list-item ">
+              <a href="javascript:void(0)" class="pagination-list-item-link"> 2 </a>
+            </li>
+            <li class="pagination-list-item">
+              <a href="javascript:void(0)" class="pagination-list-item-link"> 3 </a>
+            </li>
+            <li class="pagination-list-item">
+              <a href="javascript:void(0)" class="pagination-list-item-link"> 4 </a>
+            </li>
+            <li class="pagination-list-item">
+              <a href="javascript:void(0)" class="pagination-list-item-link"> 5 </a>
+            </li>
+            <li class="pagination-list-item-next">
+              <a href="javascript:void(0)" class="pagination-list-item-button"> Next </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<app-footer></app-footer>

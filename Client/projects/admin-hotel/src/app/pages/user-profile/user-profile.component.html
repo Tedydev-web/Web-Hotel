@@ -1,0 +1,108 @@
+<div class="wrapper">
+    <app-sidebar></app-sidebar>
+
+    <div class="content-page">
+        <div class="content">
+            <app-header></app-header>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="page-title-box">
+                            <div class="page-title-right">
+                                <ol class="breadcrumb m-0">
+                                    <li class="breadcrumb-item"><a href="javascript: void(0);">Beyond</a></li>
+                                    <li class="breadcrumb-item active">UserProfile</li>
+                                </ol>
+                            </div>
+                            <h4 class="page-title mt-2">User Profile</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <form action="" [formGroup]="updateProfile" (ngSubmit)="OnSubmit()">
+                                    <div class="dashboard-flex-input">
+                                        <div class="dashboard-input mt-4">
+                                            <!--Avatar-->
+                                            <div>
+                                                <div class="d-flex justify-content-center mb-4">
+                                                    <img [src]="userProfile.image" class="rounded-circle"
+                                                        alt="example placeholder"
+                                                        style="width: 200px;height: 200px; object-fit:cover"
+                                                        *ngIf="imgURL == null" />
+                                                    <img [src]="imgURL" class="rounded-circle" alt="example placeholder"
+                                                        style="width: 200px;height: 200px; object-fit:cover"
+                                                        *ngIf="imgURL != null">
+                                                </div>
+                                                <div class="d-flex justify-content-center">
+                                                    <div class="btn btn-primary btn-rounded">
+                                                        <label class="form-label text-white m-1" for="customFile2">Choose
+                                                            file</label>
+                                                        <span style="color:red;" *ngIf="message">{{message}}</span>
+                                                        <input type="file" class="form-control d-none" accept='image/*' #file
+                                                            (change)="uploadFile(file.files)" id="customFile2" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="simpleinput" class="form-label">Address</label>
+                                        <input type="text" class="form-control" formControlName="Address" placeholder="Address"
+                                            [ngClass]="{ 'is-invalid':  f['Address'].errors }">
+                                        <div *ngIf=" f['Address'].errors" class="invalid-feedback">
+                                            <div *ngIf="f['Address'].errors['required']">Address is required.</div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="label-title"> Email </label>
+                                        <input readonly="true" type="text" class="form-control" placeholder="Email"
+                                            [value]="userProfile.email">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="label-title"> ID Card </label>
+                                        <input type="text" class="form-control" formControlName="CMND" placeholder="ID Card"
+                                            placeholder="Enter 10 digit phone Number"
+                                            [ngClass]="{ 'is-invalid':  f['CMND'].errors }">
+                                        <div *ngIf=" f['CMND'].errors" class="invalid-feedback">
+                                            <div *ngIf="f['CMND'].errors['required']">
+                                                ID Card is required.
+                                            </div>
+                                            <div *ngIf="f['CMND'].errors['pattern']">
+                                                ID Card must have 12 digit.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="label-title"> Phone Number </label>
+                                        <input type="text" class="form-control" formControlName="PhoneNumber" id="phone"
+                                            placeholder="Phone Number" [value]="userProfile.phoneNumber"
+                                            placeholder="Enter 10 digit phone Number"
+                                            [ngClass]="{ 'is-invalid':  f['PhoneNumber'].errors }">
+
+                                        <div *ngIf=" f['PhoneNumber'].errors" class="invalid-feedback">
+                                            <div *ngIf="f['PhoneNumber'].errors['required']">
+                                                Phone Number is required.
+                                            </div>
+                                            <div *ngIf="f['PhoneNumber'].errors['pattern']">
+                                                Please Follow your pattern: Enter 10 digit phone Number.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="btn-wrapper mt-4">
+                                        <button type="submit" class="btn btn-primary"> Save Changes </button>
+                                    </div>
+                                </form>
+                            </div> <!-- end card -->
+                        </div><!-- end col-->
+                    </div>
+                    <!-- end row-->
+
+
+                </div>
+            </div>
+        </div>
+    </div>

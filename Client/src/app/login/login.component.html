@@ -1,0 +1,89 @@
+<section class="login-area padding-top-100 padding-bottom-100">
+
+  <div class="container login-container">
+    <div class="login-wrapper login-shadow bg-white">
+      <div class="login-wrapper-flex">
+        <div class="login-wrapper-contents">
+          <a href=""><img src="assets/img/logo.png" alt="">
+          </a>
+          <img src="assets/img/single-page/login2.png" alt="img">
+        </div>
+        <div class="login-wrapper-contents login-padding">
+          <h2 class="single-title"> Welcome! </h2>
+          <p class="sigle-para mt-2"> Login to Continue </p>
+          <form [formGroup]="loginForm" class="login-wrapper-contents-form custom-form"
+           (ngSubmit)="onSubmit()"action="" >
+
+            <!-- <div class="single-input mt-4">
+              <label class="label-title mb-3">  Email </label>
+              <input class="form--control"  formControlName="email" type="text" placeholder="Email">
+            </div> -->
+            <div class="single-input mt-4">
+              <label class="label-title mb-3">  Email </label>
+              <input class="form--control" id="email"  formControlName="email" type="text" placeholder=" Email "
+              [ngClass]="{ 'is-invalid': submitted && f['email'].errors }" />
+              <div *ngIf="submitted && f['email'].errors" class="invalid-feedback">
+                <div *ngIf="f['email'].errors['required']">Email is required</div>
+                <div *ngIf="f['email'].errors['email']">Email must be a valid email address</div>
+            </div>
+            </div>
+
+            <div class="single-input mt-4">
+              <label class="label-title mb-3"> Password </label>
+              <input class="form--control"  [type]="password"  formControlName="password" type="password"  placeholder="Type Password"
+                [ngClass]="{ 'is-invalid': submitted && f['password'].errors }" required="">
+
+
+
+                <div *ngIf="submitted && f['password'].errors" class="invalid-feedback">
+                  <div *ngIf="f['password'].errors['required']">Password is required</div>
+                  <div *ngIf="f['password'].errors['minlength']">Password must be at least 6 characters</div>
+              </div>
+              <div class="icon toggle-password">
+                <i (click)="OnClick()"  style="margin-left: -30px; cursor: pointer;">
+                  <i class="fa fa-eye" aria-hidden="true" *ngIf="show"></i>
+                  <i class="fa fa-eye-slash" aria-hidden="true" *ngIf="!show"></i>
+                </i>
+              </div>
+            </div>
+            <button class="submit-btn w-100 mt-4"  type="submit"   >  Sign In <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>   </button>
+          </form>
+          <div class="single-checkbox mt-4">
+
+            <div class="checkbox-inline">
+              <span class="account color-light"> Don't have an account? <a class="color-one" routerLink="/signup">
+                SignUp Now </a> </span>
+              <!-- <input class="check-input" type="checkbox" id="check15">
+              <label class="checkbox-label" for="check15"> Remember Me </label> -->
+            </div>
+            <div class="forgot-password">
+              <a routerLink="/forgot-password" class="forgot-btn color-one"> Forgot Password </a>
+            </div>
+          </div>
+          <!-- <div class="login-bottom-contents">
+            <div class="or-contents mb-3">
+              <span class="or-contents-para"> Or </span>
+            </div>
+            <div class="login-others">
+              <div class="login-others-single">
+                <a href="javascript:void(0)" class="login-others-single-btn w-100">
+                  <img src="assets/img/single-page/google.png" alt="">
+                  <span class="login-para"> Sign In With Google </span>
+                </a>
+              </div>
+              <div class="login-others-single">
+                <a href="javascript:void(0)" class="login-others-single-btn w-100">
+                  <img src="assets/img/single-page/facebook.png" alt="">
+                  <span class="login-para"> Sign In With facebook </span>
+                </a>
+              </div>
+            </div>
+          </div> -->
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+<app-spinner></app-spinner>

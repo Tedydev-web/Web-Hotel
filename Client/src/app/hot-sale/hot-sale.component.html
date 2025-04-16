@@ -1,0 +1,49 @@
+<div class="section-title center-text sale-heading margin-title">
+  <h3 class="title"> Hot sales room ! </h3>
+  <div class="section-title-line"> </div>
+</div>
+
+<div class="container" data-aos="fade-up" data-aos-anchor-placement="top-bottom"  >
+  <div class="row-sale" *ngIf="discountRoom && discountRoom.length > 0">
+
+    <button class="hot-sale-btn"  (click)="previousProduct()"><i class="las la-angle-left"></i></button >
+    <div class="employee-container"*ngFor="let room of discountRoom.slice(startIndex, endIndex + 1); let i = index" [ngClass]="slideAnimation">
+
+      <div class="employee"  *ngIf="i >= startIndex && i <= endIndex">
+
+        <div *ngIf="room!=undefined" class="hotel-view-contents-review star-sale"> <i class="las la-star"></i>
+          {{room.starSum}}
+          <span class="hotel-view-contents-review-count"> ({{room.starAmount}})</span>
+        </div>
+        <div class="employee-image">
+          <a routerLink="/room-detail/{{room.id}}">
+            <img [src]="room.roomPicture" class="img-fluid d-block m-auto" alt="employee-image">
+          </a>
+        </div>
+        <div class="employee-details">
+          <div class="employee-name">
+            <h1 class="text-center">{{room.name}}<br><span class="employee-role">{{room.discountPrice |
+                vndCurrency}}</span>
+              <br>
+              <span class="employee-role discountprice">{{room.currentPrice | vndCurrency}}</span>
+            </h1>
+
+          </div>
+          <div class="employee-social-link">
+            <ul>
+              <li>
+                <div class="btn-wrapper">
+                  <a routerLink="/room-detail/{{room.id}}"   (click)="getRoomId(room.id)"  class="cmn-btn btn-bg-1 btn-small"> Reserve Now </a>
+                </div>
+              </li>
+
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <button class="hot-sale-btn" (click)="nextProduct()"><i class="las la-angle-right"></i></button>
+  </div>
+
+</div>

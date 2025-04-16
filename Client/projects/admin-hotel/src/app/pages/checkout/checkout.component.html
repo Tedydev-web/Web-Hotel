@@ -1,0 +1,329 @@
+<div class="wrapper">
+    <app-sidebar></app-sidebar>
+    <div class="content-page">
+        <div class="content">
+            <app-header></app-header>
+            <div class="content">
+                <div class="container-fluid">
+                    <!-- start page title -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="page-title-box">
+                                <div class="page-title-right">
+                                    <ol class="breadcrumb m-0">
+                                        <li class="breadcrumb-item"><a href="javascript: void(0);">Beyond</a></li>
+                                        <li class="breadcrumb-item"><a href="javascript: void(0);">Managements</a></li>
+                                        <li class="breadcrumb-item active">Checkout</li>
+                                    </ol>
+                                </div>
+                                <h4 class="page-title">Checkout</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end page title -->
+                    <form [formGroup]="checkoutForm">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <!-- Checkout Steps -->
+                                        <!-- Steps Information -->
+                                        <div class="tab-content">
+                                            <!-- Billing Content-->
+                                            <div class="tab-pane show active" id="billing-information">
+                                                <div class="row">
+                                                    <div class="col-lg-8">
+                                                        <h4 class="mt-2">Customer information</h4>
+                                                        <p class="text-muted mb-4">Fill the form below in order to
+                                                            send you the order's invoice.</p>
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <div class="mb-3">
+                                                                    <label for="billing-first-name" class="form-label">First
+                                                                        Name</label>
+                                                                    <input class="form-control" formControlName="name" type="text"
+                                                                        placeholder="Enter your first name">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <div class="mb-3">
+                                                                    <label for="billing-last-name"
+                                                                        class="form-label">Email</label>
+                                                                    <input class="form-control" formControlName="email"
+                                                                        type="email" placeholder="Enter your address"
+                                                                        id="billing-last-name">
+                                                                </div>
+                                                            </div>
+                                                        </div> <!-- end row -->
+
+                                                        <div class="row">
+                                                            <div class="col-6">
+                                                                <div class="mb-3">
+                                                                    <label for="billing-phone" class="form-label"> Address <span
+                                                                            class="text-danger">*</span></label>
+                                                                    <input class="form-control" formControlName="address"
+                                                                        type="text" placeholder="(xx) xxx xxxx xxx"
+                                                                        id="billing-phone">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <div class="mb-3">
+                                                                    <label for="billing-phone" class="form-label">Phone <span
+                                                                            class="text-danger">*</span></label>
+                                                                    <input class="form-control" formControlName="phoneNumber"
+                                                                        type="text" placeholder="(xx) xxx xxxx xxx"
+                                                                        id="billing-phone">
+                                                                </div>
+                                                            </div>
+                                                        </div> <!-- end row -->
+
+                                                        <div class="row">
+                                                            <div class="col-12">
+                                                                <div class="mb-3">
+                                                                    <label for="billing-phone" class="form-label">Number of People
+                                                                        <span class="text-danger">*</span></label>
+                                                                    <input class="form-control" formControlName="numberOfPeople"
+                                                                        type="text" placeholder="(xx) xxx xxxx xxx"
+                                                                        id="billing-phone">
+                                                                </div>
+                                                            </div>
+                                                        </div> <!-- end row -->
+                                                        <div class="border p-3 mt-4 mt-lg-0 rounded">
+                                                            <h4 class="header-title mb-3">Checkout Information </h4>
+                                                            <div class="table-responsive">
+                                                                <table class="table table-centered mb-0">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td>
+                                                                                <p class="m-0 d-inline-block align-middle">
+                                                                                    <a href="apps-ecommerce-products-details.html"
+                                                                                        class="text-body fw-semibold">Check In</a>
+                                                                                    <br>
+                                                                                </p>
+                                                                            </td>
+                                                                            <td class="text-end">
+                                                                                {{reservationResponse.startDate | date:'MM/dd/yyyy - hh:mm' }}
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>
+                                                                                <p class="m-0 d-inline-block align-middle">
+                                                                                    <a href="apps-ecommerce-products-details.html"
+                                                                                        class="text-body fw-semibold">Check
+                                                                                        Out</a>
+                                                                                    <br>
+                                                                                </p>
+                                                                            </td>
+                                                                            <td class="text-end">
+                                                                                {{reservationResponse.endDate | date:'MM/dd/yyyy - hh:mm'}}
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>
+                                                                                <p class="m-0 d-inline-block align-middle">
+                                                                                    <a href="apps-ecommerce-products-details.html"
+                                                                                        class="text-body fw-semibold">Number of day</a>
+                                                                                    <br>
+                                                                                </p>
+                                                                            </td>
+                                                                            <td class="text-end">
+                                                                                {{reservationResponse.numberOfDay}}
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr class="text-end">
+                                                                            <td>
+                                                                                <h6 class="m-0">Sub Total:</h6>
+                                                                            </td>
+                                                                            <td class="text-end">
+                                                                                <span
+                                                                                    class="badge bg-primary rounded-pill">{{reservationResponse.roomPrice*reservationResponse.numberOfDay
+                                                                                    | vndCurrency}}</span>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr class="text-end">
+                                                                            <td>
+                                                                                <h6 class="m-0">Tax(+8%)</h6>
+                                                                            </td>
+                                                                            <td class="text-end">
+                                                                                <span class="badge bg-danger rounded-pill">
+                                                                                    + {{reservationResponse.roomPrice*reservationResponse.numberOfDay*0.08
+                                                                                    | vndCurrency}}</span>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr class="text-end">
+                                                                            <td>
+                                                                                <h5 class="m-0">Total:</h5>
+                                                                            </td>
+                                                                            <td class="text-end fw-semibold">
+                                                                                <span
+                                                                                    class="badge bg-primary rounded-pill">{{reservationResponse.reservationPrice | vndCurrency }}
+                                                                                    </span>
+                                                                                
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr class="text-end">
+                                                                            <td>
+                                                                                <h6 class="m-0">Deposit(50%)</h6>
+                                                                            </td>
+                                                                            <td class="text-end">
+                                                                                <span class="badge bg-danger rounded-pill">
+                                                                                    {{reservationResponse.reservationPrice*0.5
+                                                                                    | vndCurrency}}</span>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                            <!-- end table-responsive -->
+                                                        </div> <!-- end .border-->
+                                                    </div>
+                                                    <div class="col-lg-4">
+                                                        <div class="border p-3 mt-4 mt-lg-0 rounded">
+                                                            <h4 class="header-title mb-3">Room Information </h4>
+                                                            <div class="table-responsive">
+                                                                <table class="table table-centered mb-0">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td>
+                                                                                <p class="m-0 d-inline-block align-middle">
+                                                                                    <a href="apps-ecommerce-products-details.html"
+                                                                                        class="text-body fw-semibold">Room
+                                                                                        number</a>
+                                                                                    <br>
+                                                                                </p>
+                                                                            </td>
+                                                                            <td class="text-end">
+                                                                                {{roomResponse.roomNumber}}
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>
+                                                                                <p class="m-0 d-inline-block align-middle">
+                                                                                    <a href="apps-ecommerce-products-details.html"
+                                                                                        class="text-body fw-semibold">Room
+                                                                                        name</a>
+                                                                                    <br>
+                                                                                </p>
+                                                                            </td>
+                                                                            <td class="text-end">
+                                                                                {{roomResponse.name}}
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>
+                                                                                <p class="m-0 d-inline-block align-middle">
+                                                                                    <a href="apps-ecommerce-products-details.html"
+                                                                                        class="text-body fw-semibold">Simple
+                                                                                        bed</a>
+                                                                                    <br>
+                                                                                </p>
+                                                                            </td>
+                                                                            <td class="text-end">
+                                                                                {{roomResponse.numberOfSimpleBed}}
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>
+                                                                                <p class="m-0 d-inline-block align-middle">
+                                                                                    <a href="apps-ecommerce-products-details.html"
+                                                                                        class="text-body fw-semibold">Double
+                                                                                        bed</a>
+                                                                                    <br>
+                                                                                </p>
+                                                                            </td>
+                                                                            <td class="text-end">
+                                                                                {{roomResponse.numberOfDoubleBed}}
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>
+                                                                                <p class="m-0 d-inline-block align-middle">
+                                                                                    <a href="apps-ecommerce-products-details.html"
+                                                                                        class="text-body fw-semibold">Room
+                                                                                        type</a>
+                                                                                    <br>
+                                                                                </p>
+                                                                            </td>
+                                                                            <td class="text-end">
+                                                                                {{roomResponse.roomTypeName}}
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>
+                                                                                <p class="m-0 d-inline-block align-middle">
+                                                                                    <a href="apps-ecommerce-products-details.html"
+                                                                                        class="text-body fw-semibold">People
+                                                                                        number</a>
+                                                                                    <br>
+                                                                                </p>
+                                                                            </td>
+                                                                            <td class="text-end">
+                                                                                {{roomResponse.peopleNumber}}
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>
+                                                                                <p class="m-0 d-inline-block align-middle">
+                                                                                    <a href="apps-ecommerce-products-details.html"
+                                                                                        class="text-body fw-semibold">Service
+                                                                                        attachs</a>
+                                                                                    <br>
+                                                                                </p>
+                                                                            </td>
+                                                                            <td class="text-end ">
+                                                                                <span
+                                                                                    *ngFor="let item of roomResponse.serviceAttachs">
+                                                                                    {{item.name}}
+                                                                                </span>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>
+                                                                                <p class="m-0 d-inline-block align-middle">
+                                                                                    <a href="apps-ecommerce-products-details.html"
+                                                                                        class="text-body fw-semibold">Room
+                                                                                        price</a>
+                                                                                    <br>
+                                                                                </p>
+                                                                            </td>
+                                                                            <td class="text-end">
+                                                                                <span
+                                                                                    class="badge bg-primary rounded-pill">{{reservationResponse.roomPrice | vndCurrency}}</span>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                            <!-- end table-responsive -->
+                                                        </div> <!-- end .border-->
+                                                        <div class="row mt-4">
+                                                            <div class="col-sm-6">
+                                                                <a href="apps-ecommerce-shopping-cart.html"
+                                                                    class="btn text-muted d-none d-sm-inline-block btn-link fw-semibold"routerLink="/reservation">
+                                                                    <i class="mdi mdi-arrow-left"></i> Back to Booking
+                                                                    Room </a>
+                                                            </div> <!-- end col -->
+                                                            <div class="col-sm-6">
+                                                                <div class="text-sm-end">
+                                                                    <button type="submit" (click)="invoiceCreate()"
+                                                                        class="btn btn-danger">
+                                                                        Checkout </button>
+                                                                </div>
+                                                            </div> <!-- end col -->
+                                                        </div> <!-- end row -->
+                                                    </div> <!-- end col -->
+                                                </div> <!-- end row-->
+                                            </div>
+                                        </div> <!-- end tab content-->
+
+                                    </div> <!-- end card-body-->
+                                </div> <!-- end card-->
+                            </div> <!-- end col -->
+                        </div>
+                        <!-- end row-->
+                    </form>
+                </div> <!-- container -->
+            </div>
+        </div>
+    </div>
+</div>

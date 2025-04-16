@@ -1,0 +1,35 @@
+
+<section class="blog-area pat-50 pab-50">
+  <div class="container">
+    <div class="section-title center-text">
+      <h2 class="title"> Latest News </h2>
+      <div class="section-title-line"> </div>
+      <br>
+    </div>
+    <div class="row gy-5" *ngIf="blogs$  | async as blogPost">
+      <!-- <pre>
+
+      {{blogPost | json}}
+      </pre> -->
+      <div id class="col-xxl-4 col-lg-4 col-md-6" *ngFor="let blog of blogPost.items"  >
+        <div class="single-blog" >
+          <div class="single-blog-thumbs">
+            <a  [routerLink]="['/blog-detail',removeBlogsPrefix(blog.sys.id)]"> <img class="lazyloads" [src]="blog.fields.imageBlog.fields.file.url" alt=""> </a>
+            <div class="single-blog-thumbs-date">
+              <a href="javascript:void(0)"> <span class="date"> {{blog.fields.dateCreate | date}} </span>  </a>
+            </div>
+          </div>
+          <div class="single-blog-contents mt-3">
+            <div class="single-blog-contents-tags mt-3">
+              <span class="single-blog-contents-tags-item">
+                <a href="javascript:void(0)"> <i class="las la-tag"></i> {{blog.fields.author}} </a>
+              </span>
+            </div>
+            <h4 class="single-blog-contents-title mt-3"> <a [routerLink]="['/blog-detail',removeBlogsPrefix(blog.sys.id)]"> {{blog.fields.shortTitle}} </a> </h4>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>

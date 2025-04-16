@@ -1,0 +1,182 @@
+<div class="wrapper">
+    <app-sidebar></app-sidebar>
+  
+    <div class="content-page">
+      <div class="content">
+        <app-header></app-header>
+          <div class="content">
+           
+            <div class="container-fluid">
+                        
+                        <!-- start page title -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="page-title-box">
+                                    <div class="page-title-right">
+                                        <ol class="breadcrumb m-0">
+                                            <li class="breadcrumb-item"><a href="javascript: void(0);">Beyond</a></li>
+                                            <li class="breadcrumb-item"><a href="javascript: void(0);">Managements</a></li>
+                                            <li class="breadcrumb-item active">Booking</li>
+                                        </ol>
+                                    </div>
+                                    <h4 class="page-title">Room is booking</h4>
+                                </div>
+                            </div>
+                        </div>     
+                        <!-- end page title --> 
+
+                        <!-- end row-->
+                        <div class="card-body">
+                            <div class="row mb-2">
+
+                                <div class="col-xl-8">
+                                    <div class="row gy-2 gx-2 align-items-center justify-content-xl-start justify-content-between">
+                                        <div class="col-auto">
+                                            <label for="inputPassword2" class="visually-hidden">Search</label>
+                                            <input type="search" [(ngModel)]="searchTerm" class="form-control" id="inputPassword2"
+                                                placeholder="Search...">
+
+                                            </div>
+                                            <div class="col-auto">
+                                                <button type="submit" class="btn btn-primary" (click)="searchBookings()">Search</button>
+                                            </div>
+                                            <div class="col-auto">
+                                                <button type="button" class="btn btn-secondary" (click)="clearSearch()">Clear</button>
+                                              </div>
+                                      
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            <!-- end row-->
+                            
+                            <div class="row" >
+                                
+                                <!-- <div class="col-md-6 col-xxl-3" *ngFor="let item of roombooked; let i = index;">
+                                    <div class="card d-block">
+                                        <img class="card-img-top" src="assets/images/projects/project-2.jpg" alt="project image cap">
+                                        <div class="card-img-overlay">
+                                            <div class="badge bg-success p-1">Booking</div>
+                                        </div>
+    
+                                        <div class="card-body position-relative">
+                                            <h4 class="mt-0">
+                                                <a href="apps-projects-details.html" class="text-title">Landing page design - Home</a>
+                                            </h4>
+                                            <p class="mb-3">
+                                                <span class="pe-2 text-nowrap">
+                                                    <i class="mdi mdi-format-list-bulleted-type"></i>
+                                                    <b>11</b> Tasks
+                                                </span>
+                                                <span class="text-nowrap">
+                                                    <i class="mdi mdi-comment-multiple-outline"></i>
+                                                    <b>254</b> Comments
+                                                </span>
+                                            </p>
+                                            <div class="mb-3" id="tooltip-container5">
+                                                <a href="javascript:void(0);" data-bs-container="#tooltip-container5" data-bs-toggle="tooltip" data-bs-placement="top" title="Mat Helme" class="d-inline-block">
+                                                    <img src="assets/images/users/avatar-10.jpg" class="rounded-circle avatar-xs" alt="friend">
+                                                </a>
+                                                
+                                                <a href="javascript:void(0);" class="d-inline-block text-muted fw-bold ms-2">
+                                                    {{item.name}}
+                                                </a>
+                                            </div>
+    
+                                            <p class="mb-2 fw-bold">{{item.endDate | date:'fullDate'}} <span class="float-end">100%</span></p>
+                                            <div class="progress progress-sm">
+                                                <div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
+                                                </div>
+                                            </div>
+                                        </div> 
+                                    </div> 
+                                </div>  -->
+                                
+    
+                                <table id="state-saving-datatable"  class="table activate-select dt-responsive nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th>Customer</th>
+                                            <th>Room Number</th>
+                                            <th>Booking Date</th>
+                                            <th>Check In</th>
+                                            <th>Check Out</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                
+                                    <tbody>
+                                        <tr *ngFor="let item of roombooked; let i = index;"  (click)="toggleSelection(item.id.toString())" >
+                                            <td>{{item.name}}</td>
+                                            <td>{{item.roomNumber}}</td>
+                                            <td>{{item.createdAt | date:'fullDate'}}</td>
+                                            <td>{{item.startDate | date:'fullDate'}}</td>
+                                            <td>{{item.endDate | date:'fullDate'}}</td>
+                                            <td>
+                                                <span data-bs-toggle="modal"
+                                                  (click)="getAllService()"  data-bs-target="#staticBackdrop"
+                                                 class="badge bg-warning"> +Order more service</span>
+                                            </td>
+                                            
+                                        </tr>
+                                    
+                                    </tbody>
+                                </table>
+                                
+                            </div>
+                            <!-- end row-->
+                            
+                        </div> <!-- container -->
+                        
+                        
+                    </div>
+                </div>
+                <div>
+                    <td class="container-fluid" *ngIf="roombooked.length == 0">
+
+                            <h3 class=" align-items-center">Have none room booking!</h3>
+                       </td>
+                 </div>
+                
+                </div>
+  <!-- Order modal -->
+
+  <div id="staticBackdrop" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-top modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title" id="topModalLabel">Update room type</h4>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+        </div>
+        <div class="modal-body">
+          <form class="form-horizontal" [formGroup]="serviceForm">
+            <div class="row mb-3">
+                <label for="inputEmail3" class="col-3 col-form-label">Service</label>
+                <div class="col-9">
+                    <select class="form-select mr-sm-2"  (change)="onServiceSelectionChange($event)" >
+                        <option *ngFor="let service of services" [value]="service.id">{{ service.name }}</option>
+                      </select>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="inputEmail3" class="col-3 col-form-label">Amount</label>
+                <div class="col-9">
+                    <input type="number" formControlName="amount" class="form-control" min="1" id="inputEmail3" placeholder="Amount Service">
+                </div>
+            </div>
+           
+  
+            <div class="col-9">
+          </div>
+          
+          <div class="justify-content-end row">
+          </div>
+      </form>
+  </div>
+  <div class="modal-footer">
+      <button type="submit" (click)="order(serviceForm)" class="btn btn-info">Order Now </button>
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>

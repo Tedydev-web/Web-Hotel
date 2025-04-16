@@ -1,0 +1,173 @@
+<app-header></app-header>
+
+<div class="breadcrumb-area breadcrumb-padding">
+  <div class="container custom-container-one">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="breadcrumb-contents">
+          <h4 class="breadcrumb-contents-title"> Checkout Details </h4>
+          <ul class="breadcrumb-contents-list list-style-none">
+            <li class="breadcrumb-contents-list-item"> <a href="index.html" class="breadcrumb-contents-list-item-link">
+                Home </a> </li>
+            <li class="breadcrumb-contents-list-item"> Checkout </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<section class="Checkout-area section-bg-2 pat-100 pab-100">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-xl-8 col-lg-7">
+        <div class="checkout-wrapper">
+          <div class="checkout-single bg-white radius-10">
+            <h4 class="checkout-title"> Booking Information </h4>
+            <div class="checkout-contents mt-3">
+              <div class="checkout-form custom-form">
+                <form action="" [formGroup]="bookForm" (ngSubmit)="OnSubmit()">
+                  <div class="input-flex-item">
+                    <div class="single-input mt-4">
+                      <label class="label-title"> Name </label>
+                      <input class="form--control" type="text" formControlName="name" placeholder="Type Name">
+                    </div>
+                    <div class="single-input mt-4">
+                      <label class="label-title"> Phone Number </label>
+                      <input class="form--control" type="number" formControlName="phoneNumber" placeholder="Type Phone Number">
+                    </div>
+                  </div>
+                  <div class="input-flex-item">
+                    <div class="single-input mt-4">
+                      <label class="label-title"> Email Address </label>
+                      <input class="form--control" type="text" formControlName="email" placeholder="Type Email" required>
+                    </div>
+                  </div>
+                  <div class="input-flex-item">
+                    <div class="single-input mt-4">
+                      <label class="label-title"> Address </label>
+                      <input class="form--control" type="text" formControlName="address" placeholder="Type Address">
+                    </div>
+                  </div>
+                  <div class="input-flex-item">
+                    <div class="single-input mt-4">
+                      <label class="label-title"> Number of people </label>
+                      <input class="form--control form-control input" min="0" placeholder="Guest"
+                      [(ngModel)]="numberOfPeople" tabindex="0" max="9" type="number" style="padding: 14px 16px;"
+                      formControlName="numberOfPeople"
+                      [ngClass]="{ 'is-invalid':  f['numberOfPeople'].errors }" required="">
+
+                      <div *ngIf="f['numberOfPeople'].errors" class="invalid-feedback">
+                        <div *ngIf="f['numberOfPeople'].errors['required']">People is required</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="single-input mt-2">
+                    <div class="custom-radio custom-radio-inline">
+                      <div class="custom-radio-single active">
+                        <input class="radio-input" type="radio" formControlName="paymentMethod" value="momo" id="momoRadio"
+                          name="paymentMethod" checked="checked">
+                        <label for="momoRadio"> <img src="../../assets/img/logo-momo-inkythuatso/logo-momo-png-1.png" alt="card"
+                            style="width: 50px;">Pay with MOMO</label>
+                      </div>
+                      <div class="custom-radio-single">
+                        <input class="radio-input" type="radio" name="paymentMethod" formControlName="paymentMethod" value="vnpay"
+                          id="vnpayRadio">
+                        <label for="vnpayRadio"> <img src="../../assets/img/vnpay-logo-inkythuatso/vnpay-logo-inkythuatso-01.png"
+                            alt="Paypal" style="width: 50px;">VN Pay</label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="input-flex-item">
+                    <div class="btn-wrapper mt-4">
+                      <button type="submit" class="cmn-btn btn-bg-1 btn-small"> Booking </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-4 col-lg-5" *ngIf="room != undefined">
+        <div class="sticky-top">
+          <div class="checkout-widget checkout-widget-padding widget bg-white radius-10">
+            <div class="checkout-sidebar">
+              <h4 class="checkout-sidebar-title"> Booking Details </h4>
+              <div class="checkout-sidebar-contents">
+                <ul class="checkout-flex-list list-style-none checkout-border-top pt-3 mt-3">
+                  <li class="list"> <span class="regular"> Room name </span> <span class="strong"> {{room.name}}
+                    </span>
+                  </li>
+                  <li class="list"> <span class="regular"> Room number </span> <span class="strong"> {{room.roomNumber}}
+                    </span>
+                  </li>
+                  <li class="list"> <span class="regular"> Room type </span> <span class="strong"> {{room.roomTypeName}}
+                    </span>
+                  </li>
+                  <li class="list"> <span class="regular"> Room Price </span> <span class="strong">
+                      {{(room.discountPrice==0?room.currentPrice:room.discountPrice) | vndCurrency}}
+                    </span>
+                  </li>
+                  <li class="list"> <span class="regular me-4"> Service attachs </span>
+                    <span *ngFor="let item of room.serviceAttachs; let i = index; let length = count">
+                      <span class="strong">{{item.name}}</span>
+                    </span>
+                  </li>
+                  <li class="list" style="border-top: 1px solid var(--input-color); padding-top:20px;"> <span class="regular"> Checking In </span> <span class="strong strongdate"
+                      [innerHTML]="reservationGet.startDate | date:'yyyy/MM/dd'">
+                    </span> </li>
+                  <li class="list"> <span class="regular"> Checking Out </span> <span class="strong strongdate"
+                      [innerHTML]="reservationGet.endDate | date:'yyyy/MM/dd'">
+                    </span> </li>
+                    <li class="list"> <span class="regular"> Number of people </span> <span class="strong strongdate"
+                        [innerHTML]="reservationGet.numberOfPeople">
+                      </span> </li>
+
+                  <li class="list"> <span class="regular"> Total Stay </span> <span class="strong"> <span
+                        [innerHTML]="reservationGet.numberOfDay + 1  "></span> Days, <span
+                        [innerHTML]="reservationGet.numberOfDay"></span> Nights
+                    </span> </li>
+
+
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="checkout-widget checkout-widget-padding widget bg-white radius-10">
+            <div class="checkout-sidebar">
+              <h4 class="checkout-sidebar-title"> Invoice </h4>
+              <div class="checkout-sidebar-contents">
+                <ul class="checkout-flex-list list-style-none checkout-border-top pt-3 mt-3">
+                  <li class="list"> <span class="regular"> Charge </span> <span class="strong">
+                      {{room.currentPrice * reservationGet.numberOfDay | vndCurrency }} </span> </li>
+                  <li class="list"> <span class="regular"> Discount </span> <span class="strong">
+                      -0 </span> </li>
+                  <li class="list"> <span class="regular"> Vat </span> <span class="strong">
+                      (+8%) {{(room.currentPrice * reservationGet.numberOfDay)*0.08| vndCurrency }} </span> </li>
+                </ul>
+                <ul class="checkout-flex-list list-style-none checkout-border-top pt-3 mt-3">
+                  <li class="list"> <span class="regular"> Total </span> <span class="strong color-one fs-20">
+                      {{(room.currentPrice * reservationGet.numberOfDay)
+                      *1.08 | vndCurrency }}
+                    </span> </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="checkout-widget checkout-widget-padding widget bg-white radius-10">
+            <div class="checkout-car-shape">
+              <img src="assets/img/single-page/car-shape.svg" alt="shapes">
+            </div>
+            <div class="checkout-sidebar">
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<app-footer></app-footer>

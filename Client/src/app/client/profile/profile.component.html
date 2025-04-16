@@ -1,0 +1,153 @@
+<app-header></app-header>
+
+<body>
+  <div class="breadcrumb-area breadcrumb-padding">
+    <div class="container custom-container-one">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="breadcrumb-contents">
+            <h4 class="breadcrumb-contents-title"> Profile Details </h4>
+            <ul class="breadcrumb-contents-list list-style-none">
+              <li class="breadcrumb-contents-list-item"> <a href="index.html" class="breadcrumb-contents-list-item-link"> Home
+                </a> </li>
+              <li class="breadcrumb-contents-list-item"> Profile </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="body-overlay"></div>
+  <div class="dashboard-area section-bg-2 dashboard-padding">
+    <div class="container">
+      <div class="dashboard-contents-wrapper">
+        <div class="dashboard-icon">
+          <div class="sidebar-icon">
+            <i class="las la-bars"></i>
+          </div>
+        </div>
+  <app-left-content></app-left-content>
+
+        <div class="dashboard-right-contents mt-4 mt-lg-0">
+          <div class="dashboard-reservation">
+            <div class="single-reservation bg-white base-padding">
+              <div class="single-reservation-flex mb-4">
+                <div class="single-reservation-author">
+                  <div class="single-reservation-author-flex">
+                    <div class="single-reservation-author-thumb">
+                      <img class="profile-img" src="{{userProfile.image}}" alt="img">
+                    </div>
+                    <div class="single-reservation-author-contents">
+                      <h5 class="single-reservation-author-contents-title">{{userProfile.userName}}</h5>
+                      <p class="single-reservation-author-contents-para"> Member since <span>{{userProfile.createdAt | date
+                          }}</span> </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="btn-wrapper">
+                  <a [routerLink]="['/edit-profile']" class="cmn-btn btn-border"> Edit Profile </a>
+                </div>
+              </div>
+              <div class="single-reservation-item">
+                <div class="single-reservation-contact">
+                  <div class="single-reservation-contact-item">
+                    <span class="single-reservation-contact-list"> <span> <i class="las la-map-marker-alt"></i> </span>
+                      {{userProfile.address}} </span>
+                  </div>
+                  <div class="single-reservation-contact-item">
+                    <a href="https://bytesed.com/cdn-cgi/l/email-protection#aec0cbc2ddc180c0c1dcc3cfc0eecbd6cfc3dec2cb80cdc1c3"
+                      class="single-reservation-contact-list"> <span> <i class="las la-envelope"></i> </span> <span
+                        class="__cf_email__"
+                        data-cfemail="6b050e07180445050419060a052b0e130a061b070e45080406">{{userProfile.email}}</span>
+                    </a>
+                  </div>
+                  <div class="single-reservation-contact-item">
+                    <a href="tel:{{userProfile.phoneNumber}}" class="single-reservation-contact-list"> <span> <i
+                          class="las la-phone-alt"></i> </span> {{userProfile.phoneNumber}} </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="single-reservation bg-white base-padding">
+              <div class="single-reservation-flex">
+                <div class="single-reservation-author">
+                  <div class="single-reservation-author-flex">
+                    <div class="single-reservation-author-contents">
+                      <h5 class="single-reservation-author-contents-title"> Password </h5>
+                      <p class="single-reservation-author-contents-para"> Last change 4 month ago </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="btn-wrapper">
+                  <a [routerLink]="['/password-change']" class="cmn-btn btn-border"> Change Password </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <div class="popup-overlay"></div>
+  <div class="popup-fixed">
+    <div class="popup-contents popup-cancell-modal">
+      <h2 class="popup-contents-title"> Why do you want to cancel? </h2>
+      <div class="popup-contents-select">
+        <label class="popup-contents-select-label"> Choose a reason </label>
+        <div class="js-select">
+          <select>
+            <option value="1">Don't want to Book</option>
+            <option value="2">Booked Accidentally</option>
+            <option value="3">Don't want to Book</option>
+          </select>
+        </div>
+      </div>
+      <div class="popup-contents-btn flex-btn">
+        <a href="javascript:void(0)" class="dash-btn popup-close"> <i class="las la-arrow-left"></i> Go Back </a>
+        <a href="javascript:void(0)" class="dash-btn btn-cancelled popup-close"> Cancel </a>
+      </div>
+    </div>
+  </div>
+
+
+
+
+  <div class="back-to-top">
+    <span class="back-top"> <i class="las la-angle-up"></i> </span>
+  </div>
+
+
+
+
+
+  <script data-cfasync="false" src="../../../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+  <script src="assets/js/jquery-3.6.0.min.js"></script>
+
+  <script src="assets/js/jquery-migrate.min.js"></script>
+
+  <script src="assets/js/bootstrap.bundle.min.js"></script>
+
+  <script src="assets/js/wow.js"></script>
+
+  <script src="assets/js/slick.js"></script>
+
+  <script src="assets/js/imagesloaded.pkgd.min.js"></script>
+
+  <script src="assets/js/isotope.pkgd.min.js"></script>
+
+  <script src="assets/js/jquery.magnific-popup.js"></script>
+
+  <script src="assets/js/jquery.nice-select.js"></script>
+
+  <script src="assets/js/flatpicker.js"></script>
+
+  <script src="assets/js/nouislider-8.5.1.min.js"></script>
+
+  <script src="assets/js/intlTelInput.js"></script>
+
+  <script src="assets/js/main.js"></script>
+</body>
+<app-footer></app-footer>

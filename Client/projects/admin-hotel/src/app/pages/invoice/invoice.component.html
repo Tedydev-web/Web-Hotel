@@ -1,0 +1,334 @@
+<div class="wrapper">
+    <app-sidebar></app-sidebar>
+    <div class="content-page">
+        <div class="content">
+            <app-header></app-header>
+            <div class="container-fluid">
+                <!-- start page title -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="page-title-box">
+                            <div class="page-title-right">
+                                <ol class="breadcrumb m-0">
+                                    <li class="breadcrumb-item"><a href="javascript: void(0);">Beyond</a></li>
+                                    <li class="breadcrumb-item"><a href="javascript: void(0);">Managements</a></li>
+                                    <li class="breadcrumb-item active">Invoice</li>
+                                </ol>
+                            </div>
+                            <h4 class="page-title">Invoice</h4>
+                        </div>
+                    </div>
+                </div>
+                <!-- end page title -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row mb-2">
+                                    <div class="col-xl-8">
+                                        <div
+                                            class="row gy-2 gx-2 align-items-center justify-content-xl-start justify-content-between">
+                                            <div class="col-auto">
+                                                <label for="inputPassword2" class="visually-hidden">Search</label>
+                                                <input type="search" [(ngModel)]="searchBooking" placeholder="Search booking..."
+                                                    class="form-control" name="searchBooking" id="inputPassword2">
+                                            </div>
+
+                                            <div class="col-auto">
+                                                <button type="submit" class="btn btn-primary"
+                                                    (click)="searchBookings()">Search</button>
+                                            </div>
+                                            <div class="col-auto">
+                                                <button type="button" class="btn btn-secondary"
+                                                    (click)="clearSearch()">Clear</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-4">
+                                    </div><!-- end col-->
+                                </div>
+
+                                <div class="table-responsive">
+                                    <table id="invoice-table" class="table table-centered mb-0">
+                                        <thead class="table-light align-middle text-center">
+                                            <tr>
+
+                                                <th>Invoice ID</th>
+                                                <th>Room Number</th>
+                                                <th>Amount</th>
+                                                <th>Number Days</th>
+                                                <th>Reservation Price</th>
+                                                <th>Name Customer</th>
+                                                <th>Booking Date</th>
+                                                <th>Status</th>
+                                                <th style="width: 125px;">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody *ngFor="let item of reservationGetAll | filter: searchBooking; let i = index "
+                                            class="align-middle text-center">
+                                            <tr>
+
+                                                <td><span class="text-body fw-bold">{{item.invoice.id}}</span> </td>
+                                                <td>
+                                                    {{item.roomNumber}}
+                                                </td>
+                                                <td>
+                                                    {{item.roomPrice | vndCurrency}}
+                                                </td>
+                                                <td>
+                                                    {{item.numberOfDay}}
+                                                </td>
+                                                <td>{{item.invoice.priceReservedRoom | vndCurrency}}
+                                                </td>
+                                                <td>
+                                                    <h5><span class="badge badge-danger-lighten">{{item.name}}</span>
+                                                    </h5>
+                                                </td>
+
+                                                <td>
+                                                    <h5><span class="badge badge-info-lighten">
+                                                            {{item.invoice.payAt | date : "yyyy/MM/dd"}}<br>
+                                                            {{item.invoice.payAt | date : "HH:mm:ss"}}
+                                                        </span></h5>
+                                                </td>
+
+                                                <td *ngIf="item.status == true;else Status"><span
+                                                        class="badge badge-success-lighten"><i class="mdi mdi-coin"></i>
+                                                        Paid</span></td>
+                                                <ng-template #Status>
+                                                    <td><span class="badge badge-danger-lighten"><i class="mdi mdi-cancel"></i>
+                                                            Payment Failed</span></td>
+                                                </ng-template>
+                                                <td>
+                                                    <a href="javascript:void(0);" class="action-icon" data-bs-toggle="modal"
+                                                        data-bs-target="#modal-detail" (click)="GetReservationById(item.id)">
+                                                        <i class="mdi mdi-eye"></i></a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal detail -->
+<div id="modal-detail" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-top modal-lg">
+        <div style="margin-top: -7rem;" class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="topModalLabel">Reservation detail</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+            </div>
+            <div class="modal-body" *ngIf="reservationGetById != null">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="div-pdf p-3" id="htmlData">
+                                    <!-- Invoice Logo-->
+                                    <div class="clearfix">
+                                        <div class="float-start mb-3">
+                                            <img src="assets/images/logodark.png" alt="" height="38">
+                                        </div>
+                                        <div class="float-end">
+                                            <h4 class="m-0 d-print-none">Invoice</h4>
+                                        </div>
+                                    </div>
+
+                                    <!-- Invoice Detail-->
+                                    <div class="row">
+                                        <div class="col-sm-5">
+                                            <div class="float-end mt-3">
+                                                <p><b>Hello, {{reservationGetById.name}}</b></p>
+                                                <p class="text-muted font-13">Please find below a cost-breakdown for the
+                                                    recent work completed. Please make payment at your earliest
+                                                    convenience, and do not hesitate to contact me with any questions.
+                                                </p>
+
+                                            </div>
+
+                                        </div><!-- end col -->
+                                        <div class="col-sm-7">
+                                            <div class="mt-3 float-sm-end">
+                                                <p class="font-13"><strong>Booking ID: </strong> <span
+                                                        class="float-end">{{reservationGetById.id}}</span></p>
+                                                <p class="font-13"><strong>Booking Date: </strong> <span class="float-end">
+                                                        {{reservationGetById.createdAt | date:'MM/dd/yyyy -HH:mm'}}
+                                                    </span>
+                                                </p>
+                                                <p class="font-13"><strong>Order Status: </strong> <span
+                                                        class="badge bg-success float-end">Paid</span></p>
+                                                <p class="font-13"><strong>Address: </strong> <span
+                                                        class="float-end">{{reservationGetById.address}}</span></p>
+                                                <p class="font-13"><strong>Phone Number: </strong> <span
+                                                        class="float-end">{{reservationGetById.phoneNumber}}</span></p>
+                                                <p class="font-13"><strong>Email: </strong> <span
+                                                        class="float-end">{{reservationGetById.email}}</span></p>
+                                                <p class="font-13"><strong>Check In: </strong> <span
+                                                        class="badge float-end badge-info-lighten">
+                                                        {{reservationGetById.startDate | date : "yyyy/MM/dd"}}<br>
+                                                        {{reservationGetById.startDate | date : "HH:mm:ss"}}
+                                                    </span></p>
+                                                <p class="font-13"><strong>Check Out: </strong> <span
+                                                        class="badge float-end badge-danger-lighten">
+                                                        {{reservationGetById.endDate | date : "yyyy/MM/dd"}}<br>
+                                                        {{reservationGetById.endDate | date : "HH:mm:ss"}}
+                                                    </span></p>
+
+                                            </div>
+                                        </div><!-- end col -->
+                                    </div>
+                                    <!-- end row -->
+
+
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="table-responsive">
+                                                <table class="table mt-4">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Room Name</th>
+                                                            <th>Number of days</th>
+                                                            <th>Unit Cost</th>
+                                                            <th class="text-end">Total</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>
+                                                                {{reservationGetById.reservationPayment.orderInfo}}
+                                                            </td>
+                                                            <td>{{reservationGetById.numberOfDay}}</td>
+                                                            <td>{{reservationGetById.roomPrice | vndCurrency}}</td>
+                                                            <td class="text-end">{{ reservationGetById.roomPrice *
+                                                                reservationGetById.numberOfDay | vndCurrency}}</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                                <table class="table mt-4" *ngIf="reservationGetById.service != undefined">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Service Name</th>
+                                                            <th>Price</th>
+                                                            <th>Amount</th>
+                                                            <th class="text-end">Total</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr *ngFor="let service of reservationGetById.service">
+                                                            <td>
+                                                                {{service.serviceName}}
+                                                            </td>
+                                                            <td>{{service.price | vndCurrency}}</td>
+                                                            <td>{{service.amount}}</td>
+                                                            <td class="text-end">{{ service.price * service.amount | vndCurrency}}
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td><b>Sum</b></td>
+                                                            <td class="float-end">{{reservationGetById.invoice.priceService |
+                                                                vndCurrency}}</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div> <!-- end table-responsive-->
+                                        </div> <!-- end col -->
+                                    </div>
+                                    <!-- end row -->
+
+                                    <div class="row">
+                                        <div class="col-sm-5">
+                                            <div class="clearfix pt-1">
+                                                <h6 class="text-muted">Notes:</h6>
+                                                <small>
+                                                    All accounts are to be paid within 7 days from receipt of
+                                                    invoice. To be paid by cheque or credit card or direct payment
+                                                    online. If account is not paid within 7 days the credits details
+                                                    supplied as confirmation of work undertaken will be charged the
+                                                    agreed quoted fee noted above.
+                                                </small>
+                                            </div>
+                                        </div> <!-- end col -->
+                                        <div class="col-sm-7">
+                                            <div class="float-end mt-3 mt-sm-0">
+                                                <span>
+                                                    <p><b class="me-2">Reservation price:</b> <span
+                                                            class="float-end">{{reservationGetById.roomPrice *
+                                                            reservationGetById.numberOfDay | vndCurrency}}</span></p>
+                                                    <p><b class="me-2">VAT (+8%):</b> <span class="float-end">+
+                                                            {{(reservationGetById.roomPrice *
+                                                            reservationGetById.numberOfDay) * 0.08 | vndCurrency}}</span>
+                                                    </p>
+                                                    <p><b class="me-2">Service price:</b> <span class="float-end">+
+                                                            {{reservationGetById.invoice.priceService |
+                                                            vndCurrency}}</span></p>
+                                                </span>
+                                                <hr>
+                                                <p><b class="me-2">Sum:</b> <span class="float-end">
+                                                        {{reservationGetById.invoice.priceReservedRoom +
+                                                        reservationGetById.invoice.priceService| vndCurrency}}
+                                                    </span></p>
+                                                <p><b class="me-2">Deposited:</b> <span class="float-end">
+                                                        - {{reservationGetById.invoice.priceReservedRoom*0.5 | vndCurrency}}
+                                                    </span></p>
+                                                <p><b class="me-2">Need to pay:</b> <span class="float-end">
+                                                        {{reservationGetById.invoice.priceReservedRoom +
+                                                        reservationGetById.invoice.priceService -
+                                                        reservationGetById.invoice.priceReservedRoom*0.5 | vndCurrency}}
+                                                    </span></p>
+                                            </div>
+                                            <div class="clearfix"></div>
+                                        </div> <!-- end col -->
+                                    </div>
+                                    <!-- end row-->
+                                    <div class="row mt-2">
+                                        <div class="col-sm-6">
+                                            <h4 class="header-title mb-3">Payment Method Information</h4>
+                                            <ul class="list-unstyled mb-0">
+                                                <li>
+                                                    <p class="mb-2"><span class="fw-bold me-2">Payment Type:</span>
+                                                        {{reservationGetById.reservationPayment.payType}}</p>
+                                                    <p class="mb-2"><span class="fw-bold me-2">Provider:</span>
+                                                        {{reservationGetById.reservationPayment.orderType}}
+                                                    </p>
+                                                    <p class="mb-2"><span class="fw-bold me-2">Payment Date:</span>
+                                                        {{datePayment }}</p>
+                                                    <p class="mb-0"><span class="fw-bold me-2">CVV:</span> xxx</p>
+                                                </li>
+                                            </ul>
+                                        </div> <!-- end col-->
+                                        <div class="col-sm-6">
+                                            <div class="text-sm-end">
+                                                <img src="assets/images/barcode.png" alt="barcode-image" class="img-fluid me-2">
+                                            </div>
+                                        </div> <!-- end col-->
+                                    </div>
+                                    <!-- end row -->
+                                </div>
+                                <div class="d-print-none mt-4">
+                                    <div class="text-end">
+                                        <a href="javascript:window.print()" class="btn btn-primary"><i
+                                                class="mdi mdi-printer"></i> Print</a>
+                                        <a href="javascript: void(0);" (click)="openPDF()" style="margin-left: 5px;"
+                                            class="btn  btn-info">Export</a>
+                                    </div>
+                                </div>
+                                <!-- end buttons -->
+
+                            </div> <!-- end card-body-->
+                        </div> <!-- end card -->
+                    </div> <!-- end col-->
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

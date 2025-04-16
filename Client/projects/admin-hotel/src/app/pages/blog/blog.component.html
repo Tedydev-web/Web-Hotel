@@ -1,0 +1,121 @@
+<div class="wrapper">
+    <app-sidebar></app-sidebar>
+
+    <div class="content-page">
+        <div class="content">
+            <app-header></app-header>
+            <div class="content">
+                <div class="container-fluid">
+                    <!-- start page title -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="page-title-box">
+                                <div class="page-title-right">
+                                    <ol class="breadcrumb m-0">
+                                        <li class="breadcrumb-item"><a href="javascript: void(0);">Beyond</a></li>
+                                        <li class="breadcrumb-item"><a href="javascript: void(0);">Projects</a></li>
+                                        <li class="breadcrumb-item active">Projects List</li>
+                                    </ol>
+                                </div>
+                                <h4 class="page-title">Blog</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end page title -->
+                    <div class="row mb-2">
+                        <div class="col-sm-4">
+                            <a href="https://app.contentful.com/spaces/e76861lm8t6b/entries/7pO230PHUhLhqTslFC9xa0"
+                                target="_blank" class="btn btn-danger btn-rounded mb-3"><i class="mdi mdi-plus"></i>
+                                Create Blog</a>
+                        </div>
+                    </div>
+                    <!-- end row-->
+                    <div class="row">
+                        <div class="row" *ngIf="blogs$  | async as blogPost">
+                            <div class="col-md-6 col-xxl-3" *ngFor="let blog of blogPost.items">
+                                <!-- project card -->
+                                <div class="card d-block" style="height: 432px;">
+                                    <!-- project-thumbnail -->
+                                    <img class="card-img-top" [src]="blog.fields.imageBlog.fields.file.url"
+                                        alt="project image cap">
+                                    <div class="card-img-overlay">
+                                        <div class="badge bg-secondary text-light p-1">{{blog.fields.dateCreate | date}}
+                                        </div>
+                                    </div>
+
+                                    <div class="card-body position-relative">
+                                        <!-- project title-->
+                                        <h4 class="mt-0">
+                                            <a href="apps-projects-details.html"
+                                                class="text-title">{{blog.fields.shortTitle}}</a>
+                                        </h4>
+
+                                        <!-- project detail-->
+                                        <p class="mb-3">
+
+                                            <span class="text-nowrap">
+                                                <i class="dripicons-user"></i>
+                                                <b></b> {{blog.fields.author}}
+                                            </span>
+                                            <span class="text-nowrap">
+                                                <i class="mdi mdi-comment-multiple-outline"></i>
+                                                <b>104</b> Comments
+                                            </span>
+                                        </p>
+                                        <div class="mb-3" id="tooltip-container4">
+                                            <a href="javascript:void(0);" data-bs-container="#tooltip-container4"
+                                                data-bs-toggle="tooltip" data-bs-placement="top" title="Mat Helme"
+                                                class="d-inline-block">
+                                                <img src="assets/images/users/avatar-3.jpg"
+                                                    class="rounded-circle avatar-xs" alt="friend">
+                                            </a>
+
+                                            <a href="javascript:void(0);" data-bs-container="#tooltip-container4"
+                                                data-bs-toggle="tooltip" data-bs-placement="top" title="Michael Zenaty"
+                                                class="d-inline-block">
+                                                <img src="assets/images/users/avatar-5.jpg"
+                                                    class="rounded-circle avatar-xs" alt="friend">
+                                            </a>
+
+                                            <a href="javascript:void(0);" data-bs-container="#tooltip-container4"
+                                                data-bs-toggle="tooltip" data-bs-placement="top" title="James Anderson"
+                                                class="d-inline-block">
+                                                <img src="assets/images/users/avatar-9.jpg"
+                                                    class="rounded-circle avatar-xs" alt="friend">
+                                            </a>
+                                        </div>
+
+                                        <!-- project progress-->
+                                    </div> <!-- end card-->
+                                </div> <!-- end col -->
+
+
+                            </div>
+                            <!-- end row-->
+
+                        </div> <!-- container -->
+
+                    </div> <!-- content -->
+
+                    <!-- Footer Start -->
+                    <footer class="footer">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <script>document.write(new Date().getFullYear())</script> © Beyond - TedyDev
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="text-md-end footer-links d-none d-md-block">
+                                        <a href="javascript: void(0);">About</a>
+                                        <a href="javascript: void(0);">Support</a>
+                                        <a href="javascript: void(0);">Contact Us</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </footer>
+                    <!-- end Footer -->
+
+                </div>
+            </div>
+        </div>

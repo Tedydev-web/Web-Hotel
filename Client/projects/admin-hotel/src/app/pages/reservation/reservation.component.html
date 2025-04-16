@@ -1,0 +1,153 @@
+<div class="wrapper">
+    <app-sidebar></app-sidebar>
+    <div class="content-page">
+        <div class="content">
+            <app-header></app-header>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="page-title-box">
+                            <div class="page-title-right">
+                                <ol class="breadcrumb m-0">
+                                    <li class="breadcrumb-item"><a href="javascript: void(0);">Beyond</a></li>
+                                    <li class="breadcrumb-item"><a href="javascript: void(0);">Managements</a></li>
+                                    <li class="breadcrumb-item active">Booking</li>
+                                </ol>
+                            </div>
+                            <h4 class="page-title">Booking</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <form action="#" [formGroup]="formSearch">
+                                    <div class="row mb-2">
+                                        <div class="col-3">
+                                            <label for="example-email" class="form-label">CheckIn</label>
+                                            <mat-form-field appearance="fill">
+                                                <input matInput [matDatepicker]="picker2" formControlName="checkIn">
+                                                <mat-datepicker-toggle matIconSuffix
+                                                    [for]="picker2"></mat-datepicker-toggle>
+                                                <mat-datepicker #picker2></mat-datepicker>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-3">
+                                            <label for="example-email" class="form-label">CheckOut</label>
+                                            <mat-form-field appearance="fill">
+                                                <input matInput [matDatepicker]="picker3" formControlName="checkOut">
+                                                <mat-datepicker-toggle matIconSuffix
+                                                    [for]="picker3"></mat-datepicker-toggle>
+                                                <mat-datepicker #picker3></mat-datepicker>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-3">
+                                            <label for="example-email" class="form-label"
+                                                style="display: inherit;">Person</label>
+                                            <mat-form-field appearance="fill">
+                                                <mat-select formControlName="peopleNumber">
+                                                    <mat-option [value]="0" disabled selected>Select people
+                                                        number</mat-option>
+                                                    <mat-option *ngFor="let i of dataSearch.maxPerson"
+                                                        [value]="i">{{i}}</mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+                                        <div style="margin-left: -3rem;" class="col-3">
+                                            <label for="example-email" class="form-label" style="display: inherit;">Room
+                                                Type</label>
+                                            <mat-form-field appearance="fill">
+                                                <mat-select formControlName="roomTypeId">
+                                                    <mat-option [value]="0" disabled selected>Select room
+                                                        type</mat-option>
+                                                    <mat-option *ngFor="let roomType of dataSearch.roomTypes"
+                                                        value="{{roomType.id}}">{{roomType.typeName}}</mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+                                        <div style="    position: absolute;
+                                        top: 3.75rem;right: 1rem;" class="col-1">
+                                            <button type="button" class="btn p-2 btn-info"
+                                                (click)="getRoomByDateSearch()">Search</button>
+                                        </div>
+                                    </div>
+                                </form>
+
+                                <div class="table-responsive">
+                                    <table class="table table-centered w-100 dt-responsive nowrap"
+                                        id="products-datatable">
+                                        <thead class="table-light">
+                                            <tr>
+
+                                                <th class="all">Room name</th>
+                                                <th>Roomtype name</th>
+                                                <th>Price</th>
+                                                <th>Discount price</th>
+                                                <th>Simple bed</th>
+                                                <th>Double bed</th>
+                                                <th>People number</th>
+                                                <th>Status</th>
+                                                <th style="width: 135px;">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody *ngFor="let room of rooms;let i = index;" class="align-middle">
+                                            <tr *ngIf="room">
+
+                                                <td style="height: 100px;">
+                                                    <div class="m-0 d-inline-block align-middle font-16">
+                                                        <a href="apps-ecommerce-products-details.html"
+                                                            class="text-body fw-semibold">{{room.name}}</a>
+                                                        <br>
+                                                        <!-- <a href="apps-ecommerce-products-details.html" class="text-body">{{room.name}}</a> -->
+                                                        <span class="text-warning mdi mdi-star"></span>
+                                                        <span class="text-warning mdi mdi-star"></span>
+                                                        <span class="text-warning mdi mdi-star"></span>
+                                                        <span class="text-warning mdi mdi-star"></span>
+                                                        <span class="text-warning mdi mdi-star"></span>
+                                                    </div>
+                                                </td>
+                                                <td>{{room.roomTypeName}}</td>
+                                                <td>
+                                                    {{room.currentPrice | vndCurrency}}
+                                                </td>
+                                                <td>
+                                                    {{(room.discountPrice == null?0:room.discountPrice) | vndCurrency}}
+                                                </td>
+                                                <td>
+                                                    {{room.numberOfSimpleBed}}
+                                                </td>
+                                                <td>
+                                                    {{room.numberOfDoubleBed}}
+                                                </td>
+                                                <td>
+                                                    {{room.peopleNumber}}
+                                                </td>
+                                                <td>
+                                                    <div *ngIf="room.isActive; else inactiveBadge">
+                                                        <span class="badge bg-success">Active</span>
+                                                    </div>
+
+                                                    <ng-template #inactiveBadge>
+                                                        <span class="badge bg-danger">Inactive</span>
+                                                    </ng-template>
+                                                </td>
+                                                <td>
+
+                                                    <button type="button" tabindex="0"
+                                                        class="btn btn-primary btn-rounded booking"
+                                                        (click)="reservationCreate(room.id)"
+                                                        [attr.disabled]="checkSearchData ? '' : null">Book</button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div> <!-- end card-body-->
+                        </div> <!-- end card-->
+                    </div> <!-- end col -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

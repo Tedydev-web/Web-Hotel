@@ -1,0 +1,582 @@
+<div class="wrapper">
+    <app-sidebar></app-sidebar>
+    <div class="content-page">
+        <div class="content">
+            <app-header></app-header>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="page-title-box">
+                            <div class="page-title-right">
+                                <ol class="breadcrumb m-0">
+                                    <li class="breadcrumb-item"><a href="javascript: void(0);">Beyond</a></li>
+                                    <li class="breadcrumb-item"><a href="javascript: void(0);">Managements</a></li>
+                                    <li class="breadcrumb-item active">Room</li>
+                                </ol>
+                            </div>
+                            <h4 class="page-title">Room</h4>
+                        </div>
+                    </div>
+                </div>
+                <!-- end page title -->
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row mb-2">
+                                    <div class="col-sm-4">
+                                        <div class="col-sm-8">
+                                            <div
+                                                class="row gy-2 gx-2 align-items-center justify-content-xl-start justify-content-between">
+                                                <div class="col-auto">
+                                                    <label for="inputPassword2" class="visually-hidden">Search</label>
+                                                    <input type="search" [(ngModel)]="searchTerm"
+                                                        placeholder="Search rooms..." class="form-control"
+                                                        id="inputPassword2">
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-sm-8">
+                                        <div class="text-sm-end">
+                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                                data-bs-target="#staticBackdrop" class="btn btn-danger mb-2"><i
+                                                    class="mdi mdi-plus-circle me-2" (click)="loadModal()"></i> Add
+                                                New Room</button>
+
+                                        </div>
+                                    </div><!-- end col-->
+                                </div>
+
+                                <div class="table-responsive">
+                                    <table class="table table-centered w-100 dt-responsive nowrap"
+                                        id="products-datatable">
+                                        <thead class="table-light">
+                                            <tr>
+                                                
+                                                <th class="all">Room name</th>
+                                                <th>Room Number</th>
+                                                <th>Roomtype name</th>
+                                                <th>Price</th>
+                                                <th>Discount price</th>
+                                                <th>Simple bed</th>
+                                                <th>Double bed</th>
+                                                <th>People number</th>
+                                                <th>Attached service</th>
+                                                <th>Status</th>
+                                                <th style="width: 135px;">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody *ngFor="let room of rooms | filter: searchTerm ; let i = index;" (click)="toggleSelection(room.roomTypeId.toString(), room.id)"
+                                            class="align-middle">
+                                            <tr *ngIf="room">
+                                                
+                                                <td style="height: 100px;">
+                                                    <div class="m-0 d-inline-block align-middle font-16">
+                                                        <a href="apps-ecommerce-products-details.html"
+                                                            class="text-body fw-semibold">{{room.name}}</a>
+                                                        <br>
+                                                        <!-- <a href="apps-ecommerce-products-details.html" class="text-body">{{room.name}}</a> -->
+                                                        <span class="text-warning mdi mdi-star"></span>
+                                                        <span class="text-warning mdi mdi-star"></span>
+                                                        <span class="text-warning mdi mdi-star"></span>
+                                                        <span class="text-warning mdi mdi-star"></span>
+                                                        <span class="text-warning mdi mdi-star"></span>
+                                                    </div>
+                                                </td>
+                                                <td>{{room.roomNumber}}</td>
+                                                <td>{{room.roomTypeName}}</td>
+                                                <td>
+                                                    {{room.currentPrice | vndCurrency}}
+                                                </td>
+                                                <td>
+                                                    {{room.discountPrice == null?0:room.discountPrice | vndCurrency}}
+                                                </td>
+                                                <td>
+                                                    {{room.numberOfSimpleBed}}
+                                                </td>
+                                                <td>
+                                                    {{room.numberOfDoubleBed}}
+                                                </td>
+                                                <td>
+                                                    {{room.peopleNumber}}
+                                                </td>
+                                                <td >
+
+                                                    <div class="dropdown">
+                                                        <button type="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                           {{ countDisplayedServices(i) }} Services
+                                                        </button>
+                                                        <div class="dropdown-menu dropdown-menu-end">
+                                                           
+                                                            <li class="dropdown-item" *ngFor="let service of room?.serviceAttachs; let i = index">
+                                                                {{service.name}}
+                                                            </li>
+                                                            <li class="dropdown-item">
+
+                                                                <span data-bs-toggle="modal"
+                                                            data-bs-target="#addService"
+                                                            class="badge bg-warning"> + Add more</span>
+                                                            </li>
+                                                        </div>
+                                                        
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div *ngIf="room.isActive; else inactiveBadge">
+                                                        <span class="badge bg-success">Active</span>
+                                                    </div>
+
+                                                    <ng-template #inactiveBadge>
+                                                        <span class="badge bg-danger">Inactive</span>
+                                                    </ng-template>
+                                                </td>
+
+                                                <td class="table-action">
+                                                    <a data-bs-toggle="modal" 
+                                                    data-bs-target="#staticBackdrop3" class="action-icon"><i
+                                                            class="uil uil-dollar-alt"></i></a>
+                                                    <a href="javascript:void(0);" data-bs-toggle="modal"
+                                                        data-bs-target="#editRoom" class="action-icon"
+                                                        (click)="loadModalUpdate(room.id)"> <i
+                                                            class="mdi mdi-square-edit-outline"></i></a>
+                                                    <a href="javascript:void(0);" (click)="deleteRoom(room.id)"
+                                                        class="action-icon"> <i class="mdi mdi-delete"></i></a>
+                                                </td>
+                                                <div *ngIf="!room">
+                                                    Room not found.
+                                                </div>
+
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div> <!-- end card-body-->
+                        </div> <!-- end card-->
+                    </div> <!-- end col -->
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<!-- Modal CREATE ROOM -->
+
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Add room</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="  page-wrapper">
+                    <div class="content container-fluid">
+                        <div class="page-header">
+                            <div class="row align-items-center">
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <form [formGroup]="roomForm">
+                                    <div class="row formtype mb-3">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="mb-1">Room Number</label>
+                                                <input type="text" class="form-control" formControlName="RoomNumber"
+                                                    [ngClass]="{ 'is-invalid': submitted && f['RoomNumber'].errors }" />
+                                                <div *ngIf="submitted && f['RoomNumber'].errors"
+                                                    class="invalid-feedback">
+                                                    <div *ngIf="f['RoomNumber'].errors['required']">RoomNumber is
+                                                        required</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="mb-1">Room Name</label>
+                                                <input type="text" class="form-control" formControlName="Name"
+                                                    [ngClass]="{ 'is-invalid': submitted && f['Name'].errors }" />
+                                                <div *ngIf="submitted && f['Name'].errors" class="invalid-feedback">
+                                                    <div *ngIf="f['Name'].errors['required']">Room name is required
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="mb-1">Active</label>
+                                                <select class="form-select mr-sm-2" formControlName="IsActive"
+                                                    id="IsActive" name="IsActive">
+                                                    <option [ngValue]="true">Active</option>
+                                                    <option [ngValue]="false">Closed</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row formtype mb-3">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="mb-1">Simple Bed</label>
+                                                <input type="text" class="form-control"
+                                                    formControlName="NumberOfSimpleBed"
+                                                    [ngClass]="{ 'is-invalid': submitted && f['NumberOfSimpleBed'].errors }" />
+                                                <div *ngIf="submitted && f['NumberOfSimpleBed'].errors"
+                                                    class="invalid-feedback">
+                                                    <div *ngIf="f['NumberOfSimpleBed'].errors['required']">
+                                                        NumberOfSimpleBed is required</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="mb-1">Double Bed</label>
+                                                <input type="text" class="form-control"
+                                                    formControlName="NumberOfDoubleBed"
+                                                    [ngClass]="{ 'is-invalid': submitted && f['NumberOfDoubleBed'].errors }" />
+                                                <div *ngIf="submitted && f['NumberOfDoubleBed'].errors"
+                                                    class="invalid-feedback">
+                                                    <div *ngIf="f['NumberOfDoubleBed'].errors['required']">
+                                                        NumberOfDoubleBed is required</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="mb-1">RoomTypeId</label>
+                                                <select class="form-select mr-sm-2" id="RoomTypeId"
+                                                    formControlName="RoomTypeId">
+                                                    <option>Select</option>
+                                                    <option *ngFor="let roomType of roomTypes" value="{{roomType.id}}">
+                                                        {{roomType.typeName}}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row formtype mb-3">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="mb-1">People Number</label>
+                                                <input type="text" class="form-control" formControlName="PeopleNumber"
+                                                    [ngClass]="{ 'is-invalid': submitted && f['PeopleNumber'].errors }" />
+                                                <div *ngIf="submitted && f['PeopleNumber'].errors"
+                                                    class="invalid-feedback">
+                                                    <div *ngIf="f['PeopleNumber'].errors['required']">PeopleNumber is
+                                                        required</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="mb-1">CurrentPrice</label>
+                                                <input type="text" formControlName="CurrentPrice" class="form-control"
+                                                    id="CurrentPrice"
+                                                    [ngClass]="{ 'is-invalid': submitted && f['CurrentPrice'].errors }" />
+                                                <div *ngIf="submitted && f['CurrentPrice'].errors"
+                                                    class="invalid-feedback">
+                                                    <div *ngIf="f['CurrentPrice'].errors['required']">CurrentPrice is
+                                                        required</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="mb-1">Image</label>
+                                                <div class="form-group mb-3">
+                                                    <input type="file" id="formFile" class="form-control"
+                                                        formControlName="RoomPicture" name="RoomPicture"
+                                                        accept=".png, .jpg" (change)="uploadFile($event)">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row formtype mb-3">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="mb-1">File Upload</label>
+                                                <div class="form-group mb-3">
+                                                    <input type="file" id="formFile" class="form-control"
+                                                        formControlName="RoomPictures" name="RoomPictures"
+                                                        accept=".png, .jpg" multiple
+                                                        (change)="uploadFileDetail($event)">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="mb-1">Description</label>
+                                                <textarea class="form-control" rows="5" id="comment" name="text"
+                                                    formControlName="Description"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" (click)="addRoom(roomForm)" class="btn btn-primary">Add</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                    (click)="resetModal()">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Modal EDIT ROOM -->
+
+<div class="modal fade" id="editRoom" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Update room</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                    (click)="resetModal()"></button>
+            </div>
+            <div class="modal-body">
+                <div class="  page-wrapper">
+                    <div class="content container-fluid">
+                        <div class="page-header">
+                            <div class="row align-items-center">
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <form [formGroup]="roomForm">
+                                    <div class="row formtype mb-3">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="mb-1">Room Number</label>
+                                                <input type="text" class="form-control" formControlName="RoomNumber"
+                                                    [ngClass]="{ 'is-invalid': submitted && f['RoomNumber'].errors }" />
+                                                <div *ngIf="submitted && f['RoomNumber'].errors"
+                                                    class="invalid-feedback">
+                                                    <div *ngIf="f['RoomNumber'].errors['required']">RoomNumber is
+                                                        required</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="mb-1">Room Name</label>
+                                                <input type="text" class="form-control" formControlName="Name"
+                                                    [ngClass]="{ 'is-invalid': submitted && f['Name'].errors }" />
+                                                <div *ngIf="submitted && f['Name'].errors" class="invalid-feedback">
+                                                    <div *ngIf="f['Name'].errors['required']">Room name is required
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="mb-1">Active</label>
+                                                <select class="form-select mr-sm-2" formControlName="IsActive"
+                                                    id="IsActive" name="IsActive">
+                                                    <option [ngValue]="true">Active</option>
+                                                    <option [ngValue]="false">Closed</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row formtype mb-3">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="mb-1">Simple Bed</label>
+                                                <input type="text" class="form-control"
+                                                    formControlName="NumberOfSimpleBed"
+                                                    [ngClass]="{ 'is-invalid': submitted && f['NumberOfSimpleBed'].errors }" />
+                                                <div *ngIf="submitted && f['NumberOfSimpleBed'].errors"
+                                                    class="invalid-feedback">
+                                                    <div *ngIf="f['NumberOfSimpleBed'].errors['required']">
+                                                        NumberOfSimpleBed is required</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="mb-1">Double Bed</label>
+                                                <input type="text" class="form-control"
+                                                    formControlName="NumberOfDoubleBed"
+                                                    [ngClass]="{ 'is-invalid': submitted && f['NumberOfDoubleBed'].errors }" />
+                                                <div *ngIf="submitted && f['NumberOfDoubleBed'].errors"
+                                                    class="invalid-feedback">
+                                                    <div *ngIf="f['NumberOfDoubleBed'].errors['required']">
+                                                        NumberOfDoubleBed is required</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="mb-1">RoomTypeId</label>
+                                                <select class="form-select mr-sm-2" id="RoomTypeId"
+                                                    formControlName="RoomTypeId">
+                                                    <option>Select</option>
+                                                    <option *ngFor="let roomType of roomTypes" value="{{roomType.id}}">
+                                                        {{roomType.typeName}}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row formtype mb-3">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="mb-1">People Number</label>
+                                                <input type="text" class="form-control" formControlName="PeopleNumber"
+                                                    [ngClass]="{ 'is-invalid': submitted && f['PeopleNumber'].errors }" />
+                                                <div *ngIf="submitted && f['PeopleNumber'].errors"
+                                                    class="invalid-feedback">
+                                                    <div *ngIf="f['PeopleNumber'].errors['required']">PeopleNumber is
+                                                        required</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="mb-1">CurrentPrice</label>
+                                                <input type="text" formControlName="CurrentPrice" class="form-control"
+                                                    id="CurrentPrice"
+                                                    [ngClass]="{ 'is-invalid': submitted && f['CurrentPrice'].errors }" />
+                                                <div *ngIf="submitted && f['CurrentPrice'].errors"
+                                                    class="invalid-feedback">
+                                                    <div *ngIf="f['CurrentPrice'].errors['required']">CurrentPrice is
+                                                        required</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="mb-1">File Upload</label>
+                                                <div class="form-group mb-3">
+                                                    <input type="file" id="formFile" class="form-control"
+                                                        formControlName="RoomPicture" name="RoomPicture"
+                                                        accept=".png, .jpg" (change)="uploadFile($event)">
+                                                    <!-- <img src="{{image}}" alt="" style="width: 50px;height: 50px;"> -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row formtype mb-3">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="mb-1">File Upload</label>
+                                                <div class="form-group mb-3">
+                                                    <input type="file" id="formFile" class="form-control"
+                                                        formControlName="RoomPictures" name="RoomPictures"
+                                                        accept=".png, .jpg" multiple
+                                                        (change)="uploadFileDetail($event)">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="mb-1">Description</label>
+                                                <textarea class="form-control" rows="5" id="comment" name="text"
+                                                    formControlName="Description"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" (click)="updateRoom(roomForm)" class="btn btn-primary">Update</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                    (click)="resetModal()">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="addService" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Update room</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                    (click)="resetModal()"></button>
+            </div>
+            <div class="modal-body">
+              
+                <form class="form-group" [formGroup]="roomForm">
+                    <div class="col-9 mb-3">
+                        <label for="inputEmail3" class="col-3 col-form-label">Name service</label>
+                        <br>
+                        <select class="form-select mr-sm-2"  (change)="onServiceSelectionChange($event)">
+                            <option *ngFor="let service of services" [value]="service.id">{{ service.name }}</option>
+                          </select>
+                    </div>
+
+                 
+                    <button type="submit" (click)="addService($event)" class="btn btn-primary">Update</button>
+                </form>
+            </div>
+           
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                    (click)="resetModal()">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- add Room Discount -->
+<div class="modal fade" id="staticBackdrop3" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Discount room</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                    (click)="resetModal()"></button>
+            </div>
+            <div class="modal-body">
+              
+                <form class="form-group" [formGroup]="roomForm">
+                    <div class="col-9 mb-3">
+                        <label for="inputEmail3" class="col-3 col-form-label">Add Discount</label>
+                        <br>
+                        <select class="form-select mr-sm-2"  (change)="onServiceSelectionChange($event)">
+                            <option value="">Discount code</option>
+                            <option *ngFor="let service of discount" [value]="service.id">{{ service.name }}</option>
+                          </select>
+                    </div>
+
+                 
+                </form>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="submit" (click)="addDiscountRoom(roomForm)" class="btn btn-primary">Add </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                    (click)="resetModal()">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

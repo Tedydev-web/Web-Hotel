@@ -1,0 +1,114 @@
+
+<div class="wrapper">
+  <app-sidebar></app-sidebar>
+  <div class="content-page">
+    <div class="content">
+      <app-header></app-header>
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+              <div class="page-title-box">
+                  <div class="page-title-right">
+                      <ol class="breadcrumb m-0">
+                          <li class="breadcrumb-item"><a href="javascript: void(0);">Beyond</a></li>
+                          <li class="breadcrumb-item"><a href="javascript: void(0);">Managements</a></li>
+                          <li class="breadcrumb-item active">Customers</li>
+                      </ol>
+                  </div>
+                  <h4 class="page-title">Customers</h4>
+              </div>
+          </div>
+        </div>
+        <!-- end page title -->
+
+        <div class="row">
+          <div class="col-12">
+              <div class="card">
+                  <div class="card-body">
+                      <div class="row mb-2">
+                          <div class="col-sm-4">
+                            <div class="row gy-2 gx-2 align-items-center justify-content-xl-start justify-content-between">
+                                <div class="col-auto">
+                                    <label for="inputPassword2" class="visually-hidden">Search</label>
+                                    <input type="search" [(ngModel)]="searchTerm" class="form-control" id="inputPassword2"
+                                        placeholder="Search...">
+
+                                    </div>
+                                    <div class="col-auto">
+                                        <button type="submit" class="btn btn-primary" (click)="searchBookings()">Search</button>
+                                    </div>
+                                    <div class="col-auto">
+                                        <button type="button" class="btn btn-secondary" (click)="clearSearch()">Clear</button>
+                                      </div>
+                              
+                            </div>
+                        </div>
+                        <div class="col-sm-8">
+                            <div class="text-sm-end">
+                                  <a href="javascript:void(0);" class="btn btn-danger mb-2"><i class="mdi mdi-plus-circle me-2"></i> Add Customers</a>
+                              </div>
+                          </div><!-- end col-->
+                      </div>
+
+                      <div class="table-responsive">
+                          <table class="table table-centered table-striped dt-responsive nowrap w-100" id="products-datatable">
+                              <thead>
+                                  <tr>
+                                    
+                                      <th>Customer</th>
+                                      <th>Phone Number</th>
+                                      <th>Email</th>
+                                      <th>Address</th>
+                                      <th>Create Date</th>
+                                      <th>Status</th>
+                                      <th style="width: 75px;">Action</th>
+                                  </tr>
+                              </thead>
+                              <tbody>
+                                 
+                                  <tr *ngFor="let item of Accounts; let i = index">
+                                      
+                                      <td class="table-user">
+                                          <img src="{{item.image}}" alt="table-user" class="me-2 rounded-circle">
+                                          <a href="javascript:void(0);" class="text-body fw-semibold">{{item.name}}</a>
+                                      </td>
+                                      <td>
+                                        {{item.phoneNumber}}
+                                      </td>
+                                      <td>
+                                        {{item.email}}
+                                      </td>
+                                      <td>
+                                        {{item.address}}
+                                      </td>
+                                      <td>
+                                         {{item.createdAt |  date:'fullDate'}}
+                                      </td>
+                                      <td>
+                                        <div *ngIf="item.emailConfirmed; else inactiveBadge">
+                                            <span class="badge bg-success">Active</span>
+                                        </div>
+
+                                        <ng-template #inactiveBadge>
+                                            <span class="badge bg-danger">Inactive</span>
+                                        </ng-template>
+
+                                      </td>
+
+                                      <td>
+                                          <a href="javascript:void(0);" class="action-icon"> <i class="mdi mdi-square-edit-outline"></i></a>
+                                          <a href="javascript:void(0);" class="action-icon"> <i class="mdi mdi-delete"></i></a>
+                                      </td>
+                                  </tr>
+                              </tbody>
+                          </table>
+                      </div>
+                  </div> <!-- end card-body-->
+              </div> <!-- end card-->
+          </div> <!-- end col -->
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,103 @@
+<app-header></app-header>
+
+<div class="breadcrumb-area breadcrumb-padding">
+  <div class="container custom-container-one">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="breadcrumb-contents">
+          <h4 class="breadcrumb-contents-title"> Contact Us </h4>
+          <ul class="breadcrumb-contents-list list-style-none">
+            <li class="breadcrumb-contents-list-item"> <a href="index.html"
+                class="breadcrumb-contents-list-item-link"> Home </a> </li>
+            <li class="breadcrumb-contents-list-item"> Contact Us </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<section class="contact-area pat-100 pab-100">
+  <div class="container">
+    <div class="contact-map">
+
+       <iframe width="425" height="350" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://www.openstreetmap.org/export/embed.html?bbox=108.20054769515993%2C16.05082446441932%2C108.22887182235718%2C16.069506380161332&amp;layer=hot" style="border: 1px solid black">
+        </iframe><br/><small><a href="https://www.openstreetmap.org/#map=16/16.0602/108.2147&amp;layers=H">View Larger Map</a></small>
+    </div>
+    <div class="row">
+      <div class="col-lg-6 mt-5">
+        <div class="contact-thumb">
+          <img src="assets/img/single-page/contact.jpg" alt="img">
+        </div>
+      </div>
+      <div class="col-lg-6 mt-5">
+        <div class="contact-wrapper contact-padding bg-white radius-20">
+          <div class="contact-contents">
+            <h4 class="contact-contents-title"> Get in touch </h4>
+            <p class="contact-contents-para mt-2"> Our friendly team would love to hear from you. </p>
+            <div class="contact-contents-form custom-form">
+              <form [formGroup]="contact" (ngSubmit)="onSubmit()">
+                <div class="single-flex-input mt-4">
+                  <div class="single-input mt-4">
+                    <input type="text" class="form--control radius-5" formControlName="firstName" placeholder="First Name"
+                    class="form-control" type="name" id="name" formControlName="firstName" placeholder="Type First Name"
+                    [ngClass]="{ 'is-invalid': submitted && f['firstName'].errors }"
+                    >
+                    <div *ngIf="submitted && f['firstName'].errors" class="invalid-feedback">
+                    <div *ngIf="f['firstName'].errors['required']">First Name is required</div>
+                    </div>
+                  </div>
+                  <div class="single-input mt-4">
+                    <input type="text" class="form--control radius-5" formControlName="lastName" placeholder="Last Name"
+                    class="form-control" type="name" id="name" formControlName="lastName" placeholder="Type Full Name"
+                    [ngClass]="{ 'is-invalid': submitted && f['lastName'].errors }"
+                    >
+                    <div *ngIf="submitted && f['lastName'].errors" class="invalid-feedback">
+                    <div *ngIf="f['lastName'].errors['required']">Last Name is required</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="single-input mt-4">
+                  <input type="text" class="form--control radius-5" formControlName="email" placeholder="Type Email"
+                  [ngClass]="{ 'is-invalid': submitted && f['email'].errors }">
+                  <div *ngIf="submitted && f['email'].errors" class="invalid-feedback">
+                    <div *ngIf="f['email'].errors['required']">Email is required</div>
+                    <div *ngIf="f['email'].errors['email']">Email must be a valid email address</div>
+                  </div>
+                </div>
+                <div class="single-input mt-4">
+                  <input type="tel" class="form--control radius-5" formControlName="phoneNumber" id="phone" placeholder="Type Number"
+                  placeholder="Enter 10 digit phone Number" [ngClass]="{ 'is-invalid': submitted && f['phoneNumber'].errors }">
+                  <div *ngIf="submitted && f['phoneNumber'].errors" class="invalid-feedback">
+                    <div *ngIf="f['phoneNumber'].errors['required']">
+                      Phone Number is required.
+                    </div>
+                    <div *ngIf="f['phoneNumber'].errors['pattern']">
+                      Please Follow your pattern: Enter 10 digit phone Number.
+                    </div>
+                  </div>
+                </div>
+                <div class="single-input mt-4">
+                  <textarea class="form--control form-message radius-5" formControlName="message"
+                  [ngClass]="{ 'is-invalid': submitted && f['message'].errors }"
+
+                  ></textarea>
+                  <div *ngIf="submitted && f['message'].errors" class="invalid-feedback">
+                    <div *ngIf="f['message'].errors['required']">Message is required.</div>
+                    <div *ngIf="f['message'].errors['name']">Message must be have at least 10 characters.</div>
+                  </div>
+                </div>
+                <button  type="submit" class="submit-btn radius-5" > Save Changes </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<app-footer></app-footer>
+
+

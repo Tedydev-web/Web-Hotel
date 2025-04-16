@@ -1,0 +1,94 @@
+
+<div id="tab-list" class="tab-content-item active mt-4">
+  <div class="row gy-4">
+    <div class="col-12" *ngFor="let room of searchResults | paginate
+    : {
+        itemsPerPage: tableSize,
+        currentPage: page,
+        totalItems: count
+      }
+    ; let i = index;">
+      <div class="hotel-view bg-white radius-20">
+        <div class="hotel-view-flex">
+          <a routerLink="/room-detail/{{room.id}}" class="hotel-view-thumb hotel-view-list-thumb bg-image">
+            <img [src]="room.roomPicture" style="height: 100%;
+            object-fit: cover;">
+          </a>
+          <div class="hotel-view-contents">
+            <div class="hotel-view-contents-header">
+              <div
+                class="hotel-view-contents-header-flex d-flex flex-wrap gap-3 align-items-center justify-content-between">
+                <span class="hotel-view-contents-review"> <i class="las la-star"></i>{{room.starSum}}<span
+                    class="hotel-view-contents-review-count"> ({{room.starAmount}}) </span> </span>
+                <div class="btn-wrapper">
+                  <a routerLink="/checkout/{{room.id}}" class="cmn-btn btn-bg-1 btn-small"> Reserve Now </a>
+                </div>
+              </div>
+              <h3 class="hotel-view-contents-title"> <a routerLink="/room-detail"> {{room.name}} </a> </h3>
+              <div class="hotel-view-contents-location mt-2">
+                <span class="hotel-view-contents-location-icon"> <i class="las la-map-marker-alt"></i> </span>
+                <span class="hotel-view-contents-location-para"> {{room.roomNumber}}
+                </span>
+              </div>
+            </div>
+            <div class="hotel-view-contents-middle">
+              <div class="hotel-view-contents-flex">
+                <div class="hotel-view-contents-icon d-flex gap-1" *ngFor="let serviceAttach of room.serviceAttachs">
+                  <span> <i [ngClass]="serviceAttach.icon"></i> </span>
+                  <p class="hotel-view-contents-icon-title flex-fill"> {{serviceAttach.name}} </p>
+                </div>
+                <!-- <div class="hotel-view-contents-icon d-flex gap-1">
+                  <a class="hotel-view-contents-icon-more" href="javascript:void(0)"> +8 More </a>
+                </div> -->
+              </div>
+            </div>
+            <div class="hotel-view-contents-bottom">
+              <div class="hotel-view-contents-bottom-flex">
+                <div class="hotel-view-contents-bottom-contents d-flex flex-wrap gap-4 gap-sm-1">
+                  <h4 class="hotel-view-contents-bottom-title"> {{room.currentPrice | currency}} VND<sub>/Night</sub> </h4>
+                  <p class="hotel-view-contents-bottom-para"> <br> (4 Nights, 2 Rooms, 4 Persons) </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row mt-5">
+    <div class="col">
+      <div class="pagination-wrapper">
+        <!-- <ul class="pagination-list list-style-none">
+          <li class="pagination-list-item-prev">
+            <a href="javascript:void(0)" class="pagination-list-item-button"> Prev </a>
+          </li>
+          <li class="pagination-list-item">
+            <a href="javascript:void(0)" class="pagination-list-item-link"> 1 </a>
+          </li>
+          <li class="pagination-list-item active">
+            <a href="javascript:void(0)" class="pagination-list-item-link"> 2 </a>
+          </li>
+          <li class="pagination-list-item">
+            <a href="javascript:void(0)" class="pagination-list-item-link"> 3 </a>
+          </li>
+          <li class="pagination-list-item">
+            <a href="javascript:void(0)" class="pagination-list-item-link"> 4 </a>
+          </li>
+          <li class="pagination-list-item">
+            <a href="javascript:void(0)" class="pagination-list-item-link"> 5 </a>
+          </li>
+          <li class="pagination-list-item-next">
+            <a href="javascript:void(0)" class="pagination-list-item-button"> Next </a>
+          </li>
+        </ul> -->
+        <pagination-controls class="pagination-wrapper"
+        previousLabel="Prev"
+        nextLabel="Next"
+        (pageChange)="onTableDataChange($event)"
+      >
+
+      </pagination-controls>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,21 @@
+<div class="chart-container" [chart]="chart"></div>
+
+
+<div class="chart-widget-list" *ngFor="let item of revenueForRoom ; let i = index ;">
+    <p>
+        <i class=" text-primary"></i> {{item.typeRoomName}}
+        <span class="float-end">{{item.price | vndCurrency}}</span>
+    </p>
+    <!-- <p>
+        <i class="mdi mdi-square text-danger"></i> Attach service
+        <span class="float-end">{{13024634 | vndCurrency}}</span>
+    </p>
+    <p>
+        <i class="mdi mdi-square text-success"></i> Room service
+        <span class="float-end">{{2923634 | vndCurrency}}</span>
+    </p>
+    <p class="mb-0">
+        <i class="mdi mdi-square text-warning"></i> Sponsored
+        <span class="float-end">{{2492634 | vndCurrency}}</span>
+    </p> -->
+</div>

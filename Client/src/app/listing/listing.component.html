@@ -1,0 +1,303 @@
+<app-header></app-header>
+<div class="breadcrumb-area section-bg-2 breadcrumb-padding">
+  <div class="container custom-container-one">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="breadcrumb-contents">
+          <h4 class="breadcrumb-contents-title"> Hotel List </h4>
+          <ul class="breadcrumb-contents-list list-style-none">
+            <li class="breadcrumb-contents-list-item"> <a href="index.html" class="breadcrumb-contents-list-item-link"> Home </a>
+            </li>
+            <li class="breadcrumb-contents-list-item"> Hotels </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="responsive-overlay"></div>
+<section class="hotel-list-area section-bg-2 pat-100 pab-100">
+  <form [formGroup]="roomSearchForm" (ngSubmit)="onSubmit()">
+    <div class="container">
+      <div class="banner-location bg-white radius-10">
+        <div class="banner-location-flex">
+
+          <div class="banner-location-single">
+            <div class="banner-location-single-flex">
+
+              <div class="banner-location-single-contents">
+                <span class="banner-location-single-contents-subtitle"> Check In </span>
+
+                <mat-form-field appearance="fill">
+                  <input class="" matInput [matDatepicker]="picker2" [formControl]="checkIn">
+                  <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
+                  <mat-datepicker #picker2></mat-datepicker>
+                </mat-form-field>
+
+              </div>
+            </div>
+          </div>
+          <div class="banner-location-single">
+            <div class="banner-location-single-flex">
+              <div class="banner-location-single-contents">
+                <span class="banner-location-single-contents-subtitle"> Check Out </span>
+                <div class="banner-location-single-contents-dropdown custom-select">
+                  <mat-form-field appearance="fill">
+                    <input matInput [matDatepicker]="picker3" [formControl]="checkOut">
+                    <mat-datepicker-toggle matIconSuffix [for]="picker3"></mat-datepicker-toggle>
+                    <mat-datepicker #picker3></mat-datepicker>
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="banner-location-single">
+            <div class="banner-location-single-flex">
+              <div class="banner-location-single-icon">
+                <i class="las la-user-friends"></i>
+              </div>
+              <div class="banner-location-single-contents">
+                <span class="banner-location-single-contents-subtitle"> Person </span>
+                <mat-form-field appearance="fill">
+                  <mat-select formControlName="peopleNumber">
+                    <mat-option [value]="0" disabled selected>Select people number</mat-option>
+                    <!-- <mat-option *ngFor="let number of peopleNumberOptions" [value]="number">{{number}}</mat-option> -->
+                    <mat-option *ngFor="let i of maxPersonArray" [value]="maxPersonArray.length + 1 - i">{{maxPersonArray.length +
+                      1 - i}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+          <div class="banner-location-single">
+            <div class="banner-location-single-flex">
+              <div class="banner-location-single-icon">
+                <i class="las la-user-friends"></i>
+              </div>
+              <div class="banner-location-single-contents">
+                <span class="banner-location-single-contents-subtitle"> Room Type </span>
+                <mat-form-field appearance="fill">
+                  <mat-select formControlName="roomTypeId">
+                    <mat-option [value]="0" disabled selected>Select room type</mat-option>
+                    <mat-option *ngFor="let roomType of roomTypeName" [value]="roomType.id">{{roomType.typeName}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+          <div class="banner-location-single-search">
+            <div class="search-suggestions-wrapper flex">
+              <button type="submit" class="search-click-icon" for="control-modal">
+                <i class="las la-search"></i>
+              </button>
+            </div>
+            <div class="search-suggestion-overlay"></div>
+          </div>
+        </div>
+        <!-- <button (click)="getRoom()" class="search-click-icon"  for="control-modal">
+          <i class="fa fa-refresh" aria-hidden="true"></i>
+        </button> -->
+
+      </div>
+      <div class="shop-contents-wrapper mt-5">
+        <div class="shop-icon">
+          <div class="shop-icon-sidebar">
+            <i class="las la-bars"></i>
+          </div>
+        </div>
+        <div class="shop-sidebar-content">
+          <div class="shop-close-content">
+            <div class="shop-close-content-icon"> <i class="las la-times"></i> </div>
+            <div class="single-shop-left bg-white radius-10">
+              <div class="single-shop-left-title open">
+                <h5 class="title"> Prices </h5>
+                <div class="single-shop-left-inner mt-4">
+                  <form class="price-range-slider" method="post" data-start-min="0" data-start-max="10000000" data-min="0"
+                    data-max="10000000" data-step="5">
+                    <div class="ui-range-slider"></div>
+                    <div class="ui-range-slider-footer">
+                      <div class="ui-range-values">
+                        <span class="ui-price-title"> Price: </span>
+                        <div class="ui-range-value-min"><span class="min_price">0</span> VND
+                          <input type="hidden" value="0">
+                        </div> -
+                        <div class="ui-range-value-max"><span class="max_price">10000000</span> VND
+                          <input type="hidden" value="10000000" class="price_search">
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <div class="single-shop-left bg-white radius-10 mt-4">
+              <div class="single-shop-left-title open">
+                <h5 class="title"> Filter By Rating </h5>
+                <div class="single-shop-left-inner">
+                  <ul class="single-shop-left-filter-list active-list mt-3">
+                    <li class="item" data-value="5">
+                      <a href="javascript:void(0)"> <i class="las la-star"></i> </a>
+                      <a href="javascript:void(0)"> <i class="las la-star"></i> </a>
+                      <a href="javascript:void(0)"> <i class="las la-star"></i> </a>
+                      <a href="javascript:void(0)"> <i class="las la-star"></i> </a>
+                      <a href="javascript:void(0)"> <i class="las la-star"></i> </a>
+                    </li>
+                    <li class="item" data-value="4">
+                      <a href="javascript:void(0)"> <i class="las la-star"></i> </a>
+                      <a href="javascript:void(0)"> <i class="las la-star"></i> </a>
+                      <a href="javascript:void(0)"> <i class="las la-star"></i> </a>
+                      <a href="javascript:void(0)"> <i class="las la-star"></i> </a>
+                      <a href="javascript:void(0)"> <i class="lar la-star"></i> </a>
+                    </li>
+                    <li class="item" data-value="3">
+                      <a href="javascript:void(0)"> <i class="las la-star"></i> </a>
+                      <a href="javascript:void(0)"> <i class="las la-star"></i> </a>
+                      <a href="javascript:void(0)"> <i class="las la-star"></i> </a>
+                      <a href="javascript:void(0)"> <i class="lar la-star"></i> </a>
+                      <a href="javascript:void(0)"> <i class="lar la-star"></i> </a>
+                    </li>
+                    <li class="item" data-value="2">
+                      <a href="javascript:void(0)"> <i class="las la-star"></i> </a>
+                      <a href="javascript:void(0)"> <i class="las la-star"></i> </a>
+                      <a href="javascript:void(0)"> <i class="lar la-star"></i> </a>
+                      <a href="javascript:void(0)"> <i class="lar la-star"></i> </a>
+                      <a href="javascript:void(0)"> <i class="lar la-star"></i> </a>
+                    </li>
+                    <li class="item" data-value="1">
+                      <a href="javascript:void(0)"> <i class="las la-star"></i> </a>
+                      <a href="javascript:void(0)"> <i class="lar la-star"></i> </a>
+                      <a href="javascript:void(0)"> <i class="lar la-star"></i> </a>
+                      <a href="javascript:void(0)"> <i class="lar la-star"></i> </a>
+                      <a href="javascript:void(0)"> <i class="lar la-star"></i> </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="shop-grid-contents">
+          <div class="grid-list-contents">
+            <div class="grid-list-contents-flex">
+              <p class="grid-list-contents-para"> Showing {{results}} results </p>
+              <div class="btn-wrapper">
+                <a (click)="clear()" class="cmn-btn btn-bg-1 btn-small"> Clear </a>
+              </div>
+            </div>
+          </div>
+
+
+          <!-- Search result -->
+
+
+          <div id="tab-list" class="tab-content-item active mt-4">
+            <div class="row gy-4">
+              <div class="col-12" *ngFor="let room of filteredRooms | paginate
+            : {
+                itemsPerPage: tableSize,
+                currentPage: page,
+                totalItems: count
+              }
+            ; let i = index;">
+                <div class="hotel-view bg-white radius-20">
+                  <div class="hotel-view-flex">
+                    <a routerLink="/room-detail/{{room.id}}/{{checkInDateString}}/{{checkOutDateString}}"
+                      class="hotel-view-thumb hotel-view-list-thumb bg-image">
+                      <img [src]="room.roomPicture" style="height: 100%;
+                    object-fit: cover;">
+                    </a>
+                    <div class="hotel-view-contents">
+                      <div class="hotel-view-contents-header">
+                        <div
+                          class="hotel-view-contents-header-flex d-flex flex-wrap gap-3 align-items-center justify-content-between">
+                          <span class="hotel-view-contents-review"> <i class="las la-star"></i>{{room.starSum}}<span
+                              class="hotel-view-contents-review-count"> ({{room.starAmount}}) </span> </span>
+                          <div class="btn-wrapper">
+                            <a (click)="bookingRoom(room.id)" class="cmn-btn btn-bg-1 btn-small"> Reserve Now </a>
+                          </div>
+                        </div>
+                        <h3 class="hotel-view-contents-title"> <a routerLink="/room-detail"> {{room.name}} </a> </h3>
+                        <div class="hotel-view-contents-location mt-2">
+                          <span class="hotel-view-contents-location-icon"> <i class="las la-map-marker-alt"></i>
+                            {{room.roomTypeName
+                            }} </span>
+                          <br>
+                          <!-- <span class="hotel-view-contents-location-para"> {{room.roomNumber}}
+                        </span> -->
+                        </div>
+                      </div>
+                      <div class="hotel-view-contents-middle">
+                        <div class="hotel-view-contents-flex">
+                          <div class="hotel-view-contents-icon d-flex gap-1" *ngFor="let serviceAttach of room.serviceAttachs">
+                            <span> <i [ngClass]="serviceAttach.icon"></i> </span>
+                            <p class="hotel-view-contents-icon-title flex-fill"> {{serviceAttach.name}} </p>
+                          </div>
+                          <!-- <div class="hotel-view-contents-icon d-flex gap-1">
+                          <a class="hotel-view-contents-icon-more" href="javascript:void(0)"> +8 More </a>
+                        </div> -->
+                        </div>
+                      </div>
+                      <div class="hotel-view-contents-bottom">
+                        <div class="hotel-view-contents-bottom-flex">
+                          <div class="hotel-view-contents-bottom-contents d-flex flex-wrap gap-4 gap-sm-1">
+                            <h4 class="hotel-view-contents-bottom-title"> {{ room.currentPrice | vndCurrency }}<span>/ {{1}}
+                                Night</span> </h4>
+                            <br>
+                          </div>
+                        </div>
+                        <p class="hotel-view-contents-bottom-para"> <br> ({{1}} Nights, {{room.peopleNumber}} Persons) </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row mt-5">
+              <div class="col">
+                <div class="pagination-wrapper">
+                  <!-- <ul class="pagination-list list-style-none">
+                  <li class="pagination-list-item-prev">
+                    <a href="javascript:void(0)" class="pagination-list-item-button"> Prev </a>
+                  </li>
+                  <li class="pagination-list-item">
+                    <a href="javascript:void(0)" class="pagination-list-item-link"> 1 </a>
+                  </li>
+                  <li class="pagination-list-item active">
+                    <a href="javascript:void(0)" class="pagination-list-item-link"> 2 </a>
+                  </li>
+                  <li class="pagination-list-item">
+                    <a href="javascript:void(0)" class="pagination-list-item-link"> 3 </a>
+                  </li>
+                  <li class="pagination-list-item">
+                    <a href="javascript:void(0)" class="pagination-list-item-link"> 4 </a>
+                  </li>
+                  <li class="pagination-list-item">
+                    <a href="javascript:void(0)" class="pagination-list-item-link"> 5 </a>
+                  </li>
+                  <li class="pagination-list-item-next">
+                    <a href="javascript:void(0)" class="pagination-list-item-button"> Next </a>
+                  </li>
+                </ul> -->
+
+                  <div class="clearfix"></div>
+                  <pagination-controls class="pagination-wrapper" previousLabel="Prev" nextLabel="Next"
+                    (pageChange)="onTableDataChange($event)">
+
+                  </pagination-controls>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- End search result -->
+        </div>
+      </div>
+    </div>
+  </form>
+</section>
+<div class="back-to-top">
+  <span class="back-top"> <i class="las la-angle-up"></i> </span>
+</div>
+
+<app-footer></app-footer>

@@ -1,0 +1,29 @@
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle"> <h3>Let's rate !</h3></h5>
+      </div>
+      <form [formGroup]="rateForm" >
+        <div class="rating">
+          <input type="radio" name="rating" id="r1" formControlName="rating" value="5">
+          <label for="r1"></label>
+
+          <input type="radio" name="rating" id="r2" formControlName="rating" value="4">
+          <label for="r2"></label>
+
+          <input type="radio" name="rating" id="r3" formControlName="rating" value="3">
+          <label for="r3"></label>
+
+          <input type="radio" name="rating" id="r4" formControlName="rating" value="2">
+          <label for="r4"></label>
+
+          <input type="radio" name="rating" id="r5" formControlName="rating" value="1">
+          <label for="r5"></label>
+        </div>
+      </form>
+        <div class="popup-contents-btn ">
+          <button (click)="onSubmit()" type="submit">Button</button>
+        </div>
+
+    </div>
+  </div>

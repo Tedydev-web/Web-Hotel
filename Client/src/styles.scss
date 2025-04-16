@@ -1,0 +1,24 @@
+@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
+@import 'ngx-toastr/toastr';
+
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,300;0,400;0,500;1,400&family=Open+Sans:wght@600;700&family=Poppins:wght@100;300;400;700;900&family=Rubik:wght@300&display=swap');
+body
+{
+  font-family: 'Poppins', sans-serif;
+}
+.container-1{
+  transform: translateY(6px) !important;
+}
+.container-2{
+  transform: translateY(-12px);
+}
+.container-2 p{
+  line-height: 14px;
+  margin-top: 6px;
+}
+.toast-right-top{
+  width: 380px !important;
+  height: 90px !important;
+  padding: 20px 10px !important;
+}
+

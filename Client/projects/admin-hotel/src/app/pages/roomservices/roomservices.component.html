@@ -1,0 +1,152 @@
+<div class="wrapper">
+  <app-sidebar></app-sidebar>
+  <div class="content-page">
+    <div class="content">
+      <app-header></app-header>
+      <div class="container-fluid">
+        <!-- start page title -->
+        <div class="row">
+          <div class="col-12">
+            <div class="page-title-box">
+              <div class="page-title-right">
+                <ol class="breadcrumb m-0">
+                  <li class="breadcrumb-item"><a href="javascript: void(0);">Beyond</a></li>
+                  <li class="breadcrumb-item"><a href="javascript: void(0);">Managements</a></li>
+                  <li class="breadcrumb-item active">Attached Service</li>
+                </ol>
+              </div>
+              <h4 class="page-title">Attached Service</h4>
+            </div>
+          </div>
+        </div>
+        <!-- end page title -->
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-body">
+                <div class="col-xl-12">
+                    <div class="text-xl-end mt-xl-0 mt-2">
+                        <button type="button" data-bs-toggle="modal" data-bs-target="#modal-detail"
+                            class="btn btn-danger mb-2 me-2"><i class="mdi mdi-basket me-1"></i> Add
+                            New</button>
+                    </div>
+                </div><!-- end col-->
+
+                <div class="table-responsive">
+                  <table class="table table-centered mb-0">
+                    <thead class="table-light align-middle text-center">
+                      <tr>
+                        
+                        <th>Room service types</th>
+                        <th>Description</th>
+                        <th >Icon</th>
+                        <th>Action<th>
+                        </tr>
+                    </thead>
+                    <tbody *ngFor="let item of roomType ; let i = index" (click)="toggleSelection(item.id)" class="align-middle text-center">
+                      <tr>
+                       
+                        <td><span class="text-body fw-bold">{{item.name}}</span> </td>
+                        <td>{{item.description}}</td>
+                        <td>{{item.icon}}</td>
+                        <td>
+                          <a href="javascript:void(0);"  href="javascript:void(0);" class="action-icon" data-bs-toggle="modal" data-bs-target="#modal-detail2">
+                            <i class=" mdi mdi-update"></i></a>
+                            <a class="action-icon" (click)="deleteService(item.id)" ><i class="mdi mdi-delete"></i></a>
+                        </td>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal detail -->
+<div id="modal-detail" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-top modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="topModalLabel">Add room service</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal" [formGroup]="serviceForm">
+          <div class="row mb-3">
+            <label for="inputEmail3" class="col-3 col-form-label">Name service</label>
+            <div class="col-9">
+                <input type="email" formControlName="name" class="form-control" id="inputEmail3" placeholder="Email">
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="inputEmail3" class="col-3 col-form-label">Icon</label>
+            <div class="col-9">
+                <input type="email" formControlName="icon" class="form-control" id="inputEmail3" placeholder="Email">
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="inputEmail3" class="col-3 col-form-label">Description</label>
+            <div class="col-9">
+                <input type="email"formControlName="description" class="form-control" id="inputEmail3" placeholder="Email">
+            </div>
+        </div>
+          <div class="justify-content-end row">
+              <div class="col-9">
+                  <button (click)="createRoomType(serviceForm)" type="submit" class="btn btn-info">Add </button>
+              </div>
+          </div>
+      </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal update detail -->
+<div id="modal-detail2" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-top modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="topModalLabel">Update room type</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal" [formGroup]="serviceForm">
+          <div class="row mb-3">
+              <label for="inputEmail3" class="col-3 col-form-label">Service</label>
+              <div class="col-9">
+                  <input type="email" formControlName="name" class="form-control" id="inputEmail3" placeholder="Name service">
+              </div>
+          </div>
+          <div class="row mb-3">
+              <label for="inputEmail3" class="col-3 col-form-label">Icon</label>
+              <div class="col-9">
+                  <input type="email" formControlName="icon" class="form-control" id="inputEmail3" placeholder="Name room type">
+              </div>
+          </div>
+          <div class="row mb-3">
+              <label for="inputEmail3" class="col-3 col-form-label">Description</label>
+              <div class="col-9">
+                  <input type="email" formControlName="description" class="form-control" id="inputEmail3" placeholder="Icon">
+              </div>
+          </div>
+
+          <div class="col-9">
+        </div>
+        
+        <div class="justify-content-end row">
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <button type="submit" (click)="update(serviceForm)" class="btn btn-info">Update </button>
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
