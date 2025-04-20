@@ -77,7 +77,7 @@ public class ReservationAdminController : ControllerBase
     private async Task HandleTimer(string id)
     {
         var optionsBuilder = new DbContextOptionsBuilder<MyDBContext>();
-        optionsBuilder.UseSqlServer("Data Source=103.130.212.186;Initial Catalog=webhotel;Persist Security Info=True;User ID=metaron;Password=Hung1997;Connection Timeout=300");
+        optionsBuilder.UseSqlServer("Data Source=localhost,1433;Initial Catalog=WebHotel;User ID=sa;Password=TedyDev@23105;Encrypt=True;TrustServerCertificate=True;");
         if (id is not null)
         {
             using (MyDBContext context1 = new MyDBContext(optionsBuilder.Options))

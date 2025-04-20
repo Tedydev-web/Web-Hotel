@@ -1,76 +1,290 @@
-<div class="wrapper">
+<div class="wrapper invoice-page">
     <app-sidebar></app-sidebar>
     <div class="content-page">
-        <div class="content">
+        <div class="content content-wrapper">
             <app-header></app-header>
-            <div class="container-fluid">
+            <div class="container-fluid py-4">
                 <!-- start page title -->
-                <div class="row">
+                <div class="row mb-4">
                     <div class="col-12">
-                        <div class="page-title-box">
-                            <div class="page-title-right">
-                                <ol class="breadcrumb m-0">
-                                    <li class="breadcrumb-item"><a href="javascript: void(0);">Beyond</a></li>
-                                    <li class="breadcrumb-item"><a href="javascript: void(0);">Managements</a></li>
-                                    <li class="breadcrumb-item active">Invoice</li>
-                                </ol>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h4 class="page-title mb-0">Quản lý hóa đơn</h4>
+                                <nav aria-label="breadcrumb">
+                                    <ol class="breadcrumb m-0 mt-2">
+                                        <li class="breadcrumb-item"><a href="javascript: void(0);"
+                                                class="text-decoration-none">Trang chủ</a></li>
+                                        <li class="breadcrumb-item"><a href="javascript: void(0);"
+                                                class="text-decoration-none">Quản lý</a></li>
+                                        <li class="breadcrumb-item active">Hóa đơn</li>
+                                    </ol>
+                                </nav>
                             </div>
-                            <h4 class="page-title">Invoice</h4>
+                            <button class="btn btn-primary rounded-pill d-flex align-items-center"
+                                (click)="exportToExcel()">
+                                <i class="mdi mdi-file-excel me-1"></i> Xuất Excel
+                            </button>
                         </div>
                     </div>
                 </div>
                 <!-- end page title -->
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="row mb-2">
-                                    <div class="col-xl-8">
-                                        <div
-                                            class="row gy-2 gx-2 align-items-center justify-content-xl-start justify-content-between">
-                                            <div class="col-auto">
-                                                <label for="inputPassword2" class="visually-hidden">Search</label>
-                                                <input type="search" [(ngModel)]="searchBooking" placeholder="Search booking..."
-                                                    class="form-control" name="searchBooking" id="inputPassword2">
-                                            </div>
 
-                                            <div class="col-auto">
-                                                <button type="submit" class="btn btn-primary"
-                                                    (click)="searchBookings()">Search</button>
+                <!-- Dashboard cards -->
+                <div class="row mb-4 fade-in">
+                    <div class="col-md-3">
+                        <div class="card dashboard-card">
+                            <div class="card-body">
+                                <div class="card-icon bg-primary-lighten text-primary">
+                                    <i class="mdi mdi-receipt mdi-24px"></i>
+                                </div>
+                                <h2 class="card-number">{{reservationGetAll?.length || 0}}</h2>
+                                <p class="card-label mb-0">Tổng hóa đơn</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card dashboard-card">
+                            <div class="card-body">
+                                <div class="card-icon bg-success-lighten text-success">
+                                    <i class="mdi mdi-check-circle mdi-24px"></i>
+                                </div>
+                                <h2 class="card-number">{{(reservationGetAll && reservationGetAll.length) ?
+                                    (reservationGetAll | filter:'status':true).length : 0}}</h2>
+                                <p class="card-label mb-0">Đã thanh toán</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card dashboard-card">
+                            <div class="card-body">
+                                <div class="card-icon bg-danger-lighten text-danger">
+                                    <i class="mdi mdi-close-circle mdi-24px"></i>
+                                </div>
+                                <h2 class="card-number">{{(reservationGetAll && reservationGetAll.length) ?
+                                    (reservationGetAll | filter:'status':false).length : 0}}</h2>
+                                <p class="card-label mb-0">Chưa thanh toán</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card dashboard-card">
+                            <div class="card-body">
+                                <div class="card-icon bg-info-lighten text-info">
+                                    <i class="mdi mdi-currency-usd mdi-24px"></i>
+                                </div>
+                                <h2 class="card-number">{{getTotalRevenue() | vndCurrency}}</h2>
+                                <p class="card-label mb-0">Tổng doanh thu</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Advanced filter section -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="filter-section fade-in">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="m-0">Bộ lọc nâng cao</h5>
+                                <button class="btn btn-sm btn-outline-secondary" (click)="toggleFilterSection()">
+                                    <i class="mdi" [ngClass]="showFilters ? 'mdi-chevron-up' : 'mdi-chevron-down'"></i>
+                                </button>
+                            </div>
+
+                            <div class="row g-3" *ngIf="showFilters">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="form-label">Tìm kiếm</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="mdi mdi-magnify"></i></span>
+                                            <input type="text" [(ngModel)]="searchBooking"
+                                                class="form-control filter-control"
+                                                placeholder="Tìm theo ID, phòng, khách hàng...">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="form-label">Trạng thái</label>
+                                        <select class="form-select filter-control" [(ngModel)]="statusFilter">
+                                            <option value="all">Tất cả trạng thái</option>
+                                            <option value="true">Đã thanh toán</option>
+                                            <option value="false">Chưa thanh toán</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="form-label">Từ ngày</label>
+                                        <input type="date" class="form-control filter-control" [(ngModel)]="dateFrom">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="form-label">Đến ngày</label>
+                                        <input type="date" class="form-control filter-control" [(ngModel)]="dateTo">
+                                    </div>
+                                </div>
+                                <div class="col-12 d-flex justify-content-end mt-3">
+                                    <button type="button" class="btn btn-outline-secondary me-2"
+                                        (click)="clearFilters()">
+                                        <i class="mdi mdi-refresh me-1"></i> Đặt lại
+                                    </button>
+                                    <button type="button" class="btn btn-primary" (click)="applyFilters()">
+                                        <i class="mdi mdi-filter me-1"></i> Áp dụng bộ lọc
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- View toggle buttons -->
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="view-toggle">
+                                <button class="btn" [ngClass]="{'active': viewMode === 'card'}"
+                                    (click)="setViewMode('card')">
+                                    <i class="mdi mdi-view-grid-outline me-1"></i> Card
+                                </button>
+                                <button class="btn" [ngClass]="{'active': viewMode === 'table'}"
+                                    (click)="setViewMode('table')">
+                                    <i class="mdi mdi-table me-1"></i> Bảng
+                                </button>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <button type="button" class="btn btn-light btn-sm me-2" (click)="exportToExcel()">
+                                    <i class="mdi mdi-download me-1"></i> Xuất Excel
+                                </button>
+                                <div class="dropdown">
+                                    <button class="btn btn-light btn-sm dropdown-toggle" type="button" id="sortDropdown"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="mdi mdi-sort me-1"></i> Sắp xếp
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="sortDropdown">
+                                        <li><a class="dropdown-item" href="javascript:void(0);"
+                                                (click)="sortBy('newest')">Mới nhất</a></li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);"
+                                                (click)="sortBy('oldest')">Cũ nhất</a></li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);"
+                                                (click)="sortBy('priceHighest')">Giá cao nhất</a></li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);"
+                                                (click)="sortBy('priceLowest')">Giá thấp nhất</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card View Mode -->
+                <div class="row" *ngIf="viewMode === 'card' && filteredInvoices && filteredInvoices.length > 0">
+                    <div class="col-md-4 col-xl-3 mb-4" *ngFor="let item of filteredInvoices">
+                        <div class="invoice-card">
+                            <div class="card h-100">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <span class="invoice-id">#{{item.invoice.id.substring(0, 8)}}</span>
+                                    <span class="status-badge"
+                                        [ngClass]="{'status-paid': item.status, 'status-failed': !item.status}">
+                                        <i class="mdi"
+                                            [ngClass]="item.status ? 'mdi-check-circle' : 'mdi-close-circle'"></i>
+                                        {{item.status ? 'Đã thanh toán' : 'Chưa thanh toán'}}
+                                    </span>
+                                </div>
+                                <div class="card-body invoice-details">
+                                    <div class="mb-3">
+                                        <h5 class="mb-1">Phòng {{item.roomNumber}}</h5>
+                                        <div class="invoice-user">
+                                            <i class="mdi mdi-account text-muted me-1"></i> {{item.name}}
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between mb-3">
+                                        <div>
+                                            <small class="text-muted d-block">Ngày thanh toán</small>
+                                            <div class="invoice-date">
+                                                <i class="mdi mdi-calendar text-success me-1"></i>
+                                                {{item.invoice.payAt | date : "dd/MM/yyyy"}}
                                             </div>
-                                            <div class="col-auto">
-                                                <button type="button" class="btn btn-secondary"
-                                                    (click)="clearSearch()">Clear</button>
+                                        </div>
+                                        <div>
+                                            <small class="text-muted d-block">Số ngày</small>
+                                            <div class="invoice-days">
+                                                <i class="mdi mdi-calendar-clock text-info me-1"></i>
+                                                {{item.numberOfDay}} ngày
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-xl-4">
-                                    </div><!-- end col-->
+
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <div class="invoice-room-price">
+                                            <i class="mdi mdi-home-currency-usd me-1"></i>
+                                            {{item.roomPrice | vndCurrency}} / ngày
+                                        </div>
+                                        <div class="invoice-total-price">
+                                            {{item.invoice.priceReservedRoom | vndCurrency}}
+                                        </div>
+                                    </div>
                                 </div>
+                                <div class="card-footer">
+                                    <button type="button" class="btn btn-sm btn-primary w-100" data-bs-toggle="modal"
+                                        data-bs-target="#modal-detail" (click)="GetReservationById(item.id)">
+                                        <i class="mdi mdi-eye me-1"></i> Xem chi tiết
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
+                <!-- Empty state when no data -->
+                <div class="row" *ngIf="filteredInvoices && filteredInvoices.length === 0">
+                    <div class="col-12">
+                        <div class="text-center py-5">
+                            <i class="mdi mdi-receipt-text-outline text-muted" style="font-size: 4rem;"></i>
+                            <h5 class="mt-3">Không tìm thấy dữ liệu hóa đơn</h5>
+                            <p class="text-muted">Không có hóa đơn nào phù hợp với các tiêu chí tìm kiếm của bạn.</p>
+                            <button class="btn btn-primary" (click)="clearFilters()">Đặt lại bộ lọc</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Table View Mode -->
+                <div class="row" *ngIf="viewMode === 'table'">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
                                 <div class="table-responsive">
-                                    <table id="invoice-table" class="table table-centered mb-0">
-                                        <thead class="table-light align-middle text-center">
+                                    <table id="invoice-table" class="table table-centered table-hover">
+                                        <thead class="table-light">
                                             <tr>
-
-                                                <th>Invoice ID</th>
-                                                <th>Room Number</th>
-                                                <th>Amount</th>
-                                                <th>Number Days</th>
-                                                <th>Reservation Price</th>
-                                                <th>Name Customer</th>
-                                                <th>Booking Date</th>
-                                                <th>Status</th>
-                                                <th style="width: 125px;">Action</th>
+                                                <th>Mã hóa đơn</th>
+                                                <th>Phòng</th>
+                                                <th>Khách hàng</th>
+                                                <th>Giá phòng</th>
+                                                <th>Số ngày</th>
+                                                <th>Tổng tiền</th>
+                                                <th>Ngày thanh toán</th>
+                                                <th>Trạng thái</th>
+                                                <th style="width: 100px;">Thao tác</th>
                                             </tr>
                                         </thead>
-                                        <tbody *ngFor="let item of reservationGetAll | filter: searchBooking; let i = index "
-                                            class="align-middle text-center">
-                                            <tr>
-
-                                                <td><span class="text-body fw-bold">{{item.invoice.id}}</span> </td>
+                                        <tbody>
+                                            <tr
+                                                *ngFor="let item of filteredInvoices | filter: searchBooking; let i = index">
+                                                <td>
+                                                    <span class="text-body fw-bold">{{item.invoice.id}}</span>
+                                                </td>
                                                 <td>
                                                     {{item.roomNumber}}
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="avatar avatar-sm me-2 bg-light rounded-circle">
+                                                            <span class="avatar-text">{{item.name.charAt(0)}}</span>
+                                                        </div>
+                                                        <div>{{item.name}}</div>
+                                                    </div>
                                                 </td>
                                                 <td>
                                                     {{item.roomPrice | vndCurrency}}
@@ -78,35 +292,76 @@
                                                 <td>
                                                     {{item.numberOfDay}}
                                                 </td>
-                                                <td>{{item.invoice.priceReservedRoom | vndCurrency}}
+                                                <td>
+                                                    <span class="fw-bold">{{item.invoice.priceReservedRoom |
+                                                        vndCurrency}}</span>
                                                 </td>
                                                 <td>
-                                                    <h5><span class="badge badge-danger-lighten">{{item.name}}</span>
-                                                    </h5>
+                                                    <span class="badge badge-info-lighten">
+                                                        {{item.invoice.payAt | date : "dd/MM/yyyy"}}<br>
+                                                        {{item.invoice.payAt | date : "HH:mm:ss"}}
+                                                    </span>
                                                 </td>
-
                                                 <td>
-                                                    <h5><span class="badge badge-info-lighten">
-                                                            {{item.invoice.payAt | date : "yyyy/MM/dd"}}<br>
-                                                            {{item.invoice.payAt | date : "HH:mm:ss"}}
-                                                        </span></h5>
+                                                    <span class="badge rounded-pill"
+                                                        [ngClass]="{'bg-success': item.status, 'bg-danger': !item.status}">
+                                                        {{item.status ? 'Đã thanh toán' : 'Chưa thanh toán'}}
+                                                    </span>
                                                 </td>
-
-                                                <td *ngIf="item.status == true;else Status"><span
-                                                        class="badge badge-success-lighten"><i class="mdi mdi-coin"></i>
-                                                        Paid</span></td>
-                                                <ng-template #Status>
-                                                    <td><span class="badge badge-danger-lighten"><i class="mdi mdi-cancel"></i>
-                                                            Payment Failed</span></td>
-                                                </ng-template>
                                                 <td>
-                                                    <a href="javascript:void(0);" class="action-icon" data-bs-toggle="modal"
-                                                        data-bs-target="#modal-detail" (click)="GetReservationById(item.id)">
-                                                        <i class="mdi mdi-eye"></i></a>
+                                                    <div class="d-flex">
+                                                        <button type="button" class="btn btn-sm btn-light me-1"
+                                                            data-bs-toggle="modal" data-bs-target="#modal-detail"
+                                                            (click)="GetReservationById(item.id)">
+                                                            <i class="mdi mdi-eye"></i>
+                                                        </button>
+                                                        <div class="dropdown">
+                                                            <button class="btn btn-sm btn-light" type="button"
+                                                                data-bs-toggle="dropdown">
+                                                                <i class="mdi mdi-dots-vertical"></i>
+                                                            </button>
+                                                            <ul class="dropdown-menu dropdown-menu-end">
+                                                                <li><a class="dropdown-item" href="javascript:void(0);"
+                                                                        (click)="printInvoice(item.id)">
+                                                                        <i class="mdi mdi-printer me-1"></i> In hóa đơn
+                                                                    </a></li>
+                                                                <li><a class="dropdown-item" href="javascript:void(0);"
+                                                                        (click)="downloadPDF(item.id)">
+                                                                        <i class="mdi mdi-file-pdf-box me-1"></i> Tải
+                                                                        PDF
+                                                                    </a></li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         </tbody>
                                     </table>
+                                </div>
+
+                                <!-- Pagination -->
+                                <div class="custom-pagination mt-4">
+                                    <nav>
+                                        <ul class="pagination">
+                                            <li class="page-item" [ngClass]="{'disabled': currentPage === 1}">
+                                                <a class="page-link" href="javascript:void(0);"
+                                                    (click)="goToPage(currentPage - 1)">
+                                                    <i class="mdi mdi-chevron-left"></i>
+                                                </a>
+                                            </li>
+                                            <li class="page-item" *ngFor="let page of getPageNumbers()"
+                                                [ngClass]="{'active': page === currentPage}">
+                                                <a class="page-link" href="javascript:void(0);"
+                                                    (click)="goToPage(page)">{{page}}</a>
+                                            </li>
+                                            <li class="page-item" [ngClass]="{'disabled': currentPage === totalPages}">
+                                                <a class="page-link" href="javascript:void(0);"
+                                                    (click)="goToPage(currentPage + 1)">
+                                                    <i class="mdi mdi-chevron-right"></i>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </nav>
                                 </div>
                             </div>
                         </div>
@@ -118,217 +373,164 @@
 </div>
 
 <!-- Modal detail -->
-<div id="modal-detail" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-top modal-lg">
-        <div style="margin-top: -7rem;" class="modal-content">
+<div id="modal-detail" class="modal fade custom-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="topModalLabel">Reservation detail</h4>
+                <h4 class="modal-title">Chi tiết hóa đơn</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
             </div>
-            <div class="modal-body" *ngIf="reservationGetById != null">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="div-pdf p-3" id="htmlData">
-                                    <!-- Invoice Logo-->
-                                    <div class="clearfix">
-                                        <div class="float-start mb-3">
-                                            <img src="assets/images/logodark.png" alt="" height="38">
-                                        </div>
-                                        <div class="float-end">
-                                            <h4 class="m-0 d-print-none">Invoice</h4>
-                                        </div>
-                                    </div>
+            <div class="modal-body" *ngIf="reservationGetById">
+                <div class="div-pdf p-3" id="htmlData">
+                    <!-- Invoice Logo-->
+                    <div class="clearfix mb-4">
+                        <div class="float-start">
+                            <img src="assets/images/logodark.png" alt="" height="38">
+                        </div>
+                        <div class="float-end text-end">
+                            <h4 class="m-0">HÓA ĐƠN</h4>
+                            <p class="text-muted mt-1 mb-0">Mã hóa đơn: #{{reservationGetById.invoice?.id}}</p>
+                        </div>
+                    </div>
 
-                                    <!-- Invoice Detail-->
-                                    <div class="row">
-                                        <div class="col-sm-5">
-                                            <div class="float-end mt-3">
-                                                <p><b>Hello, {{reservationGetById.name}}</b></p>
-                                                <p class="text-muted font-13">Please find below a cost-breakdown for the
-                                                    recent work completed. Please make payment at your earliest
-                                                    convenience, and do not hesitate to contact me with any questions.
-                                                </p>
+                    <!-- Invoice Detail-->
+                    <div class="row mb-4">
+                        <div class="col-sm-6">
+                            <div class="invoice-info-card">
+                                <h5 class="mb-3">Thông tin khách hàng</h5>
+                                <p class="mb-1"><strong>Họ tên:</strong> {{reservationGetById.name}}</p>
+                                <p class="mb-1"><strong>Email:</strong> {{reservationGetById.email}}</p>
+                                <p class="mb-1"><strong>Số điện thoại:</strong> {{reservationGetById.phoneNumber}}</p>
+                                <p class="mb-0"><strong>Địa chỉ:</strong> {{reservationGetById.address}}</p>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="invoice-info-card">
+                                <h5 class="mb-3">Thông tin hóa đơn</h5>
+                                <p class="mb-1"><strong>Mã đặt phòng:</strong> {{reservationGetById.id}}</p>
+                                <p class="mb-1"><strong>Ngày đặt:</strong> {{reservationGetById.createdAt |
+                                    date:'dd/MM/yyyy - HH:mm'}}</p>
+                                <p class="mb-1"><strong>Ngày thanh toán:</strong> {{reservationGetById.invoice?.payAt |
+                                    date:'dd/MM/yyyy - HH:mm'}}</p>
+                                <p class="mb-0">
+                                    <strong>Trạng thái:</strong>
+                                    <span class="badge ms-1"
+                                        [ngClass]="{'status-paid': reservationGetById.status, 'status-failed': !reservationGetById.status}">
+                                        {{reservationGetById.status ? 'Đã thanh toán' : 'Chưa thanh toán'}}
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
 
-                                            </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered mt-4">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Phòng số</th>
+                                            <th>Thời gian lưu trú</th>
+                                            <th>Giá phòng</th>
+                                            <th>Số ngày</th>
+                                            <th class="text-end">Thành tiền</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>{{reservationGetById.roomNumber}}</td>
+                                            <td>
+                                                {{reservationGetById.startDate | date : "dd/MM/yyyy"}} -
+                                                {{reservationGetById.endDate | date : "dd/MM/yyyy"}}
+                                            </td>
+                                            <td>{{reservationGetById.roomPrice | vndCurrency}}</td>
+                                            <td>{{reservationGetById.numberOfDay}}</td>
+                                            <td class="text-end">{{reservationGetById.invoice?.priceReservedRoom |
+                                                vndCurrency}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
 
-                                        </div><!-- end col -->
-                                        <div class="col-sm-7">
-                                            <div class="mt-3 float-sm-end">
-                                                <p class="font-13"><strong>Booking ID: </strong> <span
-                                                        class="float-end">{{reservationGetById.id}}</span></p>
-                                                <p class="font-13"><strong>Booking Date: </strong> <span class="float-end">
-                                                        {{reservationGetById.createdAt | date:'MM/dd/yyyy -HH:mm'}}
-                                                    </span>
-                                                </p>
-                                                <p class="font-13"><strong>Order Status: </strong> <span
-                                                        class="badge bg-success float-end">Paid</span></p>
-                                                <p class="font-13"><strong>Address: </strong> <span
-                                                        class="float-end">{{reservationGetById.address}}</span></p>
-                                                <p class="font-13"><strong>Phone Number: </strong> <span
-                                                        class="float-end">{{reservationGetById.phoneNumber}}</span></p>
-                                                <p class="font-13"><strong>Email: </strong> <span
-                                                        class="float-end">{{reservationGetById.email}}</span></p>
-                                                <p class="font-13"><strong>Check In: </strong> <span
-                                                        class="badge float-end badge-info-lighten">
-                                                        {{reservationGetById.startDate | date : "yyyy/MM/dd"}}<br>
-                                                        {{reservationGetById.startDate | date : "HH:mm:ss"}}
-                                                    </span></p>
-                                                <p class="font-13"><strong>Check Out: </strong> <span
-                                                        class="badge float-end badge-danger-lighten">
-                                                        {{reservationGetById.endDate | date : "yyyy/MM/dd"}}<br>
-                                                        {{reservationGetById.endDate | date : "HH:mm:ss"}}
-                                                    </span></p>
+                                <!-- Services section if available -->
+                                <table class="table table-bordered mt-4"
+                                    *ngIf="reservationGetById.service && reservationGetById.service.length > 0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Dịch vụ</th>
+                                            <th>Số lượng</th>
+                                            <th>Đơn giá</th>
+                                            <th class="text-end">Thành tiền</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let service of reservationGetById.service">
+                                            <td>{{service.serviceName}}</td>
+                                            <td>{{service.quantity}}</td>
+                                            <td>{{service.price | vndCurrency}}</td>
+                                            <td class="text-end">{{service.quantity * service.price | vndCurrency}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
 
-                                            </div>
-                                        </div><!-- end col -->
-                                    </div>
-                                    <!-- end row -->
-
-
-                                    <div class="row">
-                                        <div class="col-12">
-                                            <div class="table-responsive">
-                                                <table class="table mt-4">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Room Name</th>
-                                                            <th>Number of days</th>
-                                                            <th>Unit Cost</th>
-                                                            <th class="text-end">Total</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr>
-                                                            <td>
-                                                                {{reservationGetById.reservationPayment.orderInfo}}
-                                                            </td>
-                                                            <td>{{reservationGetById.numberOfDay}}</td>
-                                                            <td>{{reservationGetById.roomPrice | vndCurrency}}</td>
-                                                            <td class="text-end">{{ reservationGetById.roomPrice *
-                                                                reservationGetById.numberOfDay | vndCurrency}}</td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                                <table class="table mt-4" *ngIf="reservationGetById.service != undefined">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Service Name</th>
-                                                            <th>Price</th>
-                                                            <th>Amount</th>
-                                                            <th class="text-end">Total</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr *ngFor="let service of reservationGetById.service">
-                                                            <td>
-                                                                {{service.serviceName}}
-                                                            </td>
-                                                            <td>{{service.price | vndCurrency}}</td>
-                                                            <td>{{service.amount}}</td>
-                                                            <td class="text-end">{{ service.price * service.amount | vndCurrency}}
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td></td>
-                                                            <td></td>
-                                                            <td><b>Sum</b></td>
-                                                            <td class="float-end">{{reservationGetById.invoice.priceService |
-                                                                vndCurrency}}</td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div> <!-- end table-responsive-->
-                                        </div> <!-- end col -->
-                                    </div>
-                                    <!-- end row -->
-
-                                    <div class="row">
-                                        <div class="col-sm-5">
-                                            <div class="clearfix pt-1">
-                                                <h6 class="text-muted">Notes:</h6>
-                                                <small>
-                                                    All accounts are to be paid within 7 days from receipt of
-                                                    invoice. To be paid by cheque or credit card or direct payment
-                                                    online. If account is not paid within 7 days the credits details
-                                                    supplied as confirmation of work undertaken will be charged the
-                                                    agreed quoted fee noted above.
-                                                </small>
-                                            </div>
-                                        </div> <!-- end col -->
-                                        <div class="col-sm-7">
-                                            <div class="float-end mt-3 mt-sm-0">
-                                                <span>
-                                                    <p><b class="me-2">Reservation price:</b> <span
-                                                            class="float-end">{{reservationGetById.roomPrice *
-                                                            reservationGetById.numberOfDay | vndCurrency}}</span></p>
-                                                    <p><b class="me-2">VAT (+8%):</b> <span class="float-end">+
-                                                            {{(reservationGetById.roomPrice *
-                                                            reservationGetById.numberOfDay) * 0.08 | vndCurrency}}</span>
-                                                    </p>
-                                                    <p><b class="me-2">Service price:</b> <span class="float-end">+
-                                                            {{reservationGetById.invoice.priceService |
-                                                            vndCurrency}}</span></p>
-                                                </span>
-                                                <hr>
-                                                <p><b class="me-2">Sum:</b> <span class="float-end">
-                                                        {{reservationGetById.invoice.priceReservedRoom +
-                                                        reservationGetById.invoice.priceService| vndCurrency}}
-                                                    </span></p>
-                                                <p><b class="me-2">Deposited:</b> <span class="float-end">
-                                                        - {{reservationGetById.invoice.priceReservedRoom*0.5 | vndCurrency}}
-                                                    </span></p>
-                                                <p><b class="me-2">Need to pay:</b> <span class="float-end">
-                                                        {{reservationGetById.invoice.priceReservedRoom +
-                                                        reservationGetById.invoice.priceService -
-                                                        reservationGetById.invoice.priceReservedRoom*0.5 | vndCurrency}}
-                                                    </span></p>
-                                            </div>
-                                            <div class="clearfix"></div>
-                                        </div> <!-- end col -->
-                                    </div>
-                                    <!-- end row-->
-                                    <div class="row mt-2">
-                                        <div class="col-sm-6">
-                                            <h4 class="header-title mb-3">Payment Method Information</h4>
-                                            <ul class="list-unstyled mb-0">
-                                                <li>
-                                                    <p class="mb-2"><span class="fw-bold me-2">Payment Type:</span>
-                                                        {{reservationGetById.reservationPayment.payType}}</p>
-                                                    <p class="mb-2"><span class="fw-bold me-2">Provider:</span>
-                                                        {{reservationGetById.reservationPayment.orderType}}
-                                                    </p>
-                                                    <p class="mb-2"><span class="fw-bold me-2">Payment Date:</span>
-                                                        {{datePayment }}</p>
-                                                    <p class="mb-0"><span class="fw-bold me-2">CVV:</span> xxx</p>
-                                                </li>
-                                            </ul>
-                                        </div> <!-- end col-->
-                                        <div class="col-sm-6">
-                                            <div class="text-sm-end">
-                                                <img src="assets/images/barcode.png" alt="barcode-image" class="img-fluid me-2">
-                                            </div>
-                                        </div> <!-- end col-->
-                                    </div>
-                                    <!-- end row -->
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="invoice-note mt-4">
+                                <h5 class="mb-3">Ghi chú</h5>
+                                <p class="text-muted mb-0">
+                                    Cảm ơn quý khách đã sử dụng dịch vụ của chúng tôi. Mọi thắc mắc xin vui lòng liên hệ
+                                    với bộ phận chăm sóc khách hàng.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="invoice-summary mt-4">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Tổng tiền phòng:</span>
+                                    <span>{{reservationGetById.invoice?.priceReservedRoom | vndCurrency}}</span>
                                 </div>
-                                <div class="d-print-none mt-4">
-                                    <div class="text-end">
-                                        <a href="javascript:window.print()" class="btn btn-primary"><i
-                                                class="mdi mdi-printer"></i> Print</a>
-                                        <a href="javascript: void(0);" (click)="openPDF()" style="margin-left: 5px;"
-                                            class="btn  btn-info">Export</a>
-                                    </div>
+                                <div class="d-flex justify-content-between mb-2"
+                                    *ngIf="getTotalServicePrice(reservationGetById) > 0">
+                                    <span>Tổng tiền dịch vụ:</span>
+                                    <span>{{getTotalServicePrice(reservationGetById) | vndCurrency}}</span>
                                 </div>
-                                <!-- end buttons -->
-
-                            </div> <!-- end card-body-->
-                        </div> <!-- end card -->
-                    </div> <!-- end col-->
+                                <hr>
+                                <div class="d-flex justify-content-between fw-bold">
+                                    <span>Tổng cộng:</span>
+                                    <span class="invoice-total">{{calculateTotal(reservationGetById) |
+                                        vndCurrency}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-
+            <div class="modal-footer">
+                <div class="d-flex justify-content-between w-100">
+                    <button *ngIf="reservationGetById" type="button" class="btn btn-primary" (click)="openPDF()">
+                        <i class="mdi mdi-file-pdf-box me-1"></i> Tải PDF
+                    </button>
+                    <div>
+                        <button *ngIf="reservationGetById" type="button" class="btn btn-light me-2"
+                            (click)="printInvoice(reservationGetById.id)">
+                            <i class="mdi mdi-printer me-1"></i> In hóa đơn
+                        </button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    </div>
+                </div>
+            </div>
         </div>
+    </div>
+</div>
+
+<!-- Loading Spinner -->
+<div class="loading-overlay" *ngIf="isLoading">
+    <div class="spinner-container">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Đang tải...</span>
+        </div>
+        <p class="mt-2">Đang xử lý...</p>
     </div>
 </div>

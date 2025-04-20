@@ -1,86 +1,311 @@
-<div class="wrapper">
+<div class="wrapper room-page">
     <app-sidebar></app-sidebar>
     <div class="content-page">
-        <div class="content">
+        <div class="content content-wrapper">
             <app-header></app-header>
-            <div class="container-fluid">
-                <div class="row">
+            <div class="container-fluid py-4">
+                <!-- start page title -->
+                <div class="row mb-4">
                     <div class="col-12">
-                        <div class="page-title-box">
-                            <div class="page-title-right">
-                                <ol class="breadcrumb m-0">
-                                    <li class="breadcrumb-item"><a href="javascript: void(0);">Beyond</a></li>
-                                    <li class="breadcrumb-item"><a href="javascript: void(0);">Managements</a></li>
-                                    <li class="breadcrumb-item active">Room</li>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h4 class="page-title mb-0">Quản lý phòng</h4>
+                                <nav aria-label="breadcrumb">
+                                    <ol class="breadcrumb m-0 mt-2">
+                                        <li class="breadcrumb-item"><a href="javascript: void(0);"
+                                                class="text-decoration-none">Trang chủ</a></li>
+                                        <li class="breadcrumb-item"><a href="javascript: void(0);"
+                                                class="text-decoration-none">Quản lý</a></li>
+                                        <li class="breadcrumb-item active">Phòng</li>
                                 </ol>
+                                </nav>
                             </div>
-                            <h4 class="page-title">Room</h4>
+                            <button type="button" class="btn btn-primary rounded-pill d-flex align-items-center"
+                                data-bs-toggle="modal" data-bs-target="#staticBackdrop" (click)="loadModal()">
+                                <i class="mdi mdi-plus-circle me-1"></i> Thêm phòng mới
+                            </button>
                         </div>
                     </div>
                 </div>
                 <!-- end page title -->
 
-                <div class="row">
+                <!-- Dashboard cards -->
+                <div class="row mb-4 fade-in">
+                    <div class="col-md-3">
+                        <div class="card dashboard-card">
+                            <div class="card-body">
+                                <div class="card-icon bg-primary-lighten text-primary">
+                                    <i class="mdi mdi-hotel mdi-24px"></i>
+                                </div>
+                                <h2 class="card-number">{{rooms?.length || 0}}</h2>
+                                <p class="card-label mb-0">Tổng số phòng</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card dashboard-card">
+                            <div class="card-body">
+                                <div class="card-icon bg-success-lighten text-success">
+                                    <i class="mdi mdi-check-circle mdi-24px"></i>
+                                </div>
+                                <h2 class="card-number">{{(rooms && rooms.length) ?
+                                    (rooms | filter:'isActive':true).length : 0}}</h2>
+                                <p class="card-label mb-0">Phòng đang hoạt động</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card dashboard-card">
+                            <div class="card-body">
+                                <div class="card-icon bg-danger-lighten text-danger">
+                                    <i class="mdi mdi-close-circle mdi-24px"></i>
+                                </div>
+                                <h2 class="card-number">{{(rooms && rooms.length) ?
+                                    (rooms | filter:'isActive':false).length : 0}}</h2>
+                                <p class="card-label mb-0">Phòng không hoạt động</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card dashboard-card">
+                            <div class="card-body">
+                                <div class="card-icon bg-info-lighten text-info">
+                                    <i class="mdi mdi-currency-usd mdi-24px"></i>
+                                </div>
+                                <h2 class="card-number">{{getAveragePrice() | vndCurrency}}</h2>
+                                <p class="card-label mb-0">Giá phòng trung bình</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Advanced filter section -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="filter-section fade-in">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="m-0">Bộ lọc nâng cao</h5>
+                                <button class="btn btn-sm btn-outline-secondary" (click)="toggleFilterSection()">
+                                    <i class="mdi" [ngClass]="showFilters ? 'mdi-chevron-up' : 'mdi-chevron-down'"></i>
+                                </button>
+                            </div>
+
+                            <div class="row g-3" *ngIf="showFilters">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="form-label">Tìm kiếm</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="mdi mdi-magnify"></i></span>
+                                            <input type="text" [(ngModel)]="searchTerm"
+                                                class="form-control filter-control"
+                                                placeholder="Tìm theo tên phòng, số phòng...">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="form-label">Loại phòng</label>
+                                        <select class="form-select filter-control" [(ngModel)]="roomTypeFilter">
+                                            <option value="all">Tất cả loại phòng</option>
+                                            <option *ngFor="let roomType of roomTypesAll" [value]="roomType.id">
+                                                {{roomType.name}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="form-label">Trạng thái</label>
+                                        <select class="form-select filter-control" [(ngModel)]="statusFilter">
+                                            <option value="all">Tất cả trạng thái</option>
+                                            <option value="true">Đang hoạt động</option>
+                                            <option value="false">Không hoạt động</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="form-label">Sức chứa</label>
+                                        <select class="form-select filter-control" [(ngModel)]="capacityFilter">
+                                            <option value="all">Tất cả sức chứa</option>
+                                            <option value="1">1 người</option>
+                                            <option value="2">2 người</option>
+                                            <option value="3">3 người</option>
+                                            <option value="4">4 người trở lên</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-12 d-flex justify-content-end mt-3">
+                                    <button type="button" class="btn btn-outline-secondary me-2"
+                                        (click)="clearFilters()">
+                                        <i class="mdi mdi-refresh me-1"></i> Đặt lại
+                                    </button>
+                                    <button type="button" class="btn btn-primary" (click)="applyFilters()">
+                                        <i class="mdi mdi-filter me-1"></i> Áp dụng bộ lọc
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- View toggle buttons -->
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="view-toggle">
+                                <button class="btn" [ngClass]="{'active': viewMode === 'card'}"
+                                    (click)="setViewMode('card')">
+                                    <i class="mdi mdi-view-grid-outline me-1"></i> Card
+                                </button>
+                                <button class="btn" [ngClass]="{'active': viewMode === 'table'}"
+                                    (click)="setViewMode('table')">
+                                    <i class="mdi mdi-table me-1"></i> Bảng
+                                </button>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <button type="button" class="btn btn-light btn-sm me-2" (click)="exportData()">
+                                    <i class="mdi mdi-download me-1"></i> Xuất Excel
+                                </button>
+                                <div class="dropdown">
+                                    <button class="btn btn-light btn-sm dropdown-toggle" type="button" id="sortDropdown"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="mdi mdi-sort me-1"></i> Sắp xếp
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="sortDropdown">
+                                        <li><a class="dropdown-item" href="javascript:void(0);"
+                                                (click)="sortBy('name')">Tên A-Z</a></li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);"
+                                                (click)="sortBy('nameDesc')">Tên Z-A</a></li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);"
+                                                (click)="sortBy('priceHighest')">Giá cao nhất</a></li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);"
+                                                (click)="sortBy('priceLowest')">Giá thấp nhất</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card View Mode -->
+                <div class="row" *ngIf="viewMode === 'card' && filteredRooms && filteredRooms.length > 0">
+                    <div class="col-md-4 col-xl-3 mb-4" *ngFor="let room of filteredRooms">
+                        <div class="room-card">
+                            <div class="card h-100">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <span class="room-number">Phòng {{room.roomNumber}}</span>
+                                    <span class="status-badge"
+                                        [ngClass]="{'status-active': room.isActive, 'status-inactive': !room.isActive}">
+                                        <i class="mdi"
+                                            [ngClass]="room.isActive ? 'mdi-check-circle' : 'mdi-close-circle'"></i>
+                                        {{room.isActive ? 'Hoạt động' : 'Không hoạt động'}}
+                                    </span>
+                                </div>
+                                <div class="card-body room-details">
+                                    <div class="mb-3">
+                                        <h5 class="mb-1">{{room.name}}</h5>
+                                        <div class="room-type">
+                                            <i class="mdi mdi-tag-outline text-muted me-1"></i> {{room.roomTypeName}}
+                                        </div>
+                                                </div>
+
+                                    <div class="d-flex justify-content-between mb-3">
+                                        <div>
+                                            <small class="text-muted d-block">Giường đơn</small>
+                                            <div class="room-beds">
+                                                <i class="mdi mdi-bed text-success me-1"></i>
+                                                {{room.numberOfSimpleBed}}
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <small class="text-muted d-block">Giường đôi</small>
+                                            <div class="room-beds">
+                                                <i class="mdi mdi-bed-king text-danger me-1"></i>
+                                                {{room.numberOfDoubleBed}}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <div class="room-capacity">
+                                            <i class="mdi mdi-account-multiple me-1"></i>
+                                            {{room.peopleNumber}} người
+                                        </div>
+                                        <div class="room-price">
+                                            {{room.currentPrice | vndCurrency}}
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-3">
+                                        <span class="badge bg-light text-dark me-1 mb-1"
+                                            *ngFor="let service of room.serviceAttachs?.slice(0, 3)">
+                                            <i class="mdi mdi-check-circle-outline me-1 text-success"></i>
+                                            {{service.name}}
+                                        </span>
+                                        <span class="badge bg-light text-dark me-1 mb-1"
+                                            *ngIf="room.serviceAttachs?.length > 3">
+                                            +{{room.serviceAttachs.length - 3}}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="d-flex">
+                                        <button type="button" class="btn btn-sm btn-primary flex-grow-1 me-1"
+                                            data-bs-toggle="modal" data-bs-target="#editRoom"
+                                            (click)="loadModalUpdate(room.id)">
+                                            <i class="mdi mdi-square-edit-outline me-1"></i> Chỉnh sửa
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-danger flex-grow-1"
+                                            (click)="deleteRoom(room.id)">
+                                            <i class="mdi mdi-delete me-1"></i> Xóa
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Empty state when no data -->
+                <div class="row" *ngIf="filteredRooms && filteredRooms.length === 0">
+                    <div class="col-12">
+                        <div class="text-center py-5">
+                            <i class="mdi mdi-hotel-off text-muted" style="font-size: 4rem;"></i>
+                            <h5 class="mt-3">Không tìm thấy phòng</h5>
+                            <p class="text-muted">Không có phòng nào phù hợp với các tiêu chí tìm kiếm của bạn.</p>
+                            <button class="btn btn-primary" (click)="clearFilters()">Đặt lại bộ lọc</button>
+                        </div>
+                    </div>
+                                </div>
+
+                <!-- Table View Mode -->
+                <div class="row" *ngIf="viewMode === 'table'">
                     <div class="col-12">
                         <div class="card">
                             <div class="card-body">
-                                <div class="row mb-2">
-                                    <div class="col-sm-4">
-                                        <div class="col-sm-8">
-                                            <div
-                                                class="row gy-2 gx-2 align-items-center justify-content-xl-start justify-content-between">
-                                                <div class="col-auto">
-                                                    <label for="inputPassword2" class="visually-hidden">Search</label>
-                                                    <input type="search" [(ngModel)]="searchTerm"
-                                                        placeholder="Search rooms..." class="form-control"
-                                                        id="inputPassword2">
-                                                </div>
-
-                                            </div>
-                                        </div>
-
-                                    </div>
-
-                                    <div class="col-sm-8">
-                                        <div class="text-sm-end">
-                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                                data-bs-target="#staticBackdrop" class="btn btn-danger mb-2"><i
-                                                    class="mdi mdi-plus-circle me-2" (click)="loadModal()"></i> Add
-                                                New Room</button>
-
-                                        </div>
-                                    </div><!-- end col-->
-                                </div>
-
                                 <div class="table-responsive">
-                                    <table class="table table-centered w-100 dt-responsive nowrap"
-                                        id="products-datatable">
+                                    <table class="table table-centered table-hover">
                                         <thead class="table-light">
                                             <tr>
-                                                
-                                                <th class="all">Room name</th>
-                                                <th>Room Number</th>
-                                                <th>Roomtype name</th>
-                                                <th>Price</th>
-                                                <th>Discount price</th>
-                                                <th>Simple bed</th>
-                                                <th>Double bed</th>
-                                                <th>People number</th>
-                                                <th>Attached service</th>
-                                                <th>Status</th>
-                                                <th style="width: 135px;">Action</th>
+                                                <th>Tên phòng</th>
+                                                <th>Số phòng</th>
+                                                <th>Loại phòng</th>
+                                                <th>Giá phòng</th>
+                                                <th>Giá giảm</th>
+                                                <th>Giường đơn</th>
+                                                <th>Giường đôi</th>
+                                                <th>Sức chứa</th>
+                                                <th>Dịch vụ đính kèm</th>
+                                                <th>Trạng thái</th>
+                                                <th style="width: 120px;">Thao tác</th>
                                             </tr>
                                         </thead>
-                                        <tbody *ngFor="let room of rooms | filter: searchTerm ; let i = index;" (click)="toggleSelection(room.roomTypeId.toString(), room.id)"
-                                            class="align-middle">
-                                            <tr *ngIf="room">
-                                                
-                                                <td style="height: 100px;">
-                                                    <div class="m-0 d-inline-block align-middle font-16">
-                                                        <a href="apps-ecommerce-products-details.html"
-                                                            class="text-body fw-semibold">{{room.name}}</a>
-                                                        <br>
-                                                        <!-- <a href="apps-ecommerce-products-details.html" class="text-body">{{room.name}}</a> -->
+                                        <tbody>
+                                            <tr *ngFor="let room of filteredRooms; let i = index">
+                                                <td>
+                                                    <span class="fw-bold">{{room.name}}</span>
+                                                    <div class="d-flex mt-1">
                                                         <span class="text-warning mdi mdi-star"></span>
                                                         <span class="text-warning mdi mdi-star"></span>
                                                         <span class="text-warning mdi mdi-star"></span>
@@ -90,92 +315,111 @@
                                                 </td>
                                                 <td>{{room.roomNumber}}</td>
                                                 <td>{{room.roomTypeName}}</td>
+                                                <td>{{room.currentPrice | vndCurrency}}</td>
+                                                <td>{{room.discountPrice == null ? 0 : room.discountPrice |
+                                                    vndCurrency}}</td>
+                                                <td>{{room.numberOfSimpleBed}}</td>
+                                                <td>{{room.numberOfDoubleBed}}</td>
+                                                <td>{{room.peopleNumber}} người</td>
                                                 <td>
-                                                    {{room.currentPrice | vndCurrency}}
-                                                </td>
-                                                <td>
-                                                    {{room.discountPrice == null?0:room.discountPrice | vndCurrency}}
-                                                </td>
-                                                <td>
-                                                    {{room.numberOfSimpleBed}}
-                                                </td>
-                                                <td>
-                                                    {{room.numberOfDoubleBed}}
-                                                </td>
-                                                <td>
-                                                    {{room.peopleNumber}}
-                                                </td>
-                                                <td >
-
                                                     <div class="dropdown">
-                                                        <button type="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                           {{ countDisplayedServices(i) }} Services
+                                                        <button type="button"
+                                                            class="btn btn-sm btn-light dropdown-toggle"
+                                                            data-bs-toggle="dropdown" aria-haspopup="true"
+                                                            aria-expanded="false">
+                                                            {{ countDisplayedServices(i) }} Dịch vụ
                                                         </button>
                                                         <div class="dropdown-menu dropdown-menu-end">
-                                                           
-                                                            <li class="dropdown-item" *ngFor="let service of room?.serviceAttachs; let i = index">
+                                                            <li class="dropdown-item"
+                                                                *ngFor="let service of room?.serviceAttachs">
                                                                 {{service.name}}
                                                             </li>
                                                             <li class="dropdown-item">
-
                                                                 <span data-bs-toggle="modal"
                                                             data-bs-target="#addService"
-                                                            class="badge bg-warning"> + Add more</span>
+                                                                    class="badge bg-warning"> + Thêm dịch vụ</span>
                                                             </li>
                                                         </div>
-                                                        
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <div *ngIf="room.isActive; else inactiveBadge">
-                                                        <span class="badge bg-success">Active</span>
+                                                    <span class="badge"
+                                                        [ngClass]="{'bg-success': room.isActive, 'bg-danger': !room.isActive}">
+                                                        {{room.isActive ? 'Hoạt động' : 'Không hoạt động'}}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex">
+                                                        <button type="button" class="btn btn-sm btn-light me-1"
+                                                            data-bs-toggle="modal" data-bs-target="#staticBackdrop3">
+                                                            <i class="uil uil-dollar-alt"></i>
+                                                        </button>
+                                                        <button type="button" class="btn btn-sm btn-light me-1"
+                                                            data-bs-toggle="modal" data-bs-target="#editRoom"
+                                                            (click)="loadModalUpdate(room.id)">
+                                                            <i class="mdi mdi-square-edit-outline"></i>
+                                                        </button>
+                                                        <button type="button" class="btn btn-sm btn-light"
+                                                            (click)="deleteRoom(room.id)">
+                                                            <i class="mdi mdi-delete"></i>
+                                                        </button>
                                                     </div>
-
-                                                    <ng-template #inactiveBadge>
-                                                        <span class="badge bg-danger">Inactive</span>
-                                                    </ng-template>
                                                 </td>
-
-                                                <td class="table-action">
-                                                    <a data-bs-toggle="modal" 
-                                                    data-bs-target="#staticBackdrop3" class="action-icon"><i
-                                                            class="uil uil-dollar-alt"></i></a>
-                                                    <a href="javascript:void(0);" data-bs-toggle="modal"
-                                                        data-bs-target="#editRoom" class="action-icon"
-                                                        (click)="loadModalUpdate(room.id)"> <i
-                                                            class="mdi mdi-square-edit-outline"></i></a>
-                                                    <a href="javascript:void(0);" (click)="deleteRoom(room.id)"
-                                                        class="action-icon"> <i class="mdi mdi-delete"></i></a>
-                                                </td>
-                                                <div *ngIf="!room">
-                                                    Room not found.
-                                                </div>
-
                                             </tr>
                                         </tbody>
                                     </table>
                                 </div>
-                            </div> <!-- end card-body-->
-                        </div> <!-- end card-->
-                    </div> <!-- end col -->
+
+                                <!-- Pagination -->
+                                <div class="custom-pagination mt-4">
+                                    <nav>
+                                        <ul class="pagination">
+                                            <li class="page-item" [ngClass]="{'disabled': currentPage === 1}">
+                                                <a class="page-link" href="javascript:void(0);"
+                                                    (click)="goToPage(currentPage - 1)">
+                                                    <i class="mdi mdi-chevron-left"></i>
+                                                </a>
+                                            </li>
+                                            <li class="page-item" *ngFor="let page of getPageNumbers()"
+                                                [ngClass]="{'active': page === currentPage}">
+                                                <a class="page-link" href="javascript:void(0);"
+                                                    (click)="goToPage(page)">{{page}}</a>
+                                            </li>
+                                            <li class="page-item" [ngClass]="{'disabled': currentPage === totalPages}">
+                                                <a class="page-link" href="javascript:void(0);"
+                                                    (click)="goToPage(currentPage + 1)">
+                                                    <i class="mdi mdi-chevron-right"></i>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </nav>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
+                <!-- Loading Spinner -->
+                <div class="loading-overlay" *ngIf="isLoading">
+                    <div class="spinner-container">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Đang tải...</span>
+                        </div>
+                        <p class="mt-2">Đang xử lý...</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-
-
-
 <!-- Modal CREATE ROOM -->
-
 <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
     aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel">Add room</h5>
+                <h5 class="modal-title" id="staticBackdropLabel">Thêm phòng mới</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -192,34 +436,34 @@
                                     <div class="row formtype mb-3">
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label class="mb-1">Room Number</label>
+                                                <label class="mb-1">Số phòng</label>
                                                 <input type="text" class="form-control" formControlName="RoomNumber"
                                                     [ngClass]="{ 'is-invalid': submitted && f['RoomNumber'].errors }" />
                                                 <div *ngIf="submitted && f['RoomNumber'].errors"
                                                     class="invalid-feedback">
-                                                    <div *ngIf="f['RoomNumber'].errors['required']">RoomNumber is
-                                                        required</div>
+                                                    <div *ngIf="f['RoomNumber'].errors['required']">Số phòng là
+                                                        bắt buộc</div>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label class="mb-1">Room Name</label>
+                                                <label class="mb-1">Tên phòng</label>
                                                 <input type="text" class="form-control" formControlName="Name"
                                                     [ngClass]="{ 'is-invalid': submitted && f['Name'].errors }" />
                                                 <div *ngIf="submitted && f['Name'].errors" class="invalid-feedback">
-                                                    <div *ngIf="f['Name'].errors['required']">Room name is required
+                                                    <div *ngIf="f['Name'].errors['required']">Tên phòng là bắt buộc
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label class="mb-1">Active</label>
+                                                <label class="mb-1">Trạng thái</label>
                                                 <select class="form-select mr-sm-2" formControlName="IsActive"
                                                     id="IsActive" name="IsActive">
-                                                    <option [ngValue]="true">Active</option>
-                                                    <option [ngValue]="false">Closed</option>
+                                                    <option [ngValue]="true">Hoạt động</option>
+                                                    <option [ngValue]="false">Không hoạt động</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -324,23 +568,18 @@
                                 </form>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="submit" (click)="addRoom(roomForm)" class="btn btn-primary">Add</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-                    (click)="resetModal()">Close</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" (click)="onSubmit()">Thêm phòng</button>
             </div>
         </div>
     </div>
 </div>
 
-
-
 <!-- Modal EDIT ROOM -->
-
 <div class="modal fade" id="editRoom" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
     aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -527,7 +766,7 @@
                     <div class="col-9 mb-3">
                         <label for="inputEmail3" class="col-3 col-form-label">Name service</label>
                         <br>
-                        <select class="form-select mr-sm-2"  (change)="onServiceSelectionChange($event)">
+                        <select class="form-select mr-sm-2" (change)="onServiceSelectionChange($event)">
                             <option *ngFor="let service of services" [value]="service.id">{{ service.name }}</option>
                           </select>
                     </div>
@@ -562,7 +801,7 @@
                     <div class="col-9 mb-3">
                         <label for="inputEmail3" class="col-3 col-form-label">Add Discount</label>
                         <br>
-                        <select class="form-select mr-sm-2"  (change)="onServiceSelectionChange($event)">
+                        <select class="form-select mr-sm-2" (change)="onServiceSelectionChange($event)">
                             <option value="">Discount code</option>
                             <option *ngFor="let service of discount" [value]="service.id">{{ service.name }}</option>
                           </select>

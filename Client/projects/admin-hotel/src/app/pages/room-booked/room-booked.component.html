@@ -1,182 +1,700 @@
-<div class="wrapper">
+<div class="wrapper room-booked-page">
     <app-sidebar></app-sidebar>
-  
     <div class="content-page">
-      <div class="content">
-        <app-header></app-header>
-          <div class="content">
-           
-            <div class="container-fluid">
-                        
-                        <!-- start page title -->
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="page-title-box">
-                                    <div class="page-title-right">
-                                        <ol class="breadcrumb m-0">
-                                            <li class="breadcrumb-item"><a href="javascript: void(0);">Beyond</a></li>
-                                            <li class="breadcrumb-item"><a href="javascript: void(0);">Managements</a></li>
-                                            <li class="breadcrumb-item active">Booking</li>
-                                        </ol>
-                                    </div>
-                                    <h4 class="page-title">Room is booking</h4>
-                                </div>
+        <div class="content content-wrapper">
+            <app-header></app-header>
+            <div class="container-fluid py-4">
+                <!-- start page title -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h4 class="page-title mb-0">Phòng đang được đặt</h4>
+                                <nav aria-label="breadcrumb">
+                                    <ol class="breadcrumb m-0 mt-2">
+                                        <li class="breadcrumb-item"><a href="javascript: void(0);"
+                                                class="text-decoration-none">Trang chủ</a></li>
+                                        <li class="breadcrumb-item"><a href="javascript: void(0);"
+                                                class="text-decoration-none">Quản lý</a></li>
+                                        <li class="breadcrumb-item active">Phòng đang được đặt</li>
+                                    </ol>
+                                </nav>
                             </div>
-                        </div>     
-                        <!-- end page title --> 
-
-                        <!-- end row-->
-                        <div class="card-body">
-                            <div class="row mb-2">
-
-                                <div class="col-xl-8">
-                                    <div class="row gy-2 gx-2 align-items-center justify-content-xl-start justify-content-between">
-                                        <div class="col-auto">
-                                            <label for="inputPassword2" class="visually-hidden">Search</label>
-                                            <input type="search" [(ngModel)]="searchTerm" class="form-control" id="inputPassword2"
-                                                placeholder="Search...">
-
-                                            </div>
-                                            <div class="col-auto">
-                                                <button type="submit" class="btn btn-primary" (click)="searchBookings()">Search</button>
-                                            </div>
-                                            <div class="col-auto">
-                                                <button type="button" class="btn btn-secondary" (click)="clearSearch()">Clear</button>
-                                              </div>
-                                      
-                                    </div>
-                                </div>
-                                
-                            </div>
-                            <!-- end row-->
-                            
-                            <div class="row" >
-                                
-                                <!-- <div class="col-md-6 col-xxl-3" *ngFor="let item of roombooked; let i = index;">
-                                    <div class="card d-block">
-                                        <img class="card-img-top" src="assets/images/projects/project-2.jpg" alt="project image cap">
-                                        <div class="card-img-overlay">
-                                            <div class="badge bg-success p-1">Booking</div>
-                                        </div>
-    
-                                        <div class="card-body position-relative">
-                                            <h4 class="mt-0">
-                                                <a href="apps-projects-details.html" class="text-title">Landing page design - Home</a>
-                                            </h4>
-                                            <p class="mb-3">
-                                                <span class="pe-2 text-nowrap">
-                                                    <i class="mdi mdi-format-list-bulleted-type"></i>
-                                                    <b>11</b> Tasks
-                                                </span>
-                                                <span class="text-nowrap">
-                                                    <i class="mdi mdi-comment-multiple-outline"></i>
-                                                    <b>254</b> Comments
-                                                </span>
-                                            </p>
-                                            <div class="mb-3" id="tooltip-container5">
-                                                <a href="javascript:void(0);" data-bs-container="#tooltip-container5" data-bs-toggle="tooltip" data-bs-placement="top" title="Mat Helme" class="d-inline-block">
-                                                    <img src="assets/images/users/avatar-10.jpg" class="rounded-circle avatar-xs" alt="friend">
-                                                </a>
-                                                
-                                                <a href="javascript:void(0);" class="d-inline-block text-muted fw-bold ms-2">
-                                                    {{item.name}}
-                                                </a>
-                                            </div>
-    
-                                            <p class="mb-2 fw-bold">{{item.endDate | date:'fullDate'}} <span class="float-end">100%</span></p>
-                                            <div class="progress progress-sm">
-                                                <div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
-                                                </div>
-                                            </div>
-                                        </div> 
-                                    </div> 
-                                </div>  -->
-                                
-    
-                                <table id="state-saving-datatable"  class="table activate-select dt-responsive nowrap">
-                                    <thead>
-                                        <tr>
-                                            <th>Customer</th>
-                                            <th>Room Number</th>
-                                            <th>Booking Date</th>
-                                            <th>Check In</th>
-                                            <th>Check Out</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                
-                                    <tbody>
-                                        <tr *ngFor="let item of roombooked; let i = index;"  (click)="toggleSelection(item.id.toString())" >
-                                            <td>{{item.name}}</td>
-                                            <td>{{item.roomNumber}}</td>
-                                            <td>{{item.createdAt | date:'fullDate'}}</td>
-                                            <td>{{item.startDate | date:'fullDate'}}</td>
-                                            <td>{{item.endDate | date:'fullDate'}}</td>
-                                            <td>
-                                                <span data-bs-toggle="modal"
-                                                  (click)="getAllService()"  data-bs-target="#staticBackdrop"
-                                                 class="badge bg-warning"> +Order more service</span>
-                                            </td>
-                                            
-                                        </tr>
-                                    
-                                    </tbody>
-                                </table>
-                                
-                            </div>
-                            <!-- end row-->
-                            
-                        </div> <!-- container -->
-                        
-                        
+                            <button type="button" class="btn btn-primary rounded-pill d-flex align-items-center"
+                                (click)="exportToExcel()">
+                                <i class="mdi mdi-file-excel me-1"></i> Xuất Excel
+                            </button>
+                        </div>
                     </div>
                 </div>
-                <div>
-                    <td class="container-fluid" *ngIf="roombooked.length == 0">
+                <!-- end page title -->
 
-                            <h3 class=" align-items-center">Have none room booking!</h3>
-                       </td>
-                 </div>
-                
+                <!-- Dashboard cards -->
+                <div class="row mb-4 fade-in">
+                    <div class="col-md-3">
+                        <div class="card dashboard-card">
+                            <div class="card-body">
+                                <div class="card-icon bg-primary-lighten text-primary">
+                                    <i class="mdi mdi-hotel mdi-24px"></i>
+                                </div>
+                                <h2 class="card-number">{{getActiveBookingsCount()}}</h2>
+                                <p class="card-label mb-0">Phòng đang được đặt</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card dashboard-card">
+                            <div class="card-body">
+                                <div class="card-icon bg-success-lighten text-success">
+                                    <i class="mdi mdi-account-check mdi-24px"></i>
+                                </div>
+                                <h2 class="card-number">{{getActiveGuestsCount()}}</h2>
+                                <p class="card-label mb-0">Khách đang lưu trú</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card dashboard-card">
+                            <div class="card-body">
+                                <div class="card-icon bg-warning-lighten text-warning">
+                                    <i class="mdi mdi-clock-outline mdi-24px"></i>
+                                </div>
+                                <h2 class="card-number">{{getCheckoutsToday()}}</h2>
+                                <p class="card-label mb-0">Trả phòng hôm nay</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card dashboard-card">
+                            <div class="card-body">
+                                <div class="card-icon bg-info-lighten text-info">
+                                    <i class="mdi mdi-currency-usd mdi-24px"></i>
+                                </div>
+                                <h2 class="card-number">{{getActiveRevenueTotal() | vndCurrency}}</h2>
+                                <p class="card-label mb-0">Doanh thu hiện tại</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-  <!-- Order modal -->
 
-  <div id="staticBackdrop" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-top modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title" id="topModalLabel">Update room type</h4>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
-        </div>
-        <div class="modal-body">
-          <form class="form-horizontal" [formGroup]="serviceForm">
-            <div class="row mb-3">
-                <label for="inputEmail3" class="col-3 col-form-label">Service</label>
-                <div class="col-9">
-                    <select class="form-select mr-sm-2"  (change)="onServiceSelectionChange($event)" >
-                        <option *ngFor="let service of services" [value]="service.id">{{ service.name }}</option>
-                      </select>
+                <!-- Advanced filter section -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="filter-section fade-in">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="m-0">Bộ lọc nâng cao</h5>
+                                <button class="btn btn-sm btn-outline-secondary" (click)="toggleFilterSection()">
+                                    <i class="mdi" [ngClass]="showFilters ? 'mdi-chevron-up' : 'mdi-chevron-down'"></i>
+                                </button>
+                            </div>
+
+                            <div class="row g-3" *ngIf="showFilters">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="form-label">Tìm kiếm</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="mdi mdi-magnify"></i></span>
+                                            <input type="text" [(ngModel)]="searchTerm"
+                                                class="form-control filter-control"
+                                                placeholder="Tìm theo phòng, khách hàng...">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="form-label">Loại phòng</label>
+                                        <select class="form-select filter-control" [(ngModel)]="roomTypeFilter">
+                                            <option value="all">Tất cả loại phòng</option>
+                                            <option *ngFor="let type of roomTypes" [value]="type.id">{{type.name}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="form-label">Từ ngày</label>
+                                        <input type="date" class="form-control filter-control" [(ngModel)]="dateFrom">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="form-label">Đến ngày</label>
+                                        <input type="date" class="form-control filter-control" [(ngModel)]="dateTo">
+                                    </div>
+                                </div>
+                                <div class="col-12 d-flex justify-content-end mt-3">
+                                    <button type="button" class="btn btn-outline-secondary me-2"
+                                        (click)="clearFilters()">
+                                        <i class="mdi mdi-refresh me-1"></i> Đặt lại
+                                    </button>
+                                    <button type="button" class="btn btn-primary" (click)="applyFilters()">
+                                        <i class="mdi mdi-filter me-1"></i> Áp dụng bộ lọc
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- View toggle buttons -->
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="view-toggle">
+                                <button class="btn" [ngClass]="{'active': viewMode === 'card'}"
+                                    (click)="setViewMode('card')">
+                                    <i class="mdi mdi-view-grid-outline me-1"></i> Card
+                                </button>
+                                <button class="btn" [ngClass]="{'active': viewMode === 'table'}"
+                                    (click)="setViewMode('table')">
+                                    <i class="mdi mdi-table me-1"></i> Bảng
+                                </button>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <button type="button" class="btn btn-light btn-sm me-2" (click)="refreshData()">
+                                    <i class="mdi mdi-refresh me-1"></i> Làm mới
+                                </button>
+                                <div class="dropdown">
+                                    <button class="btn btn-light btn-sm dropdown-toggle" type="button" id="sortDropdown"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="mdi mdi-sort me-1"></i> Sắp xếp
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="sortDropdown">
+                                        <li><a class="dropdown-item" href="javascript:void(0);"
+                                                (click)="sortBy('checkinEarliest')">Nhận phòng sớm nhất</a></li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);"
+                                                (click)="sortBy('checkinLatest')">Nhận phòng muộn nhất</a></li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);"
+                                                (click)="sortBy('checkoutEarliest')">Trả phòng sớm nhất</a></li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);"
+                                                (click)="sortBy('checkoutLatest')">Trả phòng muộn nhất</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card View Mode -->
+                <div class="row" *ngIf="viewMode === 'card' && filteredRooms && filteredRooms.length > 0">
+                    <div class="col-md-4 col-xl-3 mb-4" *ngFor="let item of filteredRooms">
+                        <div class="room-booked-card">
+                            <div class="card h-100">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <span class="room-number">Phòng {{item.roomNumber}}</span>
+                                    <span class="status-badge status-active">
+                                        <i class="mdi mdi-hotel"></i>
+                                        Đang sử dụng
+                                    </span>
+                                </div>
+                                <div class="card-body room-booked-details">
+                                    <div class="mb-3">
+                                        <h5 class="mb-1">{{item.name}}</h5>
+                                        <div class="room-booked-user">
+                                            <i class="mdi mdi-account text-muted me-1"></i> {{item.customerName}}
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between mb-3">
+                                        <div>
+                                            <small class="text-muted d-block">Nhận phòng</small>
+                                            <div class="room-booked-dates">
+                                                <i class="mdi mdi-calendar-start text-success me-1"></i>
+                                                {{item.startDate | date : "dd/MM/yyyy"}}
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <small class="text-muted d-block">Trả phòng</small>
+                                            <div class="room-booked-dates">
+                                                <i class="mdi mdi-calendar-end text-danger me-1"></i>
+                                                {{item.endDate | date : "dd/MM/yyyy"}}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <div class="room-booked-days">
+                                            <i class="mdi mdi-calendar-clock me-1"></i>
+                                            {{getRemainingDays(item.endDate)}} ngày còn lại
+                                        </div>
+                                        <div class="room-booked-price">
+                                            {{item.price | vndCurrency}}
+                                        </div>
+                                    </div>
+
+                                    <div class="progress mt-2 mb-0" style="height: 5px;">
+                                        <div class="progress-bar bg-success" role="progressbar"
+                                            [style.width]="getStayProgress(item.startDate, item.endDate) + '%'"
+                                            aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                    <small class="text-muted d-block text-end mt-1">{{getStayProgress(item.startDate,
+                                        item.endDate)}}% thời gian lưu trú</small>
+                                </div>
+                                <div class="card-footer">
+                                    <button type="button" class="btn btn-sm btn-primary w-100" data-bs-toggle="modal"
+                                        data-bs-target="#room-detail-modal" (click)="viewRoomDetails(item.id)">
+                                        <i class="mdi mdi-eye me-1"></i> Xem chi tiết
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Empty state when no data -->
+                <div class="row" *ngIf="filteredRooms && filteredRooms.length === 0">
+                    <div class="col-12">
+                        <div class="text-center py-5">
+                            <i class="mdi mdi-hotel text-muted" style="font-size: 4rem;"></i>
+                            <h5 class="mt-3">Không tìm thấy phòng đang được đặt</h5>
+                            <p class="text-muted">Hiện tại không có phòng nào đang được đặt hoặc không có phòng nào phù
+                                hợp với các tiêu chí tìm kiếm.</p>
+                            <button class="btn btn-primary" (click)="clearFilters()">Đặt lại bộ lọc</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Table View Mode -->
+                <div class="row" *ngIf="viewMode === 'table'">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table id="room-booked-table" class="table table-centered table-hover">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Phòng</th>
+                                                <th>Loại phòng</th>
+                                                <th>Khách hàng</th>
+                                                <th>Nhận phòng</th>
+                                                <th>Trả phòng</th>
+                                                <th>Số ngày còn lại</th>
+                                                <th>Giá phòng</th>
+                                                <th>Tiến trình</th>
+                                                <th style="width: 100px;">Thao tác</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let item of filteredRooms">
+                                                <td>
+                                                    <span class="text-body fw-bold">{{item.roomNumber}}</span>
+                                                </td>
+                                                <td>
+                                                    {{item.name}}
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="avatar avatar-sm me-2 bg-light rounded-circle">
+                                                            <span
+                                                                class="avatar-text">{{item.customerName.charAt(0)}}</span>
+                                                        </div>
+                                                        <div>{{item.customerName}}</div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <span class="badge badge-success-lighten">
+                                                        {{item.startDate | date : "dd/MM/yyyy"}}<br>
+                                                        {{item.startDate | date : "HH:mm:ss"}}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span class="badge badge-danger-lighten">
+                                                        {{item.endDate | date : "dd/MM/yyyy"}}<br>
+                                                        {{item.endDate | date : "HH:mm:ss"}}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    {{getRemainingDays(item.endDate)}} ngày
+                                                </td>
+                                                <td>
+                                                    <span class="fw-bold">{{item.price | vndCurrency}}</span>
+                                                </td>
+                                                <td>
+                                                    <div class="progress" style="height: 6px; width: 120px">
+                                                        <div class="progress-bar bg-success" role="progressbar"
+                                                            [style.width]="getStayProgress(item.startDate, item.endDate) + '%'"
+                                                            aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                                                        </div>
+                                                    </div>
+                                                    <span class="text-muted small">{{getStayProgress(item.startDate,
+                                                        item.endDate)}}%</span>
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex">
+                                                        <button type="button" class="btn btn-sm btn-light me-1"
+                                                            data-bs-toggle="modal" data-bs-target="#room-detail-modal"
+                                                            (click)="viewRoomDetails(item.id)">
+                                                            <i class="mdi mdi-eye"></i>
+                                                        </button>
+                                                        <div class="dropdown">
+                                                            <button class="btn btn-sm btn-light" type="button"
+                                                                data-bs-toggle="dropdown">
+                                                                <i class="mdi mdi-dots-vertical"></i>
+                                                            </button>
+                                                            <ul class="dropdown-menu dropdown-menu-end">
+                                                                <li><a class="dropdown-item" href="javascript:void(0);"
+                                                                        (click)="viewServiceUsage(item.id)">
+                                                                        <i class="mdi mdi-room-service me-1"></i> Dịch
+                                                                        vụ đã sử dụng
+                                                                    </a></li>
+                                                                <li><a class="dropdown-item" href="javascript:void(0);"
+                                                                        (click)="extendStay(item.id)">
+                                                                        <i class="mdi mdi-calendar-plus me-1"></i> Gia
+                                                                        hạn lưu trú
+                                                                    </a></li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <!-- Pagination -->
+                                <div class="custom-pagination mt-4">
+                                    <nav>
+                                        <ul class="pagination">
+                                            <li class="page-item" [ngClass]="{'disabled': currentPage === 1}">
+                                                <a class="page-link" href="javascript:void(0);"
+                                                    (click)="goToPage(currentPage - 1)">
+                                                    <i class="mdi mdi-chevron-left"></i>
+                                                </a>
+                                            </li>
+                                            <li class="page-item" *ngFor="let page of getPageNumbers()"
+                                                [ngClass]="{'active': page === currentPage}">
+                                                <a class="page-link" href="javascript:void(0);"
+                                                    (click)="goToPage(page)">{{page}}</a>
+                                            </li>
+                                            <li class="page-item" [ngClass]="{'disabled': currentPage === totalPages}">
+                                                <a class="page-link" href="javascript:void(0);"
+                                                    (click)="goToPage(currentPage + 1)">
+                                                    <i class="mdi mdi-chevron-right"></i>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </nav>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="row mb-3">
-                <label for="inputEmail3" class="col-3 col-form-label">Amount</label>
-                <div class="col-9">
-                    <input type="number" formControlName="amount" class="form-control" min="1" id="inputEmail3" placeholder="Amount Service">
-                </div>
-            </div>
-           
-  
-            <div class="col-9">
-          </div>
-          
-          <div class="justify-content-end row">
-          </div>
-      </form>
-  </div>
-  <div class="modal-footer">
-      <button type="submit" (click)="order(serviceForm)" class="btn btn-info">Order Now </button>
-          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
         </div>
-      </div>
     </div>
-  </div>
+</div>
+
+<!-- Room Detail Modal -->
+<div id="room-detail-modal" class="modal fade custom-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Chi tiết phòng đang được đặt</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+            </div>
+            <div class="modal-body" *ngIf="selectedRoom">
+                <!-- Room information -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="detail-section">
+                            <div class="d-flex justify-content-between mb-3">
+                                <h5 class="mb-0">Thông tin phòng</h5>
+                                <span class="badge status-active">
+                                    <i class="mdi mdi-hotel me-1"></i> Đang sử dụng
+                                </span>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <span class="detail-label d-block">Phòng số</span>
+                                        <span class="detail-value">{{selectedRoom.roomNumber}}</span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <span class="detail-label d-block">Loại phòng</span>
+                                        <span class="detail-value">{{selectedRoom.name}}</span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <span class="detail-label d-block">Giá phòng</span>
+                                        <span class="detail-value">{{selectedRoom.price | vndCurrency}} / ngày</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <span class="detail-label d-block">Ngày nhận phòng</span>
+                                        <span class="detail-value">{{selectedRoom.startDate | date:'dd/MM/yyyy -
+                                            HH:mm'}}</span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <span class="detail-label d-block">Ngày trả phòng</span>
+                                        <span class="detail-value">{{selectedRoom.endDate | date:'dd/MM/yyyy -
+                                            HH:mm'}}</span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <span class="detail-label d-block">Thời gian lưu trú còn lại</span>
+                                        <span class="detail-value">{{getRemainingDays(selectedRoom.endDate)}}
+                                            ngày</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-12">
+                                    <span class="detail-label d-block">Tiến trình lưu trú</span>
+                                    <div class="progress mt-2" style="height: 6px;">
+                                        <div class="progress-bar bg-success" role="progressbar"
+                                            [style.width]="getStayProgress(selectedRoom.startDate, selectedRoom.endDate) + '%'"
+                                            aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                    <small
+                                        class="text-muted d-block text-end mt-1">{{getStayProgress(selectedRoom.startDate,
+                                        selectedRoom.endDate)}}% thời gian lưu trú</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Guest information and services -->
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="detail-section h-100">
+                            <h5 class="mb-3">Thông tin khách hàng</h5>
+                            <div class="d-flex align-items-center mb-4">
+                                <div class="avatar bg-primary-lighten me-3">
+                                    <span
+                                        class="avatar-text text-primary">{{selectedRoom.customerName.charAt(0)}}</span>
+                                </div>
+                                <div>
+                                    <h5 class="mb-0">{{selectedRoom.customerName}}</h5>
+                                    <span class="text-muted small">{{selectedRoom.email}}</span>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <span class="detail-label d-block">Số điện thoại</span>
+                                <span class="detail-value">{{selectedRoom.phoneNumber}}</span>
+                            </div>
+                            <div class="mb-3">
+                                <span class="detail-label d-block">Địa chỉ</span>
+                                <span class="detail-value">{{selectedRoom.address}}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="detail-section h-100">
+                            <h5 class="mb-3">Dịch vụ đã sử dụng</h5>
+                            <div *ngIf="selectedRoom.services && selectedRoom.services.length > 0">
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-borderless mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>Dịch vụ</th>
+                                                <th>Số lượng</th>
+                                                <th class="text-end">Giá</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let service of selectedRoom.services">
+                                                <td>{{service.name}}</td>
+                                                <td>{{service.quantity}}</td>
+                                                <td class="text-end">{{service.price | vndCurrency}}</td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td colspan="2" class="fw-bold">Tổng</td>
+                                                <td class="text-end fw-bold">{{getServiceTotal() | vndCurrency}}</td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                            <div *ngIf="!selectedRoom.services || selectedRoom.services.length === 0"
+                                class="text-center py-4">
+                                <i class="mdi mdi-food-off text-muted" style="font-size: 2rem;"></i>
+                                <p class="mb-0 mt-2">Chưa sử dụng dịch vụ nào</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment information -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="detail-section">
+                            <h5 class="mb-3">Thông tin thanh toán</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <span class="detail-label d-block">Tiền phòng</span>
+                                        <span class="detail-value">{{selectedRoom.price *
+                                            getRemainingDays(selectedRoom.endDate) | vndCurrency}}</span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <span class="detail-label d-block">Dịch vụ</span>
+                                        <span class="detail-value">{{getServiceTotal() | vndCurrency}}</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <span class="detail-label d-block">Tiền cọc</span>
+                                        <span class="detail-value">{{selectedRoom.deposit | vndCurrency}}</span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <span class="detail-label d-block">Phương thức thanh toán</span>
+                                        <span class="detail-value">{{selectedRoom.paymentMethod || 'Chưa có thông
+                                            tin'}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-0">
+                                        <span class="detail-label d-block">Tổng dự kiến</span>
+                                        <span class="detail-value text-primary fs-5">{{(selectedRoom.price *
+                                            getRemainingDays(selectedRoom.endDate) + getServiceTotal()) |
+                                            vndCurrency}}</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-0">
+                                        <span class="detail-label d-block">Cần thanh toán thêm</span>
+                                        <span class="detail-value text-danger fs-5">{{(selectedRoom.price *
+                                            getRemainingDays(selectedRoom.endDate) + getServiceTotal() -
+                                            selectedRoom.deposit) | vndCurrency}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="d-flex justify-content-between w-100">
+                    <button type="button" class="btn btn-primary" (click)="addService(selectedRoom?.id)"
+                        *ngIf="selectedRoom">
+                        <i class="mdi mdi-room-service me-1"></i> Thêm dịch vụ
+                    </button>
+                    <div>
+                        <button type="button" class="btn btn-warning me-2" (click)="extendStay(selectedRoom?.id)"
+                            *ngIf="selectedRoom">
+                            <i class="mdi mdi-calendar-plus me-1"></i> Gia hạn lưu trú
+                        </button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Service Modal -->
+<div id="service-modal" class="modal fade custom-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Thêm dịch vụ</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="serviceForm">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="form-label">Dịch vụ</label>
+                                <select class="form-select" formControlName="serviceId">
+                                    <option value="">Chọn dịch vụ</option>
+                                    <option *ngFor="let service of availableServices" [value]="service.id">
+                                        {{service.name}} ({{service.price | vndCurrency}})
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="form-label">Số lượng</label>
+                                <input type="number" class="form-control" formControlName="quantity" min="1">
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="form-label">Ghi chú</label>
+                                <textarea class="form-control" formControlName="notes" rows="3"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-primary" (click)="submitService()">Thêm dịch vụ</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Extend Stay Modal -->
+<div id="extend-modal" class="modal fade custom-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Gia hạn lưu trú</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+            </div>
+            <div class="modal-body" *ngIf="selectedRoom">
+                <form [formGroup]="extendForm">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="form-label">Phòng</label>
+                                <input type="text" class="form-control"
+                                    [value]="selectedRoom?.roomNumber + ' - ' + selectedRoom?.name" readonly>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="form-label">Ngày trả phòng hiện tại</label>
+                                <input type="text" class="form-control"
+                                    [value]="selectedRoom?.endDate | date:'dd/MM/yyyy - HH:mm'" readonly>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="form-label">Thêm số ngày</label>
+                                <input type="number" class="form-control" formControlName="additionalDays" min="1">
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="form-label">Ngày trả phòng mới</label>
+                                <input type="text" class="form-control"
+                                    [value]="getExtendedDate() | date:'dd/MM/yyyy - HH:mm'" readonly>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="form-label">Phí bổ sung</label>
+                                <input type="text" class="form-control" [value]="getAdditionalFee() | vndCurrency"
+                                    readonly>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-primary" (click)="submitExtendStay()">Xác nhận gia hạn</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Spinner -->
+<div class="loading-overlay" *ngIf="isLoading">
+    <div class="spinner-container">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Đang tải...</span>
+        </div>
+        <p class="mt-2">Đang xử lý...</p>
+    </div>
+</div>

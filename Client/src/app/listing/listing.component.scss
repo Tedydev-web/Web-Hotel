@@ -2,42 +2,1233 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 20px;
+  margin-top: 30px;
+
+  ul.pagination {
+    display: inline-flex;
+    padding-left: 0;
+    margin: 0;
+    border-radius: 4px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  ul.pagination li {
+    display: inline-block;
+    margin-right: 6px;
+    font-size: 14px;
+  }
+
+  ul.pagination li.active a {
+    background: linear-gradient(45deg, #ff6b6b, #ff8e53);
+    color: #fff;
+    border-color: #ff6b6b;
+  }
+
+  ul.pagination li a {
+    color: #333;
+    background-color: #fff;
+    border: 1px solid #eee;
+    padding: 8px 15px;
+    line-height: 1.5;
+    border-radius: 30px;
+    transition: all 0.2s ease-in-out;
+  }
+
+  ul.pagination li a:hover {
+    background: linear-gradient(45deg, #ff6b6b, #ff8e53);
+    color: #fff;
+    border-color: #ff6b6b;
+    text-decoration: none;
+  }
+  
+  // ngx-pagination custom styling
+  .ngx-pagination {
+    padding: 0;
+    margin: 0;
+    
+    .current {
+      background: linear-gradient(45deg, #ff6b6b, #ff8e53) !important;
+      border-radius: 30px;
+    }
+    
+    a, .current {
+      padding: 8px 15px;
+      margin: 0 3px;
+      border-radius: 30px;
+    }
+    
+    a:hover {
+      background: rgba(255, 107, 107, 0.1);
+      color: #ff6b6b;
+    }
+  }
 }
 
-.pagination-wrapper ul.pagination {
-  display: inline-flex;
-  padding-left: 0;
-  margin: 0;
-  border-radius: 4px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+// Main styling for listing page
+.hotel-list-area {
+  background-color: #f9f9f9;
 }
 
-.pagination-wrapper ul.pagination li {
-  display: inline-block;
-  margin-right: 6px;
-  font-size: 14px;
+// Enhanced banner styling - sử dụng style tương tự search-panel từ homepage
+.banner-location {
+  background: #ffffff;
+  border-radius: 16px !important;
+  padding: 32px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  max-width: 1200px;
+  margin: -80px auto 40px;
+  position: relative;
+  z-index: 100;
+
+  .banner-location-flex {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .banner-location-single {
+    flex: 1;
+    width: 20%;
+    position: relative;
+    
+    .banner-location-single-flex {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .banner-location-single-contents {
+      margin: 0;
+
+      &-subtitle {
+        font-size: 14px;
+        font-weight: 500;
+        color: #2c3345;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 8px;
+
+        i {
+          font-size: 18px;
+          color: #2b3cf7;
+        }
+      }
+
+      .mat-form-field {
+        width: 100%;
+        
+        ::ng-deep .mat-form-field-wrapper {
+          margin-bottom: -1.25em;
+        }
+
+        ::ng-deep .mat-form-field-flex {
+          background: #ffffff;
+          border-radius: 8px;
+          border: 1px solid #e0e0e0;
+          padding: 0 12px !important;
+          height: 54px;
+          display: flex;
+          align-items: center;
+        }
+
+        ::ng-deep .mat-form-field-underline {
+          display: none;
+        }
+
+        ::ng-deep .mat-form-field-infix {
+          padding: 0;
+          border-top: 0;
+        }
+
+        ::ng-deep .mat-select-value,
+        ::ng-deep .mat-select-placeholder {
+          color: #2c3345;
+          font-size: 15px;
+        }
+
+        ::ng-deep .mat-form-field-outline {
+          display: none;
+        }
+      }
+    }
+  }
+
+  .search-button-wrapper {
+    height: 54px;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    
+    .search-click-icon {
+      width: 100%;
+      height: 100%;
+      border: none;
+      border-radius: 8px;
+      background: #2b3cf7;
+      color: white;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+
+      &:hover {
+        background: #1a2ce0;
+      }
+    }
+  }
 }
 
-.pagination-wrapper ul.pagination li.active a {
-  background-color: #007bff;
-  color: #fff;
-  border-color: #007bff;
+// Search panel styling - chuyên nghiệp và hiện đại
+.search-panel {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  margin: -80px auto 40px;
+  position: relative;
+  z-index: 100;
+
+  &-flex {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+
+  &-item {
+    flex: 1;
+    position: relative;
+
+    &-flex {
+      display: flex;
+      flex-direction: column;
+    }
+
+    &-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: #1A73E8;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      i {
+        color: #1A73E8;
+        font-size: 16px;
+      }
+    }
+
+    &-input {
+      position: relative;
+
+      input {
+        width: 100%;
+        height: 48px;
+        border: 1px solid #e6e8f0;
+        border-radius: 8px;
+        padding: 0 15px;
+        font-size: 14px;
+        color: #333;
+        background-color: #fff;
+        transition: all 0.3s;
+        outline: none;
+        box-sizing: border-box;
+
+        &:focus {
+          border-color: #1A73E8;
+          box-shadow: 0 0 0 4px rgba(26, 115, 232, 0.1);
+        }
+
+        &::placeholder {
+          color: #9aa0ac;
+        }
+      }
+
+      ::ng-deep .mat-datepicker-toggle {
+        position: absolute;
+        right: 5px;
+        top: 5px;
+
+        .mat-icon-button {
+          color: #1A73E8;
+          width: 36px;
+          height: 36px;
+          line-height: 36px;
+        }
+      }
+
+      .select-wrapper {
+        position: relative;
+
+        .custom-select {
+          width: 100%;
+          height: 48px;
+          border: 1px solid #e6e8f0;
+          border-radius: 8px;
+          padding: 0 15px;
+          font-size: 14px;
+          color: #333;
+          background: #fff;
+          appearance: none;
+          -webkit-appearance: none;
+          cursor: pointer;
+          transition: all 0.3s;
+          outline: none;
+
+          &:focus {
+            border-color: #1A73E8;
+            box-shadow: 0 0 0 4px rgba(26, 115, 232, 0.1);
+          }
+
+          option {
+            padding: 10px;
+          }
+
+          &:invalid {
+            color: #9aa0ac;
+          }
+        }
+
+        .select-arrow {
+          position: absolute;
+          right: 15px;
+          top: 50%;
+          transform: translateY(-50%);
+          pointer-events: none;
+          color: #1A73E8;
+        }
+      }
+    }
+  }
+
+  .search-button-container {
+    align-self: flex-end; 
+    max-width: 150px;
+
+    .search-btn {
+      width: 100%;
+      height: 48px;
+      background: #1A73E8;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 10px rgba(26, 115, 232, 0.3);
+
+      i {
+        font-size: 18px;
+      }
+
+      &:hover {
+        background: #0d5bbc;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(26, 115, 232, 0.4);
+      }
+
+      &:active {
+        transform: translateY(0);
+      }
+    }
+  }
 }
 
-.pagination-wrapper ul.pagination li a {
-  color: #007bff;
-  background-color: #fff;
-  border: 1px solid #dee2e6;
-  padding: 6px 12px;
-  line-height: 1.5;
-  border-radius: 4px;
-  transition: all 0.2s ease-in-out;
+// Responsive Adjustments for banner-location
+@media (max-width: 1200px) {
+  .banner-location {
+    margin: -60px 20px 40px;
+    padding: 24px;
+  }
 }
 
-.pagination-wrapper ul.pagination li a:hover {
-  background-color: #007bff;
-  color: #fff;
-  border-color: #007bff;
+@media (max-width: 991px) {
+  .banner-location {
+    margin: -40px 20px 40px;
+    padding: 24px;
+    
+    .banner-location-flex {
+      flex-direction: column;
+      gap: 24px;
+    }
+    
+    .banner-location-single {
+      width: 100%;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .banner-location {
+    margin: -40px 15px 30px;
+    padding: 20px;
+    border-radius: 20px !important;
+  }
+
+  .banner-location-flex {
+    gap: 16px;
+  }
+
+  .banner-location-single-contents-subtitle {
+    font-size: 13px;
+  }
+
+  .search-click-icon {
+    height: 50px;
+    font-size: 15px;
+  }
+}
+
+// Responsive Adjustments for search panel
+@media (max-width: 991px) {
+  .search-panel {
+    margin: -40px 20px 30px;
+    padding: 25px 20px;
+    
+    &-flex {
+      flex-direction: column;
+      gap: 20px;
+    }
+    
+    &-item {
+      width: 100%;
+    }
+    
+    .search-button-container {
+      max-width: 100%;
+    }
+  }
+}
+
+// Enhanced room card styling
+.hotel-view {
+  border-radius: 15px !important;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  margin-bottom: 25px;
+  border: 1px solid #eeeeee;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+
+    .hotel-view-thumb img {
+      transform: scale(1.05);
+    }
+  }
+
+  .hotel-view-flex {
+    display: flex;
+    flex-direction: column;
+
+    @media (min-width: 768px) {
+      flex-direction: row;
+    }
+  }
+
+  .hotel-view-thumb {
+    flex: 0 0 40%;
+    position: relative;
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+  }
+
+  .hotel-view-contents {
+    flex: 1;
+    padding: 20px;
+
+    &-header {
+      margin-bottom: 15px;
+    }
+
+    &-title {
+      font-size: 22px;
+      margin: 10px 0;
+      font-weight: 700;
+      
+      a {
+        color: #333;
+        transition: color 0.3s ease;
+        text-decoration: none;
+        
+        &:hover {
+          color: #ff6b6b;
+        }
+      }
+    }
+
+    &-review {
+      background-color: #fff9f1;
+      color: #ffb100;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    &-middle {
+      margin: 15px 0;
+    }
+
+    &-bottom {
+      border-top: 1px solid #eee;
+      padding-top: 15px;
+      
+      &-title {
+        font-size: 22px;
+        color: #ff6b6b;
+        font-weight: 700;
+        
+        span {
+          font-size: 15px;
+          color: #777;
+          font-weight: 400;
+        }
+      }
+    }
+  }
+}
+
+// Enhanced filter sidebar
+.shop-sidebar-content {
+  padding: 20px;
+  
+  .single-shop-left {
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    padding: 20px;
+    margin-bottom: 20px;
+    
+    .title {
+      font-size: 18px;
+      margin-bottom: 15px;
+      font-weight: 600;
+      position: relative;
+      padding-bottom: 10px;
+      
+      &:after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 50px;
+        height: 3px;
+        background: linear-gradient(45deg, #ff6b6b, #ff8e53);
+        border-radius: 2px;
+      }
+    }
+    
+    .active-list {
+      li {
+        margin-bottom: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        
+        &.active, &:hover {
+          color: #ff6b6b;
+        }
+      }
+    }
+  }
+}
+
+// Button styling
+.cmn-btn {
+  padding: 10px 25px;
+  border-radius: 30px;
   text-decoration: none;
+  display: inline-block;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  
+  &.btn-bg-1 {
+    background: linear-gradient(135deg, #4a6cf7 0%, #2b3cf7 100%);
+    color: white;
+    border: none;
+    
+    &:hover {
+      box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+      transform: translateY(-2px);
+    }
+    
+    &.btn-small {
+      padding: 6px 15px;
+      font-size: 14px;
+    }
+  }
+}
+
+// Breadcrumb area
+.breadcrumb-area {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/assets/img/breadcrumb.webp');
+  background-position: center;
+  background-size: cover;
+  padding: 80px 0;
+  position: relative;
+  
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    // background: rgba(0, 0, 0, 0.4);
+  }
+  
+  .breadcrumb-contents {
+    position: relative;
+    z-index: 1;
+    text-align: left;
+    background: linear-gradient(135deg, #4a6cf7 0%, #2b3cf7 100%);
+    
+    &-title {
+      color: white;
+      font-size: 24px;
+      line-height: 32px;
+      // margin-bottom: 10px;
+      font-weight: 700;
+    }
+    
+    &-list {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      
+      &-item {
+        color: #fff;
+        font-size: 16px;
+        
+        &-link {
+          color: #fff;
+          opacity: 0.8;
+          text-decoration: none;
+          transition: all 0.3s ease;
+          
+          &:hover {
+            opacity: 1;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 991px) {
+  .banner-location-flex {
+    flex-direction: column;
+    
+    .banner-location-single {
+      width: 100%;
+      margin-bottom: 10px;
+    }
+  }
+}
+
+@media (max-width: 767px) {
+  .hotel-view {
+    .hotel-view-flex {
+      flex-direction: column;
+    }
+    
+    .hotel-view-thumb {
+      height: 200px;
+    }
+  }
+}
+
+// Thiết kế hiện đại cho các filter card
+.filter-card {
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
+  overflow: hidden;
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+  }
+  
+  &-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 20px;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+    
+    &:hover {
+      background-color: rgba(26, 115, 232, 0.03);
+    }
+  }
+  
+  &-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    
+    i {
+      color: #1A73E8;
+      font-size: 18px;
+    }
+    
+    h5 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 600;
+      color: #333;
+    }
+  }
+  
+  &-toggle {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #1A73E8;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      background-color: rgba(26, 115, 232, 0.1);
+    }
+    
+    i {
+      font-size: 16px;
+      transition: all 0.2s;
+    }
+    
+    &.active i {
+      transform: rotate(180deg);
+    }
+  }
+  
+  &-body {
+    padding: 20px;
+  }
+}
+
+// Bộ lọc giá - cập nhật theo ảnh mẫu
+.price-filter-content {
+  .popular-price-ranges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+    
+    .price-tag {
+      padding: 8px 16px;
+      background-color: #f5f7fa;
+      border-radius: 30px;
+      border: 1px solid #e6e8f0;
+      font-size: 13px;
+      color: #333;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-weight: 500;
+      outline: none;
+      
+      &:hover {
+        background-color: rgba(26, 115, 232, 0.1);
+        border-color: #1A73E8;
+        color: #1A73E8;
+      }
+      
+      &.active {
+        background-color: #1A73E8;
+        color: white;
+        border-color: #1A73E8;
+      }
+    }
+  }
+  
+  .price-range-slider-container {
+    padding: 10px 5px;
+    
+    .price-slider {
+      height: 4px;
+      background-color: #e6e8f0;
+      border-radius: 6px;
+      position: relative;
+      margin: 0 10px;
+      margin-top: 20px;
+      
+      &-track {
+        position: absolute;
+        height: 100%;
+        background-color: #1A73E8;
+        border-radius: 6px;
+        left: 0%;
+        right: 0%;
+        pointer-events: none;
+      }
+      
+      &-handle {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background-color: white;
+        border: 2px solid #1A73E8;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+        transition: box-shadow 0.2s ease;
+        z-index: 3;
+        
+        &:hover {
+          box-shadow: 0 0 0 5px rgba(26, 115, 232, 0.15);
+        }
+        
+        &:active {
+          box-shadow: 0 0 0 8px rgba(26, 115, 232, 0.2);
+          cursor: grabbing;
+        }
+        
+        &.price-slider-min {
+          left: 0%;
+        }
+        
+        &.price-slider-max {
+          left: 100%;
+        }
+      }
+    }
+    
+    // Cập nhật hiển thị giá theo ảnh mẫu
+    .price-inputs-container {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+      
+      .price-input-box {
+        background-color: #f5f7fa;
+        border-radius: 8px;
+        border: 1px solid #e6e8f0;
+        padding: 10px 15px;
+        min-width: 120px;
+        
+        .price-input-label {
+          font-size: 12px;
+          color: #666;
+          margin-bottom: 4px;
+        }
+        
+        .price-input-value {
+          font-size: 14px;
+          font-weight: 600;
+          color: #1A73E8;
+        }
+        
+        .price-input-currency {
+          font-size: 12px;
+          color: #666;
+          margin-top: 2px;
+        }
+      }
+    }
+    
+    .price-apply-btn-container {
+      text-align: center;
+      margin-top: 15px;
+      
+      .apply-price-filter {
+        width: 100%;
+        padding: 10px 20px;
+        border-radius: 8px;
+        background-color: #1A73E8;
+        color: white;
+        border: none;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        
+        i {
+          font-size: 16px;
+        }
+        
+        &:hover {
+          background-color: #0d5bbc;
+          transform: translateY(-2px);
+          box-shadow: 0 4px 8px rgba(26, 115, 232, 0.3);
+        }
+        
+        &:active {
+          transform: translateY(0);
+          background-color: #0b4a95;
+        }
+      }
+    }
+  }
+}
+
+// Bộ lọc đánh giá cập nhật theo ảnh mẫu
+.rating-filter-content {
+  .rating-filter-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    
+    .rating-item {
+      margin-bottom: 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      
+      &:hover {
+        background-color: rgba(26, 115, 232, 0.05);
+      }
+      
+      &.active {
+        .rating-text {
+          color: #1A73E8;
+          font-weight: 600;
+        }
+        
+        .rating-stars i {
+          color: #ffc107;
+        }
+      }
+      
+      .rating-text-stars {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 6px;
+        
+        .rating-stars {
+          display: flex;
+          gap: 2px;
+          margin-bottom: 4px;
+          
+          i {
+            color: #ffc107;
+            font-size: 15px;
+          }
+        }
+        
+        .rating-text {
+          font-size: 14px;
+          font-weight: 500;
+        }
+      }
+      
+      .rating-bar {
+        height: 4px;
+        background-color: #eee;
+        border-radius: 2px;
+        overflow: hidden;
+        margin-top: 6px;
+        
+        &-fill {
+          height: 100%;
+          background: #ffc107;
+          border-radius: 2px;
+        }
+      }
+    }
+  }
+}
+
+// Bộ lọc tiện nghi cập nhật theo ảnh mẫu
+.amenities-filter-content {
+  position: relative;
+  padding-bottom: 75px;
+  
+  .amenities-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    
+    .amenity-item {
+      position: relative;
+      
+      &.active .amenity-label {
+        background-color: #1A73E8;
+        border-color: #1A73E8;
+        color: white;
+      }
+      
+      .amenity-checkbox {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+        
+        &:checked + .amenity-label {
+          background-color: #EBF2FD;
+          border-color: #1A73E8;
+          color: #1A73E8;
+        }
+        
+        &:focus + .amenity-label {
+          box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
+        }
+      }
+      
+      .amenity-label {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 40px;
+        padding: 0 12px;
+        background-color: #F8F9FA;
+        border: 1px solid #E6E8F0;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-size: 14px;
+        text-align: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        
+        &:hover {
+          background-color: #EBF2FD;
+          border-color: #C8D6E8;
+        }
+        
+        .amenity-text {
+          display: block;
+          width: 100%;
+          text-align: center;
+        }
+      }
+    }
+  }
+  
+  .amenity-apply-btn {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    z-index: 5;
+    
+    .apply-amenity-filter {
+      width: 60px;
+      height: 60px;
+      border-radius: 5px;
+      background-color: #1A73E8;
+      color: white;
+      border: none;
+      font-weight: 600;
+      font-size: 12px;
+      line-height: 1.2;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 8px rgba(66, 134, 245, 0.3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      
+      i {
+        font-size: 16px;
+        margin-bottom: 2px;
+      }
+      
+      &:hover {
+        background-color: #0d5bbc;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(26, 115, 232, 0.4);
+      }
+      
+      &:active {
+        transform: translateY(0);
+      }
+    }
+  }
+}
+
+// Nút xóa bộ lọc - cập nhật
+.filter-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+  
+  .clear-filter-btn {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    background-color: #f5f5f5;
+    color: #333;
+    border: 1px solid #ddd;
+    font-weight: 500;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    
+    i {
+      font-size: 16px;
+      transition: transform 0.5s ease;
+    }
+    
+    &:hover {
+      background-color: #eee;
+      color: #1A73E8;
+      
+      i {
+        transform: rotate(180deg);
+        color: #1A73E8;
+      }
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 991px) {
+  .filter-card {
+    margin-bottom: 15px;
+  }
+  
+  .popular-price-ranges {
+    .price-tag {
+      padding: 6px 12px;
+      font-size: 12px;
+    }
+  }
+  
+  .amenities-filter-content {
+    .amenities-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+}
+
+@media (max-width: 767px) {
+  .amenities-filter-content {
+    .amenities-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  .price-inputs-container {
+    .price-input-box {
+      padding: 8px 12px;
+      min-width: 100px;
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  .popular-price-ranges {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .filter-card-body {
+    padding: 15px;
+  }
+}
+
+// Cập nhật hiển thị tiện nghi trong card phòng
+.hotel-view-amenities-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+  
+  .hotel-view-amenity {
+    background-color: #f5f7fa;
+    border-radius: 20px;
+    padding: 4px 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #555;
+    transition: all 0.2s;
+    
+    &:hover {
+      background-color: #EBF2FD;
+      color: #1A73E8;
+    }
+    
+    .service-icon {
+      font-size: 14px;
+      color: #1A73E8;
+    }
+    
+    .service-name {
+      font-weight: 500;
+    }
+    
+    &.more-amenities {
+      background-color: #EBF2FD;
+      color: #1A73E8;
+      cursor: pointer;
+      
+      &:hover {
+        background-color: #D4E4FC;
+      }
+    }
+  }
+}
+
+// Hiệu ứng loading cho grid-contents
+.shop-grid-contents {
+  position: relative;
+  transition: opacity 0.3s;
+  
+  &.loading {
+    opacity: 0.6;
+    pointer-events: none;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 3px solid rgba(26, 115, 232, 0.3);
+      border-top-color: #1A73E8;
+      animation: spin 1s linear infinite;
+      z-index: 10;
+    }
+  }
+}
+
+// Hiệu ứng quay
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }

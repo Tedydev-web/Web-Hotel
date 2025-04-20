@@ -3,6 +3,7 @@ import { ViewChild } from "@angular/core";
 import { Chart } from 'angular-highcharts';
 import { ApiService } from '../../_service/api.service';
 import { RevenueYear } from '../../models/revenue.model';
+import { catchError, finalize, of } from 'rxjs';
 
 @Component({
   selector: 'app-chart',
@@ -11,19 +12,38 @@ import { RevenueYear } from '../../models/revenue.model';
 })
 export class ChartComponent implements OnInit{
     chart!: any
+    loading = false;
     constructor(private api: ApiService){}
     revenueYear!: any[]
     currentYear!: number;
     
    
-      ngOnInit(): void {
+    ngOnInit(): void {
+        this.loading = true;
         this.currentYear = new Date().getFullYear();
-        this.api.getRevenueByYear(this.currentYear).subscribe((res)=>{
-           this.revenueYear = res
-            console.log(res);
-            
-           const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-           this.chart = new Chart({
+        this.api.getRevenueByYear(this.currentYear)
+        .pipe(
+            catchError(error => {
+                console.error('Lỗi khi tải dữ liệu cho biểu đồ:', error);
+                return of([]);
+            }),
+            finalize(() => this.loading = false)
+        )
+        .subscribe((res) => {
+            if (res && res.length > 0) {
+                this.revenueYear = res;
+                this.generateChart();
+            } else {
+                // Xử lý trường hợp không có dữ liệu
+                this.revenueYear = [];
+                this.generateEmptyChart();
+            }
+        });
+    }
+
+    generateChart(): void {
+        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        this.chart = new Chart({
             chart: {
               type: 'line',
               height: 325
@@ -32,7 +52,6 @@ export class ChartComponent implements OnInit{
               text: 'Beyond Hotel Statics Year'
             },
             xAxis: {
-              
                 categories: this.revenueYear.map(item => monthNames[item.month - 1])
             },
             yAxis: {
@@ -42,43 +61,56 @@ export class ChartComponent implements OnInit{
             },
             tooltip: {
                 valueSuffix: ' VND'
-              },
+            },
             series: [
-              
-            //   {
-            //     name: 'Revenue',
-            //     type: 'line',
-            //     color: '#727cf5',
-            //     data: [
-
-            //     ]
-            //   },
               {
                 name: 'Revenue',
                 type: 'line',
                 color: '#3986DD',
-                data: 
-                   this.revenueYear.map(item => item.revenue)
-                
+                data: this.revenueYear.map(item => item.revenue)
               },
-            //   {
-            //     name: 'Ser234vice',
-            //     type: 'line',
-            //     color: '#ed9e20',
-            //     data: [
-            //         // 200030, 30303, 10303, 40303, 12303, 23030, 503030, 60303, 50303, 230300, 420300, 520300
-            //     ]
-            //   },
             ],
             credits: {
               enabled: false
             }
-          })
-        
-          });
-      }
-    
+        });
     }
+
+    generateEmptyChart(): void {
+        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        this.chart = new Chart({
+            chart: {
+              type: 'line',
+              height: 325
+            },
+            title: {
+              text: 'Beyond Hotel Statics Year'
+            },
+            xAxis: {
+                categories: monthNames
+            },
+            yAxis: {
+              title: {
+                text: 'VND'
+              }
+            },
+            tooltip: {
+                valueSuffix: ' VND'
+            },
+            series: [
+              {
+                name: 'Revenue',
+                type: 'line',
+                color: '#3986DD',
+                data: Array(12).fill(0)
+              },
+            ],
+            credits: {
+              enabled: false
+            }
+        });
+    }
+}
     
     // 'Jan',
     // 'Feb',

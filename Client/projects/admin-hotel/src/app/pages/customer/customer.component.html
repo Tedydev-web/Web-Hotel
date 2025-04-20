@@ -1,114 +1,612 @@
+<div class="wrapper customer-page">
+    <app-sidebar></app-sidebar>
+    <div class="content-page">
+        <div class="content content-wrapper">
+            <app-header></app-header>
+            <div class="container-fluid py-4">
+                <!-- start page title -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h4 class="page-title mb-0">Quản lý khách hàng</h4>
+                                <nav aria-label="breadcrumb">
+                                    <ol class="breadcrumb m-0 mt-2">
+                                        <li class="breadcrumb-item"><a href="javascript: void(0);"
+                                                class="text-decoration-none">Trang chủ</a></li>
+                                        <li class="breadcrumb-item"><a href="javascript: void(0);"
+                                                class="text-decoration-none">Quản lý</a></li>
+                                        <li class="breadcrumb-item active">Khách hàng</li>
+                                    </ol>
+                                </nav>
+                            </div>
+                            <button data-bs-toggle="modal" data-bs-target="#customer-modal"
+                                class="btn btn-primary rounded-pill d-flex align-items-center">
+                                <i class="mdi mdi-plus-circle me-1"></i> Thêm khách hàng
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- end page title -->
 
-<div class="wrapper">
-  <app-sidebar></app-sidebar>
-  <div class="content-page">
-    <div class="content">
-      <app-header></app-header>
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-12">
-              <div class="page-title-box">
-                  <div class="page-title-right">
-                      <ol class="breadcrumb m-0">
-                          <li class="breadcrumb-item"><a href="javascript: void(0);">Beyond</a></li>
-                          <li class="breadcrumb-item"><a href="javascript: void(0);">Managements</a></li>
-                          <li class="breadcrumb-item active">Customers</li>
-                      </ol>
-                  </div>
-                  <h4 class="page-title">Customers</h4>
-              </div>
-          </div>
-        </div>
-        <!-- end page title -->
-
-        <div class="row">
-          <div class="col-12">
-              <div class="card">
-                  <div class="card-body">
-                      <div class="row mb-2">
-                          <div class="col-sm-4">
-                            <div class="row gy-2 gx-2 align-items-center justify-content-xl-start justify-content-between">
-                                <div class="col-auto">
-                                    <label for="inputPassword2" class="visually-hidden">Search</label>
-                                    <input type="search" [(ngModel)]="searchTerm" class="form-control" id="inputPassword2"
-                                        placeholder="Search...">
-
-                                    </div>
-                                    <div class="col-auto">
-                                        <button type="submit" class="btn btn-primary" (click)="searchBookings()">Search</button>
-                                    </div>
-                                    <div class="col-auto">
-                                        <button type="button" class="btn btn-secondary" (click)="clearSearch()">Clear</button>
-                                      </div>
-                              
+                <!-- Dashboard cards -->
+                <div class="row mb-4 fade-in">
+                    <div class="col-md-3">
+                        <div class="card dashboard-card">
+                            <div class="card-body">
+                                <div class="card-icon bg-primary-lighten text-primary">
+                                    <i class="mdi mdi-account-multiple mdi-24px"></i>
+                                </div>
+                                <h2 class="card-number">{{Accounts?.length || 0}}</h2>
+                                <p class="card-label mb-0">Tổng số khách hàng</p>
                             </div>
                         </div>
-                        <div class="col-sm-8">
-                            <div class="text-sm-end">
-                                  <a href="javascript:void(0);" class="btn btn-danger mb-2"><i class="mdi mdi-plus-circle me-2"></i> Add Customers</a>
-                              </div>
-                          </div><!-- end col-->
-                      </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card dashboard-card">
+                            <div class="card-body">
+                                <div class="card-icon bg-success-lighten text-success">
+                                    <i class="mdi mdi-check-circle mdi-24px"></i>
+                                </div>
+                                <h2 class="card-number">{{(Accounts && Accounts.length) ? (Accounts |
+                                    filter:'emailConfirmed':true).length : 0}}</h2>
+                                <p class="card-label mb-0">Đã xác thực</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card dashboard-card">
+                            <div class="card-body">
+                                <div class="card-icon bg-danger-lighten text-danger">
+                                    <i class="mdi mdi-close-circle mdi-24px"></i>
+                                </div>
+                                <h2 class="card-number">{{(Accounts && Accounts.length) ? (Accounts |
+                                    filter:'emailConfirmed':false).length : 0}}</h2>
+                                <p class="card-label mb-0">Chưa xác thực</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card dashboard-card">
+                            <div class="card-body">
+                                <div class="card-icon bg-info-lighten text-info">
+                                    <i class="mdi mdi-calendar-check mdi-24px"></i>
+                                </div>
+                                <h2 class="card-number">{{getTotalBookings() || 0}}</h2>
+                                <p class="card-label mb-0">Tổng đơn đặt phòng</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                      <div class="table-responsive">
-                          <table class="table table-centered table-striped dt-responsive nowrap w-100" id="products-datatable">
-                              <thead>
-                                  <tr>
-                                    
-                                      <th>Customer</th>
-                                      <th>Phone Number</th>
-                                      <th>Email</th>
-                                      <th>Address</th>
-                                      <th>Create Date</th>
-                                      <th>Status</th>
-                                      <th style="width: 75px;">Action</th>
-                                  </tr>
-                              </thead>
-                              <tbody>
-                                 
-                                  <tr *ngFor="let item of Accounts; let i = index">
-                                      
-                                      <td class="table-user">
-                                          <img src="{{item.image}}" alt="table-user" class="me-2 rounded-circle">
-                                          <a href="javascript:void(0);" class="text-body fw-semibold">{{item.name}}</a>
-                                      </td>
-                                      <td>
-                                        {{item.phoneNumber}}
-                                      </td>
-                                      <td>
-                                        {{item.email}}
-                                      </td>
-                                      <td>
-                                        {{item.address}}
-                                      </td>
-                                      <td>
-                                         {{item.createdAt |  date:'fullDate'}}
-                                      </td>
-                                      <td>
-                                        <div *ngIf="item.emailConfirmed; else inactiveBadge">
-                                            <span class="badge bg-success">Active</span>
+                <!-- Advanced filter section -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="filter-section fade-in">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="m-0">Bộ lọc nâng cao</h5>
+                                <button class="btn btn-sm btn-outline-secondary" (click)="toggleFilterSection()">
+                                    <i class="mdi" [ngClass]="showFilters ? 'mdi-chevron-up' : 'mdi-chevron-down'"></i>
+                                </button>
+                            </div>
+
+                            <div class="row g-3" *ngIf="showFilters">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="form-label">Tìm kiếm</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="mdi mdi-magnify"></i></span>
+                                            <input type="text" [(ngModel)]="searchTerm"
+                                                class="form-control filter-control"
+                                                placeholder="Tìm theo tên, email, số điện thoại...">
                                         </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="form-label">Trạng thái</label>
+                                        <select class="form-select filter-control" [(ngModel)]="statusFilter">
+                                            <option value="all">Tất cả trạng thái</option>
+                                            <option value="true">Đã xác thực</option>
+                                            <option value="false">Chưa xác thực</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="form-label">Từ ngày</label>
+                                        <input type="date" class="form-control filter-control" [(ngModel)]="dateFrom">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="form-label">Đến ngày</label>
+                                        <input type="date" class="form-control filter-control" [(ngModel)]="dateTo">
+                                    </div>
+                                </div>
+                                <div class="col-12 d-flex justify-content-end mt-3">
+                                    <button type="button" class="btn btn-outline-secondary me-2"
+                                        (click)="clearFilters()">
+                                        <i class="mdi mdi-refresh me-1"></i> Đặt lại
+                                    </button>
+                                    <button type="button" class="btn btn-primary" (click)="applyFilters()">
+                                        <i class="mdi mdi-filter me-1"></i> Áp dụng bộ lọc
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                                        <ng-template #inactiveBadge>
-                                            <span class="badge bg-danger">Inactive</span>
-                                        </ng-template>
+                <!-- View toggle buttons -->
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="view-toggle">
+                                <button class="btn" [ngClass]="{'active': viewMode === 'card'}"
+                                    (click)="setViewMode('card')">
+                                    <i class="mdi mdi-view-grid-outline me-1"></i> Card
+                                </button>
+                                <button class="btn" [ngClass]="{'active': viewMode === 'table'}"
+                                    (click)="setViewMode('table')">
+                                    <i class="mdi mdi-table me-1"></i> Bảng
+                                </button>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <button type="button" class="btn btn-light btn-sm me-2" (click)="exportData()">
+                                    <i class="mdi mdi-download me-1"></i> Xuất Excel
+                                </button>
+                                <div class="dropdown">
+                                    <button class="btn btn-light btn-sm dropdown-toggle" type="button" id="sortDropdown"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="mdi mdi-sort me-1"></i> Sắp xếp
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="sortDropdown">
+                                        <li><a class="dropdown-item" href="javascript:void(0);"
+                                                (click)="sortBy('newest')">Mới nhất</a></li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);"
+                                                (click)="sortBy('oldest')">Cũ nhất</a></li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);"
+                                                (click)="sortBy('nameAZ')">Tên A-Z</a></li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);"
+                                                (click)="sortBy('nameZA')">Tên Z-A</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                                      </td>
+                <!-- Card View Mode -->
+                <div class="row" *ngIf="viewMode === 'card' && filteredCustomers && filteredCustomers.length > 0">
+                    <div class="col-md-4 col-xl-3 mb-4" *ngFor="let item of filteredCustomers">
+                        <div class="booking-card">
+                            <div class="card h-100">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <span class="booking-id">#{{item.id.substring(0, 8)}}</span>
+                                    <span class="status-badge"
+                                        [ngClass]="{'status-paid': item.emailConfirmed, 'status-failed': !item.emailConfirmed}">
+                                        <i class="mdi"
+                                            [ngClass]="item.emailConfirmed ? 'mdi-check-circle' : 'mdi-close-circle'"></i>
+                                        {{item.emailConfirmed ? 'Đã xác thực' : 'Chưa xác thực'}}
+                                    </span>
+                                </div>
+                                <div class="card-body booking-details">
+                                    <div class="mb-3 text-center">
+                                        <div class="customer-avatar mb-2">
+                                            <img [src]="item.image || './assets/images/default-avatar.jpg'"
+                                                alt="{{item.name}}" class="rounded-circle">
+                                        </div>
+                                        <h5 class="mb-1">{{item.name}}</h5>
+                                    </div>
 
-                                      <td>
-                                          <a href="javascript:void(0);" class="action-icon"> <i class="mdi mdi-square-edit-outline"></i></a>
-                                          <a href="javascript:void(0);" class="action-icon"> <i class="mdi mdi-delete"></i></a>
-                                      </td>
-                                  </tr>
-                              </tbody>
-                          </table>
-                      </div>
-                  </div> <!-- end card-body-->
-              </div> <!-- end card-->
-          </div> <!-- end col -->
+                                    <div class="customer-info mb-3">
+                                        <div class="d-flex align-items-center mb-2">
+                                            <i class="mdi mdi-email text-muted me-2"></i>
+                                            <span>{{item.email}}</span>
+                                        </div>
+                                        <div class="d-flex align-items-center mb-2">
+                                            <i class="mdi mdi-phone text-muted me-2"></i>
+                                            <span>{{item.phoneNumber}}</span>
+                                        </div>
+                                        <div class="d-flex align-items-center">
+                                            <i class="mdi mdi-map-marker text-muted me-2"></i>
+                                            <span>{{item.address}}</span>
+                                        </div>
+                                    </div>
 
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <div class="booking-days">
+                                            <i class="mdi mdi-calendar-clock me-1"></i>
+                                            {{item.createdAt | date:'dd/MM/yyyy'}}
+                                        </div>
+                                        <div class="booking-count" *ngIf="item.bookingsCount">
+                                            {{item.bookingsCount}} đơn
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <button type="button" class="btn btn-sm btn-primary w-100" data-bs-toggle="modal"
+                                        data-bs-target="#detail-modal" (click)="getCustomerDetail(item.id)">
+                                        <i class="mdi mdi-eye me-1"></i> Xem chi tiết
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Empty state when no data -->
+                <div class="row" *ngIf="filteredCustomers && filteredCustomers.length === 0">
+                    <div class="col-12">
+                        <div class="text-center py-5">
+                            <i class="mdi mdi-account-off text-muted" style="font-size: 4rem;"></i>
+                            <h5 class="mt-3">Không tìm thấy khách hàng</h5>
+                            <p class="text-muted">Không có khách hàng nào phù hợp với các tiêu chí tìm kiếm của bạn.</p>
+                            <button class="btn btn-primary" (click)="clearFilters()">Đặt lại bộ lọc</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Table View Mode -->
+                <div class="row" *ngIf="viewMode === 'table'">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-centered table-hover">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th style="width: 80px;">ID</th>
+                                                <th>Khách hàng</th>
+                                                <th>Liên hệ</th>
+                                                <th>Địa chỉ</th>
+                                                <th>Ngày tạo</th>
+                                                <th>Số đơn</th>
+                                                <th>Trạng thái</th>
+                                                <th style="width: 100px;">Thao tác</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let item of filteredCustomers">
+                                                <td>
+                                                    <span class="fw-bold">#{{item.id.substring(0, 8)}}</span>
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="avatar avatar-sm me-2">
+                                                            <img [src]="item.image || 'assets/images/default-avatar.jpg'"
+                                                                class="rounded-circle" alt="{{item.name}}">
+                                                        </div>
+                                                        <div>{{item.name}}</div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div><i class="mdi mdi-email text-muted me-1"></i> {{item.email}}
+                                                    </div>
+                                                    <div><i class="mdi mdi-phone text-muted me-1"></i>
+                                                        {{item.phoneNumber}}</div>
+                                                </td>
+                                                <td>
+                                                    {{item.address}}
+                                                </td>
+                                                <td>
+                                                    {{item.createdAt | date:'dd/MM/yyyy'}}
+                                                </td>
+                                                <td>
+                                                    <span class="badge bg-info rounded-pill">{{item.bookingsCount ||
+                                                        0}}</span>
+                                                </td>
+                                                <td>
+                                                    <span class="badge rounded-pill"
+                                                        [ngClass]="{'bg-success': item.emailConfirmed, 'bg-danger': !item.emailConfirmed}">
+                                                        {{item.emailConfirmed ? 'Đã xác thực' : 'Chưa xác thực'}}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex">
+                                                        <button type="button" class="btn btn-sm btn-light me-1"
+                                                            data-bs-toggle="modal" data-bs-target="#detail-modal"
+                                                            (click)="getCustomerDetail(item.id)">
+                                                            <i class="mdi mdi-eye"></i>
+                                                        </button>
+                                                        <div class="dropdown">
+                                                            <button class="btn btn-sm btn-light" type="button"
+                                                                data-bs-toggle="dropdown">
+                                                                <i class="mdi mdi-dots-vertical"></i>
+                                                            </button>
+                                                            <ul class="dropdown-menu dropdown-menu-end">
+                                                                <li><a class="dropdown-item" href="javascript:void(0);"
+                                                                        data-bs-toggle="modal"
+                                                                        data-bs-target="#customer-modal"
+                                                                        (click)="editCustomer(item)">
+                                                                        <i class="mdi mdi-pencil me-1"></i> Chỉnh sửa
+                                                                    </a></li>
+                                                                <li><a class="dropdown-item" href="javascript:void(0);"
+                                                                        (click)="updateStatus(item.id, !item.emailConfirmed)">
+                                                                        <i class="mdi mdi-swap-horizontal me-1"></i> Đổi
+                                                                        trạng thái
+                                                                    </a></li>
+                                                                <li><a class="dropdown-item text-danger"
+                                                                        href="javascript:void(0);"
+                                                                        (click)="deleteCustomer(item.id)">
+                                                                        <i class="mdi mdi-delete me-1"></i> Xóa
+                                                                    </a></li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <!-- Pagination -->
+                                <div class="custom-pagination mt-4">
+                                    <nav>
+                                        <ul class="pagination">
+                                            <li class="page-item" [ngClass]="{'disabled': currentPage === 1}">
+                                                <a class="page-link" href="javascript:void(0);"
+                                                    (click)="goToPage(currentPage - 1)">
+                                                    <i class="mdi mdi-chevron-left"></i>
+                                                </a>
+                                            </li>
+                                            <li class="page-item" *ngFor="let page of getPageNumbers()"
+                                                [ngClass]="{'active': page === currentPage}">
+                                                <a class="page-link" href="javascript:void(0);"
+                                                    (click)="goToPage(page)">{{page}}</a>
+                                            </li>
+                                            <li class="page-item" [ngClass]="{'disabled': currentPage === totalPages}">
+                                                <a class="page-link" href="javascript:void(0);"
+                                                    (click)="goToPage(currentPage + 1)">
+                                                    <i class="mdi mdi-chevron-right"></i>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </nav>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detail Modal -->
+                <div id="detail-modal" class="modal fade custom-modal" tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Chi tiết khách hàng</h4>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-hidden="true"></button>
+                            </div>
+                            <div class="modal-body" *ngIf="selectedCustomer">
+                                <div class="row">
+                                    <div class="col-12 mb-4">
+                                        <div class="customer-detail-header d-flex">
+                                            <div class="customer-avatar me-3">
+                                                <img [src]="selectedCustomer.image || './assets/images/default-avatar.jpg'"
+                                                    alt="{{selectedCustomer.name}}">
+                                            </div>
+                                            <div>
+                                                <h4 class="mb-1">{{selectedCustomer.name}}</h4>
+                                                <p class="text-muted mb-0">ID: {{selectedCustomer.id}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-12 mb-4">
+                                        <div class="verification-status mb-3"
+                                            [ngClass]="{'status-paid': selectedCustomer.emailConfirmed, 'status-failed': !selectedCustomer.emailConfirmed}">
+                                            <i class="mdi"
+                                                [ngClass]="selectedCustomer.emailConfirmed ? 'mdi-check-circle' : 'mdi-close-circle'"></i>
+                                            {{selectedCustomer.emailConfirmed ? 'Đã xác thực' : 'Chưa xác thực'}}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <span class="detail-label d-block">Email</span>
+                                            <span class="detail-value">{{selectedCustomer.email}}</span>
+                                        </div>
+                                        <div class="mb-3">
+                                            <span class="detail-label d-block">Số điện thoại</span>
+                                            <span class="detail-value">{{selectedCustomer.phoneNumber}}</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <span class="detail-label d-block">Địa chỉ</span>
+                                            <span class="detail-value">{{selectedCustomer.address}}</span>
+                                        </div>
+                                        <div class="mb-3">
+                                            <span class="detail-label d-block">Ngày tạo tài khoản</span>
+                                            <span class="detail-value">{{selectedCustomer.createdAt |
+                                                date:'dd/MM/yyyy - HH:mm'}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row"
+                                    *ngIf="selectedCustomer.bookings && selectedCustomer.bookings.length > 0">
+                                    <div class="col-12 mb-4">
+                                        <div class="detail-section">
+                                            <h5 class="mb-3">Lịch sử đặt phòng</h5>
+                                            <div class="table-responsive">
+                                                <table class="table table-sm table-centered">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>ID</th>
+                                                            <th>Phòng</th>
+                                                            <th>Thời gian</th>
+                                                            <th>Số ngày</th>
+                                                            <th>Tổng tiền</th>
+                                                            <th>Trạng thái</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr *ngFor="let booking of selectedCustomer.bookings">
+                                                            <td><span class="text-primary">#{{booking.id.substring(0,
+                                                                    8)}}</span></td>
+                                                            <td>{{booking.roomNumber}}</td>
+                                                            <td>{{booking.startDate | date:'dd/MM/yyyy'}} -
+                                                                {{booking.endDate | date:'dd/MM/yyyy'}}</td>
+                                                            <td>{{booking.numberOfDay}} ngày</td>
+                                                            <td>{{booking.reservationPrice | vndCurrency}}</td>
+                                                            <td>
+                                                                <span class="badge"
+                                                                    [ngClass]="booking.status ? 'bg-success' : 'bg-danger'">
+                                                                    {{booking.status ? 'Đã thanh toán' : 'Chưa thanh
+                                                                    toán'}}
+                                                                </span>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row"
+                                    *ngIf="!selectedCustomer.bookings || selectedCustomer.bookings.length === 0">
+                                    <div class="col-12">
+                                        <div class="detail-section">
+                                            <div class="text-center py-3">
+                                                <i class="mdi mdi-calendar-remove text-muted"
+                                                    style="font-size: 3rem;"></i>
+                                                <h5 class="mt-2">Chưa có lịch sử đặt phòng</h5>
+                                                <p class="text-muted">Khách hàng này chưa đặt phòng lần nào.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="d-flex justify-content-between w-100">
+                                    <button type="button" class="btn btn-light" data-bs-toggle="modal"
+                                        data-bs-target="#customer-modal" (click)="editCustomer(selectedCustomer)">
+                                        <i class="mdi mdi-pencil me-1"></i> Chỉnh sửa
+                                    </button>
+                                    <div>
+                                        <button *ngIf="selectedCustomer" type="button" class="btn btn-primary me-2"
+                                            (click)="updateStatus(selectedCustomer.id, !selectedCustomer.emailConfirmed)">
+                                            <i class="mdi"
+                                                [ngClass]="selectedCustomer?.emailConfirmed ? 'mdi-close-circle' : 'mdi-check-circle'"></i>
+                                            {{selectedCustomer?.emailConfirmed ? 'Hủy xác thực' : 'Xác thực tài khoản'}}
+                                        </button>
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Đóng</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Customer Modal (Add/Edit) -->
+                <div class="modal fade custom-modal" id="customer-modal" tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">{{isEditMode ? 'Cập nhật thông tin khách hàng' : 'Thêm khách
+                                    hàng mới'}}</h4>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-hidden="true"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form [formGroup]="customerForm">
+                                    <div class="row g-3">
+                                        <div class="col-12 text-center mb-3" *ngIf="isEditMode">
+                                            <div class="avatar-upload">
+                                                <img [src]="customerForm.value.image || 'assets/images/default-avatar.jpg'"
+                                                    class="rounded-circle avatar-lg">
+                                                <div class="avatar-edit mt-2">
+                                                    <button type="button" class="btn btn-light btn-sm">
+                                                        <i class="mdi mdi-camera"></i> Thay đổi ảnh
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-label">Họ và tên</label>
+                                                <input type="text" formControlName="name"
+                                                    class="form-control filter-control" placeholder="Nhập họ tên">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-label">Email</label>
+                                                <input type="email" formControlName="email"
+                                                    class="form-control filter-control" placeholder="Nhập email">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-label">Số điện thoại</label>
+                                                <input type="text" formControlName="phoneNumber"
+                                                    class="form-control filter-control"
+                                                    placeholder="Nhập số điện thoại">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-label">Trạng thái</label>
+                                                <select class="form-select filter-control"
+                                                    formControlName="emailConfirmed">
+                                                    <option [ngValue]="true">Đã xác thực</option>
+                                                    <option [ngValue]="false">Chưa xác thực</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <label class="form-label">Địa chỉ</label>
+                                                <textarea formControlName="address" class="form-control filter-control"
+                                                    rows="3" placeholder="Nhập địa chỉ"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6" *ngIf="!isEditMode">
+                                            <div class="form-group">
+                                                <label class="form-label">Mật khẩu</label>
+                                                <input type="password" formControlName="password"
+                                                    class="form-control filter-control" placeholder="Nhập mật khẩu">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6" *ngIf="!isEditMode">
+                                            <div class="form-group">
+                                                <label class="form-label">Xác nhận mật khẩu</label>
+                                                <input type="password" formControlName="confirmPassword"
+                                                    class="form-control filter-control" placeholder="Nhập lại mật khẩu">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Hủy</button>
+                                <button type="button" class="btn btn-primary" (click)="saveCustomer()">
+                                    {{isEditMode ? 'Cập nhật' : 'Thêm mới'}}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Loading Spinner -->
+                <div class="loading-overlay" *ngIf="isLoading">
+                    <div class="spinner-container">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Đang tải...</span>
+                        </div>
+                        <p class="mt-2">Đang xử lý...</p>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 </div>

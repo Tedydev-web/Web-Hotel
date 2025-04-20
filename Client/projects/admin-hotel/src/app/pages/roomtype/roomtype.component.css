@@ -1,0 +1,245 @@
+/* Styles chung */
+.roomtype-page {
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+.content-wrapper {
+  transition: all 0.3s ease;
+}
+
+/* Dashboard card styles */
+.dashboard-card {
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+  border: none;
+  height: 100%;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-card .card-body {
+  padding: 1.5rem;
+}
+
+.dashboard-card .card-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.dashboard-card .card-number {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.dashboard-card .card-label {
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+/* Filter styles */
+.filter-section {
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.filter-control {
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  padding: 0.6rem 1rem;
+  transition: all 0.2s ease;
+}
+
+.filter-control:focus {
+  border-color: #7e3af2;
+  box-shadow: 0 0 0 3px rgba(126, 58, 242, 0.1);
+}
+
+/* Roomtype card styles */
+.roomtype-card {
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  margin-bottom: 1.5rem;
+}
+
+.roomtype-card .card {
+  transition: all 0.3s;
+  border: 1px solid rgba(0,0,0,0.1);
+  box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075);
+}
+
+.roomtype-card .card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
+}
+
+.roomtype-card .card-header {
+  border-bottom: 1px solid rgba(0,0,0,0.1);
+  background-color: rgba(0,0,0,0.02);
+}
+
+.roomtype-id {
+  font-weight: 600;
+  color: #495057;
+}
+
+.roomtype-details .card-title {
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+.roomtype-stats {
+  margin-top: 0.75rem;
+}
+
+/* Animation styles */
+.fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Toggle view buttons */
+.view-toggle {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.view-toggle .btn {
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+}
+
+.view-toggle .active {
+  background-color: #7e3af2;
+  color: white;
+}
+
+/* Loading overlay */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.spinner-container {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+/* Pagination styles */
+.custom-pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.custom-pagination .page-item .page-link {
+  border: none;
+  margin: 0 5px;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6c757d;
+  transition: all 0.2s ease;
+}
+
+.custom-pagination .page-item.active .page-link {
+  background-color: #7e3af2;
+  color: white;
+}
+
+.custom-pagination .page-item .page-link:hover:not(.active) {
+  background-color: #f8f9fa;
+}
+
+/* Background colors */
+.bg-primary-lighten {
+  background-color: rgba(79, 70, 229, 0.1);
+}
+
+.bg-success-lighten {
+  background-color: rgba(16, 185, 129, 0.1);
+}
+
+.bg-danger-lighten {
+  background-color: rgba(239, 68, 68, 0.1);
+}
+
+.bg-info-lighten {
+  background-color: rgba(14, 165, 233, 0.1);
+}
+
+.text-primary {
+  color: #4f46e5;
+}
+
+.text-success {
+  color: #10b981;
+}
+
+.text-danger {
+  color: #ef4444;
+}
+
+.text-info {
+  color: #0ea5e9;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .dashboard-card .card-icon {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .dashboard-card .card-number {
+    font-size: 1.5rem;
+  }
+  
+  .filter-section {
+    padding: 1rem;
+  }
+  
+  .roomtype-card .roomtype-details {
+    padding: 1rem;
+  }
+}

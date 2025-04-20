@@ -14,6 +14,7 @@ export class Room {
   numberOfDoubleBed!: string
   currentPrice!: number
   discountPrice!: number
+  discount!: number // Thêm thuộc tính discount
   roomTypeId!: number
   roomTypeName!: string
   peopleNumber!: string

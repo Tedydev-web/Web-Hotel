@@ -60,13 +60,13 @@ namespace WebHotel.Startup
         {
             var info = new OpenApiInfo()
             {
-                Title = "API Web Hotel v1",
+                Title = "API Web Hotel",
                 Version = desc.ApiVersion.ToString()
             };
 
             if (desc.IsDeprecated)
             {
-                info.Description += " This API version has been deprecated. Please use one of the new APIs available from the explorer.";
+                info.Description += "This API version has been deprecated. Please use one of the new APIs available from the explorer.";
             }
 
             return info;

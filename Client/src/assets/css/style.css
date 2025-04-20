@@ -17,7 +17,7 @@ Version: 1.0.0
 # Normalize
 --------------------------------------------------------------*/
 :root {
-  --main-color-one: #1E84FE;
+  --main-color-one: #2b3cf7;
   --main-color-one-rgb: 30, 132, 254;
   --secondary-color: #FF8C32;
   --secondary-color-rgb: 255, 140, 50;
@@ -25,7 +25,7 @@ Version: 1.0.0
   --section-bg-1: #F6F7F8;
   --section-bg-2: #F2F4F7;
   --footer-bg-1: #27282B;
-  --footer-bg-2: #1E84FE;
+  --footer-bg-2: #2b3cf7;
   --copyright-bg-1: #323336;
   --heading-color: #1D2635;
   --body-color: #667085;
@@ -6116,7 +6116,7 @@ a.lazyloads  {
 }
 
 .breadcrumb-contents {
-  background: #fff;
+  background: linear-gradient(135deg, #4a6cf7 0%, #2b3cf7 100%);
   padding: 20px 20px 25px;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -6135,7 +6135,7 @@ a.lazyloads  {
 .breadcrumb-contents-title {
   font-size: 24px;
   line-height: 32px;
-  color: var(--heading-color);
+  color: #ffffff;
   -webkit-box-flex: 1;
       -ms-flex: 1;
           flex: 1;
@@ -6158,7 +6158,7 @@ a.lazyloads  {
 .breadcrumb-contents-list-item {
   font-size: 16px;
   font-weight: 500;
-  color: var(--paragraph-color);
+  color: #ffffffc9;
   position: relative;
   -webkit-transition: 200ms;
   transition: 200ms;
@@ -6704,7 +6704,7 @@ a.lazyloads  {
 }
 .navbar-area .nav-container .navbar-collapse .navbar-nav li {
   display: inline-block;
-  font-size: 16px;
+  font-size: 18px;
   font-family: var(--body-font);
   text-transform: capitalize;
   color: var(--heading-color);
@@ -6716,16 +6716,16 @@ a.lazyloads  {
 }
 @media (min-width: 1200px) and (max-width: 1399.98px) {
   .navbar-area .nav-container .navbar-collapse .navbar-nav li {
-    font-size: 15px;
+    font-size: 17px;
   }
 }
 @media (min-width: 992px) and (max-width: 1199.98px) {
   .navbar-area .nav-container .navbar-collapse .navbar-nav li {
-    font-size: 14px;
+    font-size: 16px;
   }
 }
 .navbar-area .nav-container .navbar-collapse .navbar-nav li a {
-  padding: 10px 30px 10px 0;
+  padding: 10px 80px 10px 0;
   -webkit-transition: all 0.3s ease-in;
   transition: all 0.3s ease-in;
 }
@@ -7916,7 +7916,7 @@ a.lazyloads  {
   background-image: url(../img/banner/star-shape.svg);
   top: 20px;
   left: auto;
-  right: -40%;
+  right: -60%;
 }
 .banner-single-content-para {
   font-size: 16px;

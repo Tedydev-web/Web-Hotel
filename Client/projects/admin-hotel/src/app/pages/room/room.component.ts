@@ -18,6 +18,7 @@ import { ServiceAttach } from '../../models/serviceAttach.model';
 import { NgToastService } from 'ng-angular-popup';
 import { Discount } from '../../models/discount.model';
 import { environment } from 'src/environments/environment.development';
+import * as XLSX from 'xlsx';
 
 interface RoomType {
     id: number;
@@ -60,6 +61,21 @@ export class RoomComponent implements OnInit {
     get f() {
         return this.roomForm.controls;
     }
+    filteredRooms: any[] = [];
+    viewMode: 'card' | 'table' = 'table';
+    showFilters: boolean = false;
+    statusFilter: string = 'all';
+    roomTypeFilter: string = 'all';
+    capacityFilter: string = 'all';
+    currentPage: number = 1;
+    totalPages: number = 1;
+    pageSize: number = 10;
+    isLoading: boolean = false;
+    roomTypes_1: any[] = [];
+    roomTypesAll: any[] = [];
+    roomAttachs: any;
+    roomTypeName: string = '';
+
     constructor(
         private roomService: ApiService,
         private router: Router,
@@ -101,16 +117,11 @@ export class RoomComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        // this.loadModal();
-        // this.submitted = false;
-        // this.api.getRoomTypeId().subscribe((data: any)=>{
-        //   this.roomTypes = data.roomTypes;
-        //   this.typeId = data.roomTypes.id
-        // });
         this.getRooms();
         this.getRoomtype();
         this.getAllDiscountType2()
         this.getAllService();
+        this.applyFilters();
     }
     uploadFileDetail = (event: any) => {
         let files = event.target.files;
@@ -119,17 +130,6 @@ export class RoomComponent implements OnInit {
         }
         if (files.length > 0) {
             this.images = files;
-            // var mimeType = files[0].type;
-            // if (mimeType.match(/image\/*/) == null) {
-            //   this.message = "Only images are supported.";
-            //   return;
-            // }
-            // var reader = new FileReader();
-            // this.imagePath = files;
-            // reader.readAsDataURL(files[0]);
-            // reader.onload = (_event) => {
-            //   this.imgURL = reader.result;
-            // }
         }
     };
 
@@ -142,17 +142,6 @@ export class RoomComponent implements OnInit {
         if (files.length === 1) {
             this.image = files;
             console.log(this.image);
-            // var mimeType = files[0].type;
-            // if (mimeType.match(/image\/*/) == null) {
-            //     this.message = 'Only images are supported.';
-            //     return;
-            // }
-            // var reader = new FileReader();
-            // this.imagePath = files;
-            // reader.readAsDataURL(files[0]);
-            // reader.onload = (_event) => {
-            //     this.imgURL = reader.result;
-            // };
         }
     };
     getRoomtype(): Promise<number> {
@@ -291,12 +280,6 @@ export class RoomComponent implements OnInit {
     }
 
     updateRoom(_roomForm2: FormGroup) {
-        // Identity roomId
-        // this.api.deleteRoom(roomId)
-        // if (this.roomForm.invalid) {
-        //   return;
-        // }
-
         let fileToUpload: File | undefined;
         let fileToUploads: File[] | undefined;
         const formData = new FormData();
@@ -347,7 +330,6 @@ export class RoomComponent implements OnInit {
                 (res) => {
                     $("#editRoom").modal("toggle");
                     this.getRooms();
-                    // this.loadModal(this.roomForm.value);
                     this.toastr.success(res.message);
                 },
                 (err) => {
@@ -358,14 +340,6 @@ export class RoomComponent implements OnInit {
 
     deleteRoom(id: string) {
         if (confirm('Are you want to delete this room?')) {
-            //   this.rooms.forEach((value, index) =>{
-            //     if(value.id == parseInt(id)){
-            //       this.api.deleteRoom(id).subscribe((res) =>{
-            //         this.rooms.splice(index, 1)
-            //       });
-            //     }
-            //   });
-            // }
             this.api.deleteRoom(id).subscribe({
                 next: (_res) => {
                     this.toastr.success('Room deleted!');
@@ -377,8 +351,6 @@ export class RoomComponent implements OnInit {
             });
         }
     }
-
-    /////////////////////////////////////////////////ServiceAttachDetailAdmin
 
     getAllService() {
         this.api.getAllService().subscribe((res: any) => {
@@ -412,7 +384,6 @@ export class RoomComponent implements OnInit {
     }
 
     showAllServices() {
-        // this.serviceCount = this.services..length;
         alert(this.serviceCount)
         this.showAll = true;
       }
@@ -441,5 +412,162 @@ export class RoomComponent implements OnInit {
         },err=>{
             this.toast.error(err.error.message);
         })
+    }
+
+    getAveragePrice(): number {
+        if (!this.rooms || this.rooms.length === 0) return 0;
+        
+        const totalPrice = this.rooms.reduce((sum, room) => sum + room.currentPrice, 0);
+        return totalPrice / this.rooms.length;
+    }
+
+    toggleFilterSection(): void {
+        this.showFilters = !this.showFilters;
+    }
+
+    clearFilters(): void {
+        this.searchTerm = '';
+        this.statusFilter = 'all';
+        this.roomTypeFilter = 'all';
+        this.capacityFilter = 'all';
+        this.applyFilters();
+    }
+
+    applyFilters(): void {
+        this.isLoading = true;
+        let filtered = [...this.rooms];
+        
+        if (this.searchTerm.trim()) {
+            const searchTerm = this.searchTerm.toLowerCase();
+            filtered = filtered.filter(room => 
+                room.name.toLowerCase().includes(searchTerm) || 
+                room.roomNumber.toString().includes(searchTerm) ||
+                room.roomTypeName.toLowerCase().includes(searchTerm)
+            );
+        }
+        
+        if (this.roomTypeFilter !== 'all') {
+            filtered = filtered.filter(room => room.roomTypeId.toString() === this.roomTypeFilter);
+        }
+        
+        if (this.statusFilter !== 'all') {
+            const isActive = this.statusFilter === 'true';
+            filtered = filtered.filter(room => room.isActive === isActive);
+        }
+        
+        if (this.capacityFilter !== 'all') {
+            const capacity = parseInt(this.capacityFilter);
+            if (capacity < 4) {
+                filtered = filtered.filter(room => parseInt(room.peopleNumber) === capacity);
+            } else {
+                filtered = filtered.filter(room => parseInt(room.peopleNumber) >= capacity);
+            }
+        }
+        
+        this.filteredRooms = filtered;
+        this.totalPages = Math.ceil(this.filteredRooms.length / this.pageSize);
+        this.currentPage = 1;
+        this.applyPagination();
+        
+        setTimeout(() => {
+            this.isLoading = false;
+        }, 300);
+    }
+
+    setViewMode(mode: 'card' | 'table'): void {
+        this.viewMode = mode;
+    }
+
+    sortBy(criteria: string): void {
+        let sorted = [...this.filteredRooms];
+        
+        switch (criteria) {
+            case 'name':
+                sorted.sort((a, b) => a.name.localeCompare(b.name));
+                break;
+            case 'nameDesc':
+                sorted.sort((a, b) => b.name.localeCompare(a.name));
+                break;
+            case 'priceHighest':
+                sorted.sort((a, b) => b.currentPrice - a.currentPrice);
+                break;
+            case 'priceLowest':
+                sorted.sort((a, b) => a.currentPrice - b.currentPrice);
+                break;
+        }
+        
+        this.filteredRooms = sorted;
+    }
+
+    goToPage(page: number): void {
+        if (page < 1 || page > this.totalPages) {
+            return;
+        }
+        this.currentPage = page;
+        this.applyPagination();
+    }
+
+    getPageNumbers(): number[] {
+        const pages: number[] = [];
+        
+        if (this.totalPages <= 5) {
+            for (let i = 1; i <= this.totalPages; i++) {
+                pages.push(i);
+            }
+        } else {
+            if (this.currentPage <= 3) {
+                for (let i = 1; i <= 5; i++) {
+                    pages.push(i);
+                }
+            } else if (this.currentPage >= this.totalPages - 2) {
+                for (let i = this.totalPages - 4; i <= this.totalPages; i++) {
+                    pages.push(i);
+                }
+            } else {
+                for (let i = this.currentPage - 2; i <= this.currentPage + 2; i++) {
+                    pages.push(i);
+                }
+            }
+        }
+        
+        return pages;
+    }
+
+    applyPagination(): void {
+        const startIndex = (this.currentPage - 1) * this.pageSize;
+        const endIndex = startIndex + this.pageSize;
+        this.filteredRooms = this.rooms.slice(startIndex, Math.min(endIndex, this.rooms.length));
+    }
+
+    exportData(): void {
+        const data = this.rooms.map(room => {
+            return {
+                'Tên phòng': room.name,
+                'Số phòng': room.roomNumber,
+                'Loại phòng': room.roomTypeName,
+                'Giá phòng': room.currentPrice,
+                'Giá giảm': room.discountPrice || 0,
+                'Giường đơn': room.numberOfSimpleBed,
+                'Giường đôi': room.numberOfDoubleBed,
+                'Sức chứa': room.peopleNumber + ' người',
+                'Trạng thái': room.isActive ? 'Hoạt động' : 'Không hoạt động'
+            };
+        });
+        
+        const worksheet = XLSX.utils.json_to_sheet(data);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Danh sách phòng');
+        
+        XLSX.writeFile(workbook, 'danh-sach-phong.xlsx');
+    }
+
+    onSubmit(): void {
+        this.submitted = true;
+        
+        if (this.roomForm.invalid) {
+            return;
+        }
+        
+        this.addRoom(this.roomForm);
     }
 }

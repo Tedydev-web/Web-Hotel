@@ -1,82 +1,133 @@
 <div class="loading authentication-bg">
-  <div class="account-pages pt-2 pt-sm-5 pb-4 pb-sm-5">
-      <div class="container">
-          <div class="row justify-content-center">
-              <div class="col-xxl-4 col-lg-5">
-                  <div class="card">
+    <div class="account-pages d-flex justify-content-center align-items-center min-vh-100">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-xxl-8 col-lg-10">
+                    <!-- Main card with glass effect -->
+                    <div class="card main-card">
+                        <!-- Card dots/indicators at top -->
+                        <div class="card-indicators">
+                            <span class="indicator"></span>
+                            <span class="indicator"></span>
+                        </div>
 
-                      <!-- Logo -->
-                      <div class="card-header pt-4 pb-4 text-center bg-primary">
-                          <a href="index.html">
-                              <span><img src="assets/images/logo.png" alt="" height="18"></span>
-                          </a>
-                      </div>
-
-                      <div class="card-body p-4">
-
-                          <div class="text-center w-75 m-auto">
-                              <h4 class="text-dark-50 text-center pb-0 fw-bold" >Sign In</h4>
-                              <p class="text-muted mb-4">Enter your email address and password to access admin panel.</p>
-                          </div>
-
-                          <form [formGroup]="loginForm"
-                          (ngSubmit)="onSubmit()">
-
-                              <div class="mb-3">
-                                  <label for="emailaddress" class="form-label">Email address</label>
-                                  <input class="form-control" id="email"  formControlName="email" type="text" placeholder=" Email "
-                                  [ngClass]="{ 'is-invalid': submitted && f['email'].errors }" />
-                                  <div *ngIf="submitted && f['email'].errors" class="invalid-feedback">
-                                    <div *ngIf="f['email'].errors['required']">Email is required</div>
-                                    <div *ngIf="f['email'].errors['email']">Email must be a valid email address</div>
-                                </div>
-                              </div>
-
-                              <div class="mb-3">
-                                  <label for="password" class="form-label">Password</label>
-                                  <div class="input-group input-group-merge">
-                                    <input class="form-control"  formControlName="password" type="password" placeholder="Type Password"
-                                    [ngClass]="{ 'is-invalid': submitted && f['password'].errors }" required="">
-
-
-
-                                    <div class="icon toggle-password">
-                                      <i (click)="OnClick()"  style="margin-left: -30px; cursor: pointer;">
-                                        <i class="fa fa-eye" aria-hidden="true" *ngIf="show"></i>
-                                        <i class="fa fa-eye-slash" aria-hidden="true" *ngIf="!show"></i>
-                                      </i>
+                        <div class="row g-0">
+                            <!-- Left side - Illustration/Welcome -->
+                            <div class="col-md-6 welcome-section">
+                                <div class="welcome-content text-center">
+                                    <div class="illustration-container">
+                                        <!-- Replace with your own mascot/illustration -->
+                                        <img src="/assets/images/favicon.png" alt="Beyond Hotel" class="mascot-image">
+                                        <div class="glow-circle"></div>
+                                        <div class="glow-ring ring-1"></div>
+                                        <div class="glow-ring ring-2"></div>
+                                        <div class="glow-ring ring-3"></div>
+                                        <div class="floating-dot dot-1"></div>
+                                        <div class="floating-dot dot-2"></div>
                                     </div>
-                                    <div *ngIf="submitted && f['password'].errors" class="invalid-feedback">
-                                      <div *ngIf="f['password'].errors['required']">Password is required</div>
-                                      <div *ngIf="f['password'].errors['minlength']">Password must be at least 6 characters</div>
-                                  </div>
-                                  </div>
-                              </div>
 
-                             
+                                    <h3 class="welcome-title">Welcome to HotelAdmin</h3>
+                                    <p class="welcome-subtitle">Your all-in-one hotel management system</p>
+                                </div>
+                            </div>
 
-                              <div class="mb-3 mb-0 text-center">
-                                  <button class="btn btn-primary" type="submit"> Log In </button>
-                              </div>
+                            <!-- Right side - Login form -->
+                            <div class="col-md-6 login-form-section">
+                                <div class="form-card">
+                                    <div class="form-header">
+                                        <img src="assets/images/logo.png" alt="Logo" height="30" class="mb-3">
+                                        <h4 class="text-center mb-1 fw-semibold">Sign In</h4>
+                                        <p class="text-center text-muted mb-4 small">Enter your email address and
+                                            password to access admin panel.</p>
+                                    </div>
 
-                          </form>
-                      </div> <!-- end card-body -->
-                  </div>
-                  <!-- end card -->
+                                    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+                                        <!-- Email input with icon -->
+                                        <div class="mb-3">
+                                            <label for="email" class="form-label">Email address</label>
+                                            <div class="input-group input-group-merge position-relative">
+                                                <div class="input-icon">
+                                                    <i class="fa fa-envelope"></i>
+                                                </div>
+                                                <input class="form-control has-icon" id="email" formControlName="email"
+                                                    type="text" placeholder="Enter email"
+                                                    [ngClass]="{ 'is-invalid': submitted && f['email'].errors }" />
+                                                <div *ngIf="submitted && f['email'].errors" class="invalid-feedback">
+                                                    <div *ngIf="f['email'].errors['required']">Email is required</div>
+                                                    <div *ngIf="f['email'].errors['email']">Email must be a valid email
+                                                        address</div>
+                                                </div>
+                                            </div>
+                                        </div>
 
-                  
-                  <!-- end row -->
+                                        <!-- Password input -->
+                                        <div class="mb-3">
+                                            <label for="password" class="form-label">Password</label>
+                                            <div class="input-group input-group-merge position-relative">
+                                                <div class="input-icon">
+                                                    <i class="fa fa-lock"></i>
+                                                </div>
+                                                <input class="form-control has-icon" id="password"
+                                                    formControlName="password" [type]="show ? 'text' : 'password'"
+                                                    placeholder="Enter password"
+                                                    [ngClass]="{ 'is-invalid': submitted && f['password'].errors }"
+                                                    required />
+                                                <div
+                                                    class="icon toggle-password position-absolute end-0 top-50 translate-middle-y me-3">
+                                                    <i (click)="OnClick()" style="cursor: pointer;">
+                                                        <i class="fa fa-eye" aria-hidden="true" *ngIf="show"></i>
+                                                        <i class="fa fa-eye-slash" aria-hidden="true" *ngIf="!show"></i>
+                                                    </i>
+                                                </div>
+                                                <div *ngIf="submitted && f['password'].errors" class="invalid-feedback">
+                                                    <div *ngIf="f['password'].errors['required']">Password is required
+                                                    </div>
+                                                    <div *ngIf="f['password'].errors['minlength']">Password must be at
+                                                        least 6 characters</div>
+                                                </div>
+                                            </div>
+                                        </div>
 
-              </div> <!-- end col -->
-          </div>
-          <!-- end row -->
-      </div>
-      <!-- end container -->
-  </div>
-  <!-- end page -->
+                                        <div class="mb-3 d-flex justify-content-between align-items-center">
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" id="remember-me">
+                                                <label class="form-check-label small" for="remember-me">Remember
+                                                    me</label>
+                                            </div>
+                                            <a href="#" class="forgot-link small">Forgot password?</a>
+                                        </div>
 
-  <!-- bundle -->
-  <script src="assets/js/vendor.min.js"></script>
-  <script src="assets/js/app.min.js"></script>
+                                        <!-- Submit button -->
+                                        <div class="mb-3">
+                                            <button class="btn btn-primary w-100" type="submit">Sign In</button>
+                                        </div>
 
+                                        <!-- Separator line -->
+                                        <div class="separator">
+                                            <span>Or continue with</span>
+                                        </div>
+
+                                        <!-- Social login options -->
+                                        <div class="text-center mb-4">
+                                            <div class="d-flex gap-2 justify-content-center">
+                                                <button type="button" class="btn btn-social"><i
+                                                        class="fa fa-google"></i></button>
+                                                <button type="button" class="btn btn-social"><i
+                                                        class="fa fa-facebook"></i></button>
+                                            </div>
+                                        </div>
+
+                                        <div class="signup-link text-center">
+                                            <p class="mb-0 text-muted small">Don't have an account? <a href="#">Sign
+                                                    up</a></p>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div> <!-- end card -->
+                </div> <!-- end col -->
+            </div> <!-- end row -->
+        </div> <!-- end container -->
+    </div> <!-- end page -->
 </div>

@@ -1,151 +1,699 @@
-<div class="wrapper">
+<div class="wrapper reservation-page">
     <app-sidebar></app-sidebar>
     <div class="content-page">
-        <div class="content">
+        <div class="content content-wrapper">
             <app-header></app-header>
-            <div class="container-fluid">
-                <div class="row">
+            <div class="container-fluid py-4">
+                <!-- start page title -->
+                <div class="row mb-4">
                     <div class="col-12">
-                        <div class="page-title-box">
-                            <div class="page-title-right">
-                                <ol class="breadcrumb m-0">
-                                    <li class="breadcrumb-item"><a href="javascript: void(0);">Beyond</a></li>
-                                    <li class="breadcrumb-item"><a href="javascript: void(0);">Managements</a></li>
-                                    <li class="breadcrumb-item active">Booking</li>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h4 class="page-title mb-0">Quản lý đặt phòng</h4>
+                                <nav aria-label="breadcrumb">
+                                    <ol class="breadcrumb m-0 mt-2">
+                                        <li class="breadcrumb-item"><a href="javascript: void(0);"
+                                                class="text-decoration-none">Trang chủ</a></li>
+                                        <li class="breadcrumb-item"><a href="javascript: void(0);"
+                                                class="text-decoration-none">Quản lý</a></li>
+                                        <li class="breadcrumb-item active">Đặt phòng</li>
                                 </ol>
+                                </nav>
                             </div>
-                            <h4 class="page-title">Booking</h4>
+                            <button data-bs-toggle="modal" data-bs-target="#reservation-modal"
+                                class="btn btn-primary rounded-pill d-flex align-items-center">
+                                <i class="mdi mdi-plus-circle me-1"></i> Tạo đơn đặt phòng
+                            </button>
                         </div>
                     </div>
                 </div>
-                <div class="row">
+                <!-- end page title -->
+
+                <!-- Dashboard cards -->
+                <div class="row mb-4 fade-in">
+                    <div class="col-md-3">
+                        <div class="card dashboard-card">
+                            <div class="card-body">
+                                <div class="card-icon bg-primary-lighten text-primary">
+                                    <i class="mdi mdi-calendar-check mdi-24px"></i>
+                                </div>
+                                <h2 class="card-number">{{reservationGetAll?.length || 0}}</h2>
+                                <p class="card-label mb-0">Tổng đơn đặt phòng</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card dashboard-card">
+                            <div class="card-body">
+                                <div class="card-icon bg-success-lighten text-success">
+                                    <i class="mdi mdi-check-circle mdi-24px"></i>
+                                </div>
+                                <h2 class="card-number">{{(reservationGetAll && reservationGetAll.length) ?
+                                    (reservationGetAll | filter:'status':true).length : 0}}</h2>
+                                <p class="card-label mb-0">Đã thanh toán</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card dashboard-card">
+                            <div class="card-body">
+                                <div class="card-icon bg-danger-lighten text-danger">
+                                    <i class="mdi mdi-close-circle mdi-24px"></i>
+                                </div>
+                                <h2 class="card-number">{{(reservationGetAll && reservationGetAll.length) ?
+                                    (reservationGetAll | filter:'status':false).length : 0}}</h2>
+                                <p class="card-label mb-0">Chưa thanh toán</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card dashboard-card">
+                            <div class="card-body">
+                                <div class="card-icon bg-info-lighten text-info">
+                                    <i class="mdi mdi-currency-usd mdi-24px"></i>
+                                </div>
+                                <h2 class="card-number">{{getTotalRevenue() | vndCurrency}}</h2>
+                                <p class="card-label mb-0">Tổng doanh thu</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Advanced filter section -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="filter-section fade-in">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="m-0">Bộ lọc nâng cao</h5>
+                                <button class="btn btn-sm btn-outline-secondary" (click)="toggleFilterSection()">
+                                    <i class="mdi" [ngClass]="showFilters ? 'mdi-chevron-up' : 'mdi-chevron-down'"></i>
+                                </button>
+                            </div>
+
+                            <div class="row g-3" *ngIf="showFilters">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="form-label">Tìm kiếm</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="mdi mdi-magnify"></i></span>
+                                            <input type="text" [(ngModel)]="searchReservation"
+                                                class="form-control filter-control"
+                                                placeholder="Tìm theo ID, phòng, khách hàng...">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="form-label">Trạng thái</label>
+                                        <select class="form-select filter-control" [(ngModel)]="statusFilter">
+                                            <option value="all">Tất cả trạng thái</option>
+                                            <option value="true">Đã thanh toán</option>
+                                            <option value="false">Chưa thanh toán</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="form-label">Từ ngày</label>
+                                        <input type="date" class="form-control filter-control" [(ngModel)]="dateFrom">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="form-label">Đến ngày</label>
+                                        <input type="date" class="form-control filter-control" [(ngModel)]="dateTo">
+                                    </div>
+                                </div>
+                                <div class="col-12 d-flex justify-content-end mt-3">
+                                    <button type="button" class="btn btn-outline-secondary me-2"
+                                        (click)="clearFilters()">
+                                        <i class="mdi mdi-refresh me-1"></i> Đặt lại
+                                    </button>
+                                    <button type="button" class="btn btn-primary" (click)="applyFilters()">
+                                        <i class="mdi mdi-filter me-1"></i> Áp dụng bộ lọc
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                                            </div>
+
+                <!-- View toggle buttons -->
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="view-toggle">
+                                <button class="btn" [ngClass]="{'active': viewMode === 'card'}"
+                                    (click)="setViewMode('card')">
+                                    <i class="mdi mdi-view-grid-outline me-1"></i> Card
+                                </button>
+                                <button class="btn" [ngClass]="{'active': viewMode === 'table'}"
+                                    (click)="setViewMode('table')">
+                                    <i class="mdi mdi-table me-1"></i> Bảng
+                                </button>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <button type="button" class="btn btn-light btn-sm me-2" (click)="exportData()">
+                                    <i class="mdi mdi-download me-1"></i> Xuất Excel
+                                </button>
+                                <div class="dropdown">
+                                    <button class="btn btn-light btn-sm dropdown-toggle" type="button" id="sortDropdown"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="mdi mdi-sort me-1"></i> Sắp xếp
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="sortDropdown">
+                                        <li><a class="dropdown-item" href="javascript:void(0);"
+                                                (click)="sortBy('newest')">Mới nhất</a></li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);"
+                                                (click)="sortBy('oldest')">Cũ nhất</a></li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);"
+                                                (click)="sortBy('priceHighest')">Giá cao nhất</a></li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);"
+                                                (click)="sortBy('priceLowest')">Giá thấp nhất</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                                            </div>
+
+                <!-- Card View Mode -->
+                <div class="row" *ngIf="viewMode === 'card' && filteredReservations && filteredReservations.length > 0">
+                    <div class="col-md-4 col-xl-3 mb-4" *ngFor="let item of filteredReservations">
+                        <div class="reservation-card">
+                            <div class="card h-100">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <span class="booking-id">#{{item.id.substring(0, 8)}}</span>
+                                    <span class="status-badge"
+                                        [ngClass]="{'status-paid': item.status, 'status-failed': !item.status}">
+                                        <i class="mdi"
+                                            [ngClass]="item.status ? 'mdi-check-circle' : 'mdi-close-circle'"></i>
+                                        {{item.status ? 'Đã thanh toán' : 'Chưa thanh toán'}}
+                                    </span>
+                                </div>
+                                <div class="card-body reservation-details">
+                                    <div class="mb-3">
+                                        <h5 class="mb-1">Phòng {{item.roomNumber}}</h5>
+                                        <div class="reservation-user">
+                                            <i class="mdi mdi-account text-muted me-1"></i> {{item.name}}
+                                        </div>
+                                            </div>
+
+                                    <div class="d-flex justify-content-between mb-3">
+                                        <div>
+                                            <small class="text-muted d-block">Ngày nhận phòng</small>
+                                            <div class="reservation-dates">
+                                                <i class="mdi mdi-calendar-start text-success me-1"></i>
+                                                {{item.startDate | date : "dd/MM/yyyy"}}
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <small class="text-muted d-block">Ngày trả phòng</small>
+                                            <div class="reservation-dates">
+                                                <i class="mdi mdi-calendar-end text-danger me-1"></i>
+                                                {{item.endDate | date : "dd/MM/yyyy"}}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <div class="reservation-days">
+                                            <i class="mdi mdi-calendar-clock me-1"></i>
+                                            {{item.numberOfDay}} ngày
+                                        </div>
+                                        <div class="reservation-price">
+                                            {{item.reservationPrice | vndCurrency}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <button type="button" class="btn btn-sm btn-primary w-100" data-bs-toggle="modal"
+                                        data-bs-target="#detail-modal" (click)="GetReservationById(item.id)">
+                                        <i class="mdi mdi-eye me-1"></i> Xem chi tiết
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Empty state when no data -->
+                <div class="row" *ngIf="filteredReservations && filteredReservations.length === 0">
+                    <div class="col-12">
+                        <div class="text-center py-5">
+                            <i class="mdi mdi-calendar-remove text-muted" style="font-size: 4rem;"></i>
+                            <h5 class="mt-3">Không tìm thấy dữ liệu đặt phòng</h5>
+                            <p class="text-muted">Không có đơn đặt phòng nào phù hợp với các tiêu chí tìm kiếm của bạn.
+                            </p>
+                            <button class="btn btn-primary" (click)="clearFilters()">Đặt lại bộ lọc</button>
+                        </div>
+                    </div>
+                                </div>
+
+                <!-- Table View Mode -->
+                <div class="row" *ngIf="viewMode === 'table'">
                     <div class="col-12">
                         <div class="card">
                             <div class="card-body">
-                                <form action="#" [formGroup]="formSearch">
-                                    <div class="row mb-2">
-                                        <div class="col-3">
-                                            <label for="example-email" class="form-label">CheckIn</label>
-                                            <mat-form-field appearance="fill">
-                                                <input matInput [matDatepicker]="picker2" formControlName="checkIn">
-                                                <mat-datepicker-toggle matIconSuffix
-                                                    [for]="picker2"></mat-datepicker-toggle>
-                                                <mat-datepicker #picker2></mat-datepicker>
-                                            </mat-form-field>
-                                        </div>
-                                        <div class="col-3">
-                                            <label for="example-email" class="form-label">CheckOut</label>
-                                            <mat-form-field appearance="fill">
-                                                <input matInput [matDatepicker]="picker3" formControlName="checkOut">
-                                                <mat-datepicker-toggle matIconSuffix
-                                                    [for]="picker3"></mat-datepicker-toggle>
-                                                <mat-datepicker #picker3></mat-datepicker>
-                                            </mat-form-field>
-                                        </div>
-                                        <div class="col-3">
-                                            <label for="example-email" class="form-label"
-                                                style="display: inherit;">Person</label>
-                                            <mat-form-field appearance="fill">
-                                                <mat-select formControlName="peopleNumber">
-                                                    <mat-option [value]="0" disabled selected>Select people
-                                                        number</mat-option>
-                                                    <mat-option *ngFor="let i of dataSearch.maxPerson"
-                                                        [value]="i">{{i}}</mat-option>
-                                                </mat-select>
-                                            </mat-form-field>
-                                        </div>
-                                        <div style="margin-left: -3rem;" class="col-3">
-                                            <label for="example-email" class="form-label" style="display: inherit;">Room
-                                                Type</label>
-                                            <mat-form-field appearance="fill">
-                                                <mat-select formControlName="roomTypeId">
-                                                    <mat-option [value]="0" disabled selected>Select room
-                                                        type</mat-option>
-                                                    <mat-option *ngFor="let roomType of dataSearch.roomTypes"
-                                                        value="{{roomType.id}}">{{roomType.typeName}}</mat-option>
-                                                </mat-select>
-                                            </mat-form-field>
-                                        </div>
-                                        <div style="    position: absolute;
-                                        top: 3.75rem;right: 1rem;" class="col-1">
-                                            <button type="button" class="btn p-2 btn-info"
-                                                (click)="getRoomByDateSearch()">Search</button>
-                                        </div>
-                                    </div>
-                                </form>
-
                                 <div class="table-responsive">
-                                    <table class="table table-centered w-100 dt-responsive nowrap"
-                                        id="products-datatable">
+                                    <table class="table table-centered table-hover">
                                         <thead class="table-light">
                                             <tr>
-
-                                                <th class="all">Room name</th>
-                                                <th>Roomtype name</th>
-                                                <th>Price</th>
-                                                <th>Discount price</th>
-                                                <th>Simple bed</th>
-                                                <th>Double bed</th>
-                                                <th>People number</th>
-                                                <th>Status</th>
-                                                <th style="width: 135px;">Action</th>
+                                                <th style="width: 80px;">ID</th>
+                                                <th>Phòng</th>
+                                                <th>Khách hàng</th>
+                                                <th>Thời gian</th>
+                                                <th>Số ngày</th>
+                                                <th>Giá phòng</th>
+                                                <th>Thành tiền</th>
+                                                <th>Trạng thái</th>
+                                                <th style="width: 100px;">Thao tác</th>
                                             </tr>
                                         </thead>
-                                        <tbody *ngFor="let room of rooms;let i = index;" class="align-middle">
-                                            <tr *ngIf="room">
-
-                                                <td style="height: 100px;">
-                                                    <div class="m-0 d-inline-block align-middle font-16">
-                                                        <a href="apps-ecommerce-products-details.html"
-                                                            class="text-body fw-semibold">{{room.name}}</a>
-                                                        <br>
-                                                        <!-- <a href="apps-ecommerce-products-details.html" class="text-body">{{room.name}}</a> -->
-                                                        <span class="text-warning mdi mdi-star"></span>
-                                                        <span class="text-warning mdi mdi-star"></span>
-                                                        <span class="text-warning mdi mdi-star"></span>
-                                                        <span class="text-warning mdi mdi-star"></span>
-                                                        <span class="text-warning mdi mdi-star"></span>
+                                        <tbody>
+                                            <tr *ngFor="let item of filteredReservations">
+                                                <td>
+                                                    <span class="fw-bold">#{{item.id.substring(0, 8)}}</span>
+                                                </td>
+                                                <td>
+                                                    {{item.roomNumber}}
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="avatar avatar-sm me-2 bg-light rounded-circle">
+                                                            <span class="avatar-text">{{item.name.charAt(0)}}</span>
+                                                        </div>
+                                                        <div>{{item.name}}</div>
                                                     </div>
                                                 </td>
-                                                <td>{{room.roomTypeName}}</td>
                                                 <td>
-                                                    {{room.currentPrice | vndCurrency}}
+                                                    <div>{{item.startDate | date : "dd/MM/yyyy"}} - {{item.endDate |
+                                                        date :
+                                                        "dd/MM/yyyy"}}</div>
                                                 </td>
                                                 <td>
-                                                    {{(room.discountPrice == null?0:room.discountPrice) | vndCurrency}}
+                                                    {{item.numberOfDay}} ngày
                                                 </td>
                                                 <td>
-                                                    {{room.numberOfSimpleBed}}
+                                                    {{item.roomPrice | vndCurrency}}
                                                 </td>
                                                 <td>
-                                                    {{room.numberOfDoubleBed}}
+                                                    <span class="fw-bold">{{item.reservationPrice | vndCurrency}}</span>
                                                 </td>
                                                 <td>
-                                                    {{room.peopleNumber}}
+                                                    <span class="badge rounded-pill"
+                                                        [ngClass]="{'bg-success': item.status, 'bg-danger': !item.status}">
+                                                        {{item.status ? 'Đã thanh toán' : 'Chưa thanh toán'}}
+                                                    </span>
                                                 </td>
                                                 <td>
-                                                    <div *ngIf="room.isActive; else inactiveBadge">
-                                                        <span class="badge bg-success">Active</span>
+                                                    <div class="d-flex">
+                                                        <button type="button" class="btn btn-sm btn-light me-1"
+                                                            data-bs-toggle="modal" data-bs-target="#detail-modal"
+                                                            (click)="GetReservationById(item.id)">
+                                                            <i class="mdi mdi-eye"></i>
+                                                        </button>
+                                                        <div class="dropdown">
+                                                            <button class="btn btn-sm btn-light" type="button"
+                                                                data-bs-toggle="dropdown">
+                                                                <i class="mdi mdi-dots-vertical"></i>
+                                                    </button>
+                                                            <ul class="dropdown-menu dropdown-menu-end">
+                                                                <li><a class="dropdown-item" href="javascript:void(0);"
+                                                                        (click)="printReservation(item.id)">
+                                                                        <i class="mdi mdi-printer me-1"></i> In hóa đơn
+                                                                    </a></li>
+                                                                <li><a class="dropdown-item" href="javascript:void(0);"
+                                                                        (click)="updateStatus(item.id, !item.status)">
+                                                                        <i class="mdi mdi-swap-horizontal me-1"></i> Đổi
+                                                                        trạng thái
+                                                                    </a></li>
+                                                            </ul>
+                                                        </div>
                                                     </div>
-
-                                                    <ng-template #inactiveBadge>
-                                                        <span class="badge bg-danger">Inactive</span>
-                                                    </ng-template>
-                                                </td>
-                                                <td>
-
-                                                    <button type="button" tabindex="0"
-                                                        class="btn btn-primary btn-rounded booking"
-                                                        (click)="reservationCreate(room.id)"
-                                                        [attr.disabled]="checkSearchData ? '' : null">Book</button>
                                                 </td>
                                             </tr>
                                         </tbody>
                                     </table>
                                 </div>
-                            </div> <!-- end card-body-->
-                        </div> <!-- end card-->
-                    </div> <!-- end col -->
+
+                                <!-- Pagination -->
+                                <div class="custom-pagination mt-4">
+                                    <nav>
+                                        <ul class="pagination">
+                                            <li class="page-item" [ngClass]="{'disabled': currentPage === 1}">
+                                                <a class="page-link" href="javascript:void(0);"
+                                                    (click)="goToPage(currentPage - 1)">
+                                                    <i class="mdi mdi-chevron-left"></i>
+                                                </a>
+                                            </li>
+                                            <li class="page-item" *ngFor="let page of getPageNumbers()"
+                                                [ngClass]="{'active': page === currentPage}">
+                                                <a class="page-link" href="javascript:void(0);"
+                                                    (click)="goToPage(page)">{{page}}</a>
+                                            </li>
+                                            <li class="page-item" [ngClass]="{'disabled': currentPage === totalPages}">
+                                                <a class="page-link" href="javascript:void(0);"
+                                                    (click)="goToPage(currentPage + 1)">
+                                                    <i class="mdi mdi-chevron-right"></i>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </nav>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detail Modal -->
+                <div id="detail-modal" class="modal fade custom-modal" tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Chi tiết đặt phòng</h4>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" id="detail-modal-close"
+                                    aria-hidden="true"></button>
+                            </div>
+                            <div class="modal-body" *ngIf="reservationGetById">
+                                <div class="row">
+                                    <div class="col-12 mb-4">
+                                        <div class="detail-section">
+                                            <div class="d-flex justify-content-between mb-3">
+                                                <h5 class="mb-0">Thông tin đặt phòng</h5>
+                                                <span class="badge"
+                                                    [ngClass]="{'status-paid': reservationGetById.status, 'status-failed': !reservationGetById.status}">
+                                                    <i class="mdi"
+                                                        [ngClass]="reservationGetById.status ? 'mdi-check-circle' : 'mdi-close-circle'"></i>
+                                                    {{reservationGetById.status ? 'Đã thanh toán' : 'Chưa thanh toán'}}
+                                                </span>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <span class="detail-label d-block">Mã đặt phòng</span>
+                                                        <span class="detail-value">{{reservationGetById.id}}</span>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <span class="detail-label d-block">Phòng số</span>
+                                                        <span
+                                                            class="detail-value">{{reservationGetById.roomNumber}}</span>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <span class="detail-label d-block">Giá phòng</span>
+                                                        <span class="detail-value">{{reservationGetById.roomPrice |
+                                                            vndCurrency}}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <span class="detail-label d-block">Ngày bắt đầu</span>
+                                                        <span class="detail-value">{{reservationGetById.startDate |
+                                                            date:"dd/MM/yyyy -
+                                                            HH:mm"}}</span>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <span class="detail-label d-block">Ngày kết thúc</span>
+                                                        <span class="detail-value">{{reservationGetById.endDate |
+                                                            date:"dd/MM/yyyy -
+                                                            HH:mm"}}</span>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <span class="detail-label d-block">Số ngày</span>
+                                                        <span class="detail-value">{{reservationGetById.numberOfDay}}
+                                                            ngày</span>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <span class="detail-label d-block">Tổng tiền</span>
+                                                        <span class="detail-value">{{reservationGetById.reservationPrice
+                                                            |
+                                                            vndCurrency}}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-4">
+                                        <div class="detail-section h-100">
+                                            <h5 class="mb-3">Thông tin khách hàng</h5>
+                                            <div class="d-flex align-items-center mb-4">
+                                                <div class="avatar bg-primary-lighten me-3 rounded-circle">
+                                                    <span
+                                                        class="avatar-text text-primary">{{reservationGetById.name.charAt(0)}}</span>
+                                                </div>
+                                                <div>
+                                                    <h5 class="mb-0">{{reservationGetById.name}}</h5>
+                                                    <span class="text-muted small">{{reservationGetById.userName ||
+                                                        'Khách
+                                                        không đăng
+                                                        nhập'}}</span>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <span class="detail-label d-block">Địa chỉ</span>
+                                                <span class="detail-value">{{reservationGetById.address}}</span>
+                                            </div>
+                                            <div class="mb-3">
+                                                <span class="detail-label d-block">Số điện thoại</span>
+                                                <span class="detail-value">{{reservationGetById.phoneNumber}}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 mb-4">
+                                        <div class="detail-section h-100">
+                                            <h5 class="mb-3">Thông tin thanh toán</h5>
+                                            <div class="mb-3">
+                                                <span class="detail-label d-block">Phương thức thanh toán</span>
+                                                <span class="detail-value"
+                                                    *ngIf="reservationGetById.reservationPayment?.payType">
+                                                    <i class="mdi mdi-credit-card-outline me-1"></i>
+                                                    {{reservationGetById.reservationPayment?.payType}}
+                                                </span>
+                                                <span class="detail-value"
+                                                    *ngIf="!reservationGetById.reservationPayment?.payType">
+                                                    <i class="mdi mdi-cash me-1"></i> Thanh toán tại quầy
+                                                </span>
+                                            </div>
+                                            <div class="mb-3">
+                                                <span class="detail-label d-block">Thời gian thanh toán</span>
+                                                <span class="detail-value"
+                                                    *ngIf="reservationGetById.reservationPayment?.createdAt">
+                                                    {{reservationGetById.reservationPayment?.createdAt |
+                                                    date:"dd/MM/yyyy -
+                                                    HH:mm"}}
+                                                </span>
+                                                <span class="detail-value text-muted"
+                                                    *ngIf="!reservationGetById.reservationPayment?.createdAt">
+                                                    Chưa thanh toán
+                                                </span>
+                                            </div>
+                                            <div class="mb-3">
+                                                <span class="detail-label d-block">Trạng thái thanh toán</span>
+                                                <span class="badge"
+                                                    [ngClass]="{'status-paid': reservationGetById.status, 'status-failed': !reservationGetById.status}">
+                                                    {{reservationGetById.status ? 'Thành công' : 'Thất bại'}}
+                                                </span>
+                                            </div>
+                                            <div class="mb-3" *ngIf="reservationGetById.reservationPayment?.message">
+                                                <span class="detail-label d-block">Ghi chú</span>
+                                                <span
+                                                    class="detail-value">{{reservationGetById.reservationPayment?.message}}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="detail-section">
+                                            <h5 class="mb-3">Thời gian</h5>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <span class="detail-label d-block">Thời gian tạo</span>
+                                                        <span class="detail-value">{{reservationGetById.createdAt |
+                                                            date:"dd/MM/yyyy -
+                                                            HH:mm"}}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <span class="detail-label d-block">Cập nhật gần nhất</span>
+                                                        <span class="detail-value" *ngIf="reservationGetById.updatedAt">
+                                                            {{reservationGetById.updatedAt | date:"dd/MM/yyyy - HH:mm"}}
+                                                        </span>
+                                                        <span class="detail-value text-muted"
+                                                            *ngIf="!reservationGetById.updatedAt">
+                                                            Chưa có cập nhật
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="d-flex justify-content-between w-100">
+                                    <button *ngIf="reservationGetById" type="button" class="btn btn-light"
+                                        (click)="printReservation(reservationGetById.id)">
+                                        <i class="mdi mdi-printer me-1"></i> In hóa đơn
+                                    </button>
+                                    <div>
+                                        <button *ngIf="reservationGetById" type="button" class="btn btn-primary me-2"
+                                            (click)="updateStatus(reservationGetById.id, !reservationGetById.status)">
+                                            <i class="mdi"
+                                                [ngClass]="reservationGetById?.status ? 'mdi-close-circle' : 'mdi-check-circle'"></i>
+                                            {{reservationGetById?.status ? 'Đánh dấu chưa thanh toán' : 'Đánh dấu đã
+                                            thanh
+                                            toán'}}
+                                        </button>
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Đóng</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- New Reservation Modal -->
+                <div class="modal fade custom-modal" id="reservation-modal" tabindex="-1" role="dialog"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Tạo đơn đặt phòng mới</h4>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    id="reservation-modal-close" aria-hidden="true"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form [formGroup]="reservationForm">
+                                    <div class="row g-3">
+                                        <!-- Room Information -->
+                                        <div class="col-12">
+                                            <h5 class="section-title">Thông tin phòng</h5>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-label">Chọn phòng</label>
+                                                <select class="form-select filter-control" formControlName="roomId">
+                                                    <option value="">Chọn phòng</option>
+                                                    <option *ngFor="let room of availableRooms" [value]="room.id">
+                                                        {{room.roomNumber}} - {{room.name}} ({{room.currentPrice |
+                                                        vndCurrency}})
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-label">Số ngày</label>
+                                                <input type="number" formControlName="numberOfDay"
+                                                    class="form-control filter-control" placeholder="Nhập số ngày">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-label">Ngày bắt đầu</label>
+                                                <input type="datetime-local" formControlName="startDate"
+                                                    class="form-control filter-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-label">Ngày kết thúc</label>
+                                                <input type="datetime-local" formControlName="endDate"
+                                                    class="form-control filter-control" readonly>
+                                            </div>
+                                        </div>
+
+                                        <!-- Customer Information -->
+                                        <div class="col-12 mt-4">
+                                            <h5 class="section-title">Thông tin khách hàng</h5>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-label">Họ và tên</label>
+                                                <input type="text" formControlName="name"
+                                                    class="form-control filter-control"
+                                                    placeholder="Nhập họ tên khách hàng">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-label">Email</label>
+                                                <input type="email" formControlName="email"
+                                                    class="form-control filter-control" placeholder="Nhập email">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-label">Số điện thoại</label>
+                                                <input type="text" formControlName="phoneNumber"
+                                                    class="form-control filter-control"
+                                                    placeholder="Nhập số điện thoại">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-label">Địa chỉ</label>
+                                                <input type="text" formControlName="address"
+                                                    class="form-control filter-control" placeholder="Nhập địa chỉ">
+                                            </div>
+                                        </div>
+
+                                        <!-- Payment Information -->
+                                        <div class="col-12 mt-4">
+                                            <h5 class="section-title">Thông tin thanh toán</h5>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-label">Phương thức thanh toán</label>
+                                                <select class="form-select filter-control"
+                                                    formControlName="paymentMethod">
+                                                    <option value="momo">MoMo</option>
+                                                    <option value="vnpay">VNPay</option>
+                                                    <option value="cash">Tiền mặt tại quầy</option>
+                                                    <option value="card">Thẻ tín dụng</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-label">Tổng tiền dự kiến</label>
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control filter-control"
+                                                        [value]="calculateTotal() | vndCurrency" readonly>
+                                                    <span class="input-group-text"><i
+                                                            class="mdi mdi-currency-usd"></i></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Hủy</button>
+                                <button type="button" class="btn btn-primary" (click)="createReservation()">Tạo đơn đặt
+                                    phòng</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Loading Spinner -->
+                <div class="loading-overlay" *ngIf="isLoading">
+                    <div class="spinner-container">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Đang tải...</span>
+                        </div>
+                        <p class="mt-2">Đang xử lý...</p>
+                    </div>
                 </div>
             </div>
         </div>
