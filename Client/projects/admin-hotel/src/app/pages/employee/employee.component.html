@@ -1,132 +1,631 @@
-
-<div class="wrapper">
-    <app-sidebar></app-sidebar>
-    <div class="content-page">
-      <div class="content">
-        <app-header></app-header>
-        <div class="container-fluid">
-          <div class="row">
-            <div class="col-12">
-                <div class="page-title-box">
-                    <div class="page-title-right">
-                        <ol class="breadcrumb m-0">
-                            <li class="breadcrumb-item"><a href="javascript: void(0);">Beyond</a></li>
-                            <li class="breadcrumb-item"><a href="javascript: void(0);">Managements</a></li>
-                            <li class="breadcrumb-item active">Employee</li>
-                        </ol>
-                    </div>
-                    <h4 class="page-title">Employee</h4>
-                </div>
+<div class="wrapper employee-page">
+  <app-sidebar></app-sidebar>
+  <div class="content-page">
+    <div class="content content-wrapper">
+      <app-header></app-header>
+      <div class="container-fluid py-4">
+        <!-- start page title -->
+        <div class="row mb-4">
+          <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h4 class="page-title mb-0">Quản lý nhân viên</h4>
+                <nav aria-label="breadcrumb">
+                  <ol class="breadcrumb m-0 mt-2">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);" class="text-decoration-none">Trang
+                        chủ</a></li>
+                    <li class="breadcrumb-item"><a href="javascript: void(0);" class="text-decoration-none">Quản lý</a>
+                    </li>
+                    <li class="breadcrumb-item active">Nhân viên</li>
+                  </ol>
+                </nav>
+              </div>
+              <button data-bs-toggle="modal" data-bs-target="#modal-create"
+                class="btn btn-primary rounded-pill d-flex align-items-center">
+                <i class="mdi mdi-plus-circle me-1"></i> Thêm nhân viên mới
+              </button>
             </div>
           </div>
-          <!-- end page title -->
-  
-          <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="row mb-2">
-                            <div class="col-sm-4">
-                                <div class="row gy-2 gx-2 align-items-center justify-content-xl-start justify-content-between">
-                                <div class="col-auto">
-                                    <label for="inputPassword2" class="visually-hidden">Search</label>
-                                    <input type="search" [(ngModel)]="searchTerm2" class="form-control" id="inputPassword2"
-                                        placeholder="Search...">
+        </div>
+        <!-- end page title -->
 
-                                    </div>
-                                    <div class="col-auto">
-                                        <button type="submit" class="btn btn-primary" (click)="searchBookings2()">Search</button>
-                                    </div>
-                                    <div class="col-auto">
-                                        <button type="button" class="btn btn-secondary" (click)="clearSearch2()">Clear</button>
-                                      </div>
-                              
+        <!-- Dashboard cards -->
+        <div class="row mb-4 fade-in">
+          <div class="col-md-3">
+            <div class="card dashboard-card">
+              <div class="card-body">
+                <div class="card-icon bg-primary-lighten text-primary">
+                  <i class="mdi mdi-account-group mdi-24px"></i>
+                </div>
+                <h2 class="card-number">{{getTotalEmployees()}}</h2>
+                <p class="card-label mb-0">Tổng số nhân viên</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card dashboard-card">
+              <div class="card-body">
+                <div class="card-icon bg-success-lighten text-success">
+                  <i class="mdi mdi-check-circle mdi-24px"></i>
+                </div>
+                <h2 class="card-number">{{getActiveEmployeesCount()}}</h2>
+                <p class="card-label mb-0">Đang hoạt động</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card dashboard-card">
+              <div class="card-body">
+                <div class="card-icon bg-danger-lighten text-danger">
+                  <i class="mdi mdi-close-circle mdi-24px"></i>
+                </div>
+                <h2 class="card-number">{{getInactiveEmployeesCount()}}</h2>
+                <p class="card-label mb-0">Không hoạt động</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card dashboard-card">
+              <div class="card-body">
+                <div class="card-icon bg-warning-lighten text-warning">
+                  <i class="mdi mdi-currency-usd mdi-24px"></i>
+                </div>
+                <h2 class="card-number">{{getTotalSalary() | number:'1.0-0'}}</h2>
+                <p class="card-label mb-0">Tổng lương (VND)</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Advanced filter section -->
+        <div class="row mb-4">
+          <div class="col-12">
+            <div class="filter-section fade-in">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="m-0">Bộ lọc nâng cao</h5>
+                <button class="btn btn-sm btn-outline-secondary" (click)="toggleFilterSection()">
+                  <i class="mdi" [ngClass]="showFilters ? 'mdi-chevron-up' : 'mdi-chevron-down'"></i>
+                </button>
+              </div>
+
+              <div class="row g-3" *ngIf="showFilters">
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label class="form-label">Tìm kiếm</label>
+                    <div class="input-group">
+                      <span class="input-group-text"><i class="mdi mdi-magnify"></i></span>
+                      <input type="text" [(ngModel)]="searchTerm" class="form-control filter-control"
+                        placeholder="Tìm theo tên, email, số điện thoại...">
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label class="form-label">Trạng thái</label>
+                    <select class="form-select filter-control" [(ngModel)]="statusFilter">
+                      <option value="all">Tất cả trạng thái</option>
+                      <option value="active">Đang hoạt động</option>
+                      <option value="inactive">Không hoạt động</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label class="form-label">Phòng ban</label>
+                    <select class="form-select filter-control" [(ngModel)]="departmentFilter">
+                      <option value="all">Tất cả phòng ban</option>
+                      <option *ngFor="let dept of departments" [value]="dept">{{dept}}</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-12 d-flex justify-content-end mt-3">
+                  <button type="button" class="btn btn-outline-secondary me-2" (click)="clearFilters()">
+                    <i class="mdi mdi-refresh me-1"></i> Đặt lại
+                  </button>
+                  <button type="button" class="btn btn-primary" (click)="applyFilters()">
+                    <i class="mdi mdi-filter me-1"></i> Áp dụng bộ lọc
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- View toggle buttons -->
+        <div class="row mb-3">
+          <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="view-toggle">
+                <button class="btn" [ngClass]="{'active': viewMode === 'card'}" (click)="setViewMode('card')">
+                  <i class="mdi mdi-view-grid-outline me-1"></i> Card
+                </button>
+                <button class="btn" [ngClass]="{'active': viewMode === 'table'}" (click)="setViewMode('table')">
+                  <i class="mdi mdi-table me-1"></i> Bảng
+                </button>
+              </div>
+              <div class="d-flex align-items-center">
+                <button type="button" class="btn btn-light btn-sm me-2" (click)="exportData()">
+                  <i class="mdi mdi-download me-1"></i> Xuất Excel
+                </button>
+                <div class="dropdown">
+                  <button class="btn btn-light btn-sm dropdown-toggle" type="button" id="sortDropdown"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="mdi mdi-sort me-1"></i> Sắp xếp
+                  </button>
+                  <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="sortDropdown">
+                    <li><a class="dropdown-item" href="javascript:void(0);" (click)="sortBy('nameAsc')">Tên A-Z</a></li>
+                    <li><a class="dropdown-item" href="javascript:void(0);" (click)="sortBy('nameDesc')">Tên Z-A</a>
+                    </li>
+                    <li><a class="dropdown-item" href="javascript:void(0);" (click)="sortBy('newest')">Mới nhất</a>
+                    </li>
+                    <li><a class="dropdown-item" href="javascript:void(0);" (click)="sortBy('oldest')">Cũ nhất</a>
+                    </li>
+                    <li><a class="dropdown-item" href="javascript:void(0);" (click)="sortBy('salaryAsc')">Lương
+                        thấp-cao</a>
+                    </li>
+                    <li><a class="dropdown-item" href="javascript:void(0);" (click)="sortBy('salaryDesc')">Lương
+                        cao-thấp</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card View Mode -->
+        <div class="row" *ngIf="viewMode === 'card' && filteredEmployees && filteredEmployees.length > 0">
+          <div class="col-md-4 col-xl-3 mb-4" *ngFor="let item of filteredEmployees">
+            <div class="employee-card">
+              <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <span class="employee-id">#{{item.id.substring(0, 8)}}</span>
+                  <span class="status-badge"
+                    [ngClass]="{'status-active': item.emailConfirmed === 'true', 'status-inactive': item.emailConfirmed !== 'true'}">
+                    <i class="mdi"
+                      [ngClass]="item.emailConfirmed === 'true' ? 'mdi-check-circle' : 'mdi-close-circle'"></i>
+                    {{item.emailConfirmed === 'true' ? 'Hoạt động' : 'Không hoạt động'}}
+                  </span>
+                </div>
+                <div class="card-body employee-details">
+                  <div class="mb-3 text-center">
+                    <div class="employee-avatar mb-2">
+                      <img [src]="item.image || 'assets/images/users/avatar-1.jpg'" alt="{{item.name}}">
+                    </div>
+                    <h5 class="mb-1 mt-2">{{item.name}}</h5>
+                    <div class="department-badge"
+                      [ngClass]="'dept-' + (item.department || 'management').toLowerCase().split(' ')[0]">
+                      {{item.department || 'Quản lý'}}
+                    </div>
+                    <div class="position-info mt-1 text-muted">
+                      {{item.position || 'Nhân viên'}}
+                    </div>
+                    <div class="salary-tag mt-2">
+                      <span class="current-salary">{{item.salary || 0 | number:'1.0-0'}} VND</span>
+                    </div>
+                  </div>
+
+                  <div class="employee-info mt-3">
+                    <div class="d-flex justify-content-between mb-2">
+                      <span><i class="mdi mdi-email me-1"></i> Email:</span>
+                      <span class="fw-bold">{{item.email}}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                      <span><i class="mdi mdi-phone me-1"></i> Số điện thoại:</span>
+                      <span class="fw-bold">{{item.phoneNumber}}</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-footer d-flex">
+                  <button type="button" class="btn btn-sm btn-primary flex-grow-1 me-1" data-bs-toggle="modal"
+                    data-bs-target="#modal-update" (click)="editEmployee(item)">
+                    <i class="mdi mdi-pencil me-1"></i> Chỉnh sửa
+                  </button>
+                  <button type="button" class="btn btn-sm btn-danger flex-grow-1" (click)="confirmDelete(item.id)">
+                    <i class="mdi mdi-delete me-1"></i> Xóa
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Empty state when no data -->
+        <div class="row" *ngIf="filteredEmployees && filteredEmployees.length === 0">
+          <div class="col-12">
+            <div class="text-center py-5">
+              <i class="mdi mdi-account-off text-muted" style="font-size: 4rem;"></i>
+              <h5 class="mt-3">Không tìm thấy dữ liệu nhân viên</h5>
+              <p class="text-muted">Không có nhân viên nào phù hợp với các tiêu chí tìm kiếm của bạn.</p>
+              <button class="btn btn-primary" (click)="clearFilters()">Đặt lại bộ lọc</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Table View Mode -->
+        <div class="row" *ngIf="viewMode === 'table'">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-centered table-hover">
+                    <thead class="table-light">
+                      <tr>
+                        <th style="width: 60px;">ID</th>
+                        <th>Nhân viên</th>
+                        <th>Phòng ban</th>
+                        <th>Chức vụ</th>
+                        <th>Liên hệ</th>
+                        <th>Lương</th>
+                        <th>Trạng thái</th>
+                        <th style="width: 150px;">Thao tác</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let item of filteredEmployees">
+                        <td>
+                          <span class="fw-bold">#{{item.id.substring(0, 8)}}</span>
+                        </td>
+                        <td>
+                          <div class="d-flex align-items-center">
+                            <div class="avatar avatar-sm me-2">
+                              <img [src]="item.image || 'assets/images/users/avatar-1.jpg'" class="rounded-circle"
+                                alt="{{item.name}}">
                             </div>
-                            </div>
-                            <div class="col-sm-8">
-                                <div class="text-sm-end">
-                                    <a data-bs-toggle="modal" data-bs-target="#modal-detail2" class="btn btn-danger mb-2"><i class="mdi mdi-plus-circle me-2"></i> Add Employee</a>
-                                    <!-- <button type="button" class="btn btn-light mb-2 me-1">Import</button>
-                                    <button type="button" class="btn btn-light mb-2">Export</button> -->
-                                </div>
-                            </div><!-- end col-->
-                        </div>
-  
-                        <div class="table-responsive">
-                            <table class="table table-centered table-striped dt-responsive nowrap w-100" id="products-datatable">
-                                <thead>
-                                    <tr>
-                                        
-                                        <th>Employee</th>
-                                        <th>Phone Number</th>
-                                        <th>Email</th>
-                                        <th>Address</th>
-                                        <th>Create Date</th>
-                                        <th>Status</th>
-                                        <th style="width: 75px;">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                   
-                                    <tr *ngFor="let item of Accounts; let i = index">
-                                        
-                                        <td class="table-user">
-                                            <img src="{{item.image}}" alt="table-user" class="me-2 rounded-circle">
-                                            <a href="javascript:void(0);" class="text-body fw-semibold">{{item.name}}</a>
-                                        </td>
-                                        <td>
-                                          {{item.phoneNumber}}
-                                        </td>
-                                        <td>
-                                          {{item.email}}
-                                        </td>
-                                        <td>
-                                          {{item.address}}
-                                        </td>
-                                        <td>
-                                           {{item.createdAt |  date:'fullDate'}}
-                                        </td>
-                                        <td>
-                                          <div *ngIf="item.emailConfirmed; else inactiveBadge">
-                                              <span class="badge bg-success">Active</span>
-                                          </div>
-  
-                                          <ng-template #inactiveBadge>
-                                              <span class="badge bg-danger">Inactive</span>
-                                          </ng-template>
-  
-                                        </td>
-  
-                                        <td>
-                                            <a href="javascript:void(0);" class="action-icon"> <i class="mdi mdi-square-edit-outline"></i></a>
-                                            <a href="javascript:void(0);" class="action-icon"> <i class="mdi mdi-delete"></i></a>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div> <!-- end card-body-->
-                </div> <!-- end card-->
-            </div> <!-- end col -->
-  
+                            <div>{{item.name}}</div>
+                          </div>
+                        </td>
+                        <td>
+                          <span class="department-badge"
+                            [ngClass]="'dept-' + (item.department || 'management').toLowerCase().split(' ')[0]">
+                            {{item.department || 'Quản lý'}}
+                          </span>
+                        </td>
+                        <td>
+                          {{item.position || 'Nhân viên'}}
+                        </td>
+                        <td>
+                          <div><i class="mdi mdi-email text-muted me-1"></i> {{item.email}}</div>
+                          <div><i class="mdi mdi-phone text-muted me-1"></i> {{item.phoneNumber}}</div>
+                        </td>
+                        <td>
+                          {{item.salary || 0 | number:'1.0-0'}} VND
+                        </td>
+                        <td>
+                          <span class="badge"
+                            [ngClass]="{'bg-success': item.emailConfirmed === 'true', 'bg-danger': item.emailConfirmed !== 'true'}">
+                            {{item.emailConfirmed === 'true' ? 'Hoạt động' : 'Không hoạt động'}}
+                          </span>
+                        </td>
+                        <td>
+                          <div class="d-flex">
+                            <button type="button" class="btn btn-sm btn-light me-1" data-bs-toggle="modal"
+                              data-bs-target="#modal-update" (click)="editEmployee(item)">
+                              <i class="mdi mdi-pencil"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-light me-1"
+                              (click)="updateStatus(item.id, item.emailConfirmed !== 'true')">
+                              <i class="mdi"
+                                [ngClass]="item.emailConfirmed === 'true' ? 'mdi-close-circle' : 'mdi-check-circle'"
+                                [title]="item.emailConfirmed === 'true' ? 'Vô hiệu hóa' : 'Kích hoạt'"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-danger" (click)="confirmDelete(item.id)">
+                              <i class="mdi mdi-delete"></i>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="custom-pagination mt-4" *ngIf="totalPages > 1">
+                  <nav>
+                    <ul class="pagination">
+                      <li class="page-item" [ngClass]="{'disabled': currentPage === 1}">
+                        <a class="page-link" href="javascript:void(0);" (click)="goToPage(currentPage - 1)">
+                          <i class="mdi mdi-chevron-left"></i>
+                        </a>
+                      </li>
+                      <li class="page-item" *ngFor="let page of getPageNumbers()"
+                        [ngClass]="{'active': page === currentPage}">
+                        <a class="page-link" href="javascript:void(0);" (click)="goToPage(page)">{{page}}</a>
+                      </li>
+                      <li class="page-item" [ngClass]="{'disabled': currentPage === totalPages}">
+                        <a class="page-link" href="javascript:void(0);" (click)="goToPage(currentPage + 1)">
+                          <i class="mdi mdi-chevron-right"></i>
+                        </a>
+                      </li>
+                    </ul>
+                  </nav>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-  
+</div>
 
-  <!-- Modal create employee -->
-<div id="modal-detail2" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-top modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title" id="topModalLabel">Create an employee</h4>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
-        </div>
-        <div class="modal-body">
-            <app-signup></app-signup>
-        </div>
+<!-- Modal Add Employee -->
+<div id="modal-create" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-top modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="topModalLabel">Thêm nhân viên mới</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal" [formGroup]="employeeForm">
+          <div class="row mb-3">
+            <label for="employeeName" class="col-3 col-form-label">Họ và tên</label>
+            <div class="col-9">
+              <input type="text" formControlName="name" class="form-control" id="employeeName"
+                placeholder="Nhập họ tên nhân viên">
+              <div *ngIf="employeeForm.get('name')?.invalid && employeeForm.get('name')?.touched"
+                class="text-danger mt-1">
+                Vui lòng nhập họ tên nhân viên
+              </div>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label for="employeeEmail" class="col-3 col-form-label">Email</label>
+            <div class="col-9">
+              <input type="email" formControlName="email" class="form-control" id="employeeEmail"
+                placeholder="Nhập email">
+              <div *ngIf="employeeForm.get('email')?.invalid && employeeForm.get('email')?.touched"
+                class="text-danger mt-1">
+                Vui lòng nhập email hợp lệ
+              </div>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label for="employeePhone" class="col-3 col-form-label">Số điện thoại</label>
+            <div class="col-9">
+              <input type="text" formControlName="phoneNumber" class="form-control" id="employeePhone"
+                placeholder="Nhập số điện thoại">
+              <div *ngIf="employeeForm.get('phoneNumber')?.invalid && employeeForm.get('phoneNumber')?.touched"
+                class="text-danger mt-1">
+                Vui lòng nhập số điện thoại hợp lệ (10-11 số)
+              </div>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label for="employeeAddress" class="col-3 col-form-label">Địa chỉ</label>
+            <div class="col-9">
+              <textarea formControlName="address" class="form-control" id="employeeAddress" placeholder="Nhập địa chỉ"
+                rows="2"></textarea>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label for="employeeDepartment" class="col-3 col-form-label">Phòng ban</label>
+            <div class="col-9">
+              <select formControlName="department" class="form-select" id="employeeDepartment">
+                <option value="" disabled>Chọn phòng ban</option>
+                <option *ngFor="let dept of departments" [value]="dept">{{dept}}</option>
+              </select>
+              <div *ngIf="employeeForm.get('department')?.invalid && employeeForm.get('department')?.touched"
+                class="text-danger mt-1">
+                Vui lòng chọn phòng ban
+              </div>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label for="employeePosition" class="col-3 col-form-label">Chức vụ</label>
+            <div class="col-9">
+              <input type="text" formControlName="position" class="form-control" id="employeePosition"
+                placeholder="Nhập chức vụ">
+              <div *ngIf="employeeForm.get('position')?.invalid && employeeForm.get('position')?.touched"
+                class="text-danger mt-1">
+                Vui lòng nhập chức vụ
+              </div>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label for="employeeSalary" class="col-3 col-form-label">Lương</label>
+            <div class="col-9">
+              <div class="input-group">
+                <span class="input-group-text">VND</span>
+                <input type="number" formControlName="salary" class="form-control" id="employeeSalary"
+                  placeholder="Nhập lương">
+              </div>
+              <div *ngIf="employeeForm.get('salary')?.invalid && employeeForm.get('salary')?.touched"
+                class="text-danger mt-1">
+                Vui lòng nhập lương hợp lệ
+              </div>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label for="employeeStatus" class="col-3 col-form-label">Trạng thái</label>
+            <div class="col-9">
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" formControlName="status" id="employeeStatus">
+                <label class="form-check-label" for="employeeStatus">
+                  Đang hoạt động
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label for="employeeImage" class="col-3 col-form-label">Ảnh đại diện</label>
+            <div class="col-9">
+              <input type="file" class="form-control" id="employeeImage" (change)="uploadFileDetail($event)"
+                formControlName="image">
+            </div>
+          </div>
+          <div class="row mb-3" *ngIf="imagePreviewUrl">
+            <div class="col-3"></div>
+            <div class="col-9">
+              <div class="image-preview">
+                <img [src]="imagePreviewUrl" alt="Preview" class="img-thumbnail">
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Hủy</button>
+        <button type="button" (click)="createEmployee(employeeForm)" class="btn btn-primary">
+          <i class="mdi mdi-plus-circle me-1"></i> Thêm nhân viên
+        </button>
       </div>
     </div>
   </div>
+</div>
+
+<!-- Modal Edit Employee -->
+<div id="modal-update" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-top modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Chỉnh sửa thông tin nhân viên</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal" [formGroup]="employeeForm">
+          <div class="row mb-3">
+            <label for="editEmployeeName" class="col-3 col-form-label">Họ và tên</label>
+            <div class="col-9">
+              <input type="text" formControlName="name" class="form-control" id="editEmployeeName"
+                placeholder="Nhập họ tên nhân viên">
+              <div *ngIf="employeeForm.get('name')?.invalid && employeeForm.get('name')?.touched"
+                class="text-danger mt-1">
+                Vui lòng nhập họ tên nhân viên
+              </div>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label for="editEmployeeEmail" class="col-3 col-form-label">Email</label>
+            <div class="col-9">
+              <input type="email" formControlName="email" class="form-control" id="editEmployeeEmail"
+                placeholder="Nhập email">
+              <div *ngIf="employeeForm.get('email')?.invalid && employeeForm.get('email')?.touched"
+                class="text-danger mt-1">
+                Vui lòng nhập email hợp lệ
+              </div>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label for="editEmployeePhone" class="col-3 col-form-label">Số điện thoại</label>
+            <div class="col-9">
+              <input type="text" formControlName="phoneNumber" class="form-control" id="editEmployeePhone"
+                placeholder="Nhập số điện thoại">
+              <div *ngIf="employeeForm.get('phoneNumber')?.invalid && employeeForm.get('phoneNumber')?.touched"
+                class="text-danger mt-1">
+                Vui lòng nhập số điện thoại hợp lệ
+              </div>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label for="editEmployeeAddress" class="col-3 col-form-label">Địa chỉ</label>
+            <div class="col-9">
+              <textarea formControlName="address" class="form-control" id="editEmployeeAddress"
+                placeholder="Nhập địa chỉ" rows="2"></textarea>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label for="editEmployeeDepartment" class="col-3 col-form-label">Phòng ban</label>
+            <div class="col-9">
+              <select formControlName="department" class="form-select" id="editEmployeeDepartment">
+                <option value="" disabled>Chọn phòng ban</option>
+                <option *ngFor="let dept of departments" [value]="dept">{{dept}}</option>
+              </select>
+              <div *ngIf="employeeForm.get('department')?.invalid && employeeForm.get('department')?.touched"
+                class="text-danger mt-1">
+                Vui lòng chọn phòng ban
+              </div>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label for="editEmployeePosition" class="col-3 col-form-label">Chức vụ</label>
+            <div class="col-9">
+              <input type="text" formControlName="position" class="form-control" id="editEmployeePosition"
+                placeholder="Nhập chức vụ">
+              <div *ngIf="employeeForm.get('position')?.invalid && employeeForm.get('position')?.touched"
+                class="text-danger mt-1">
+                Vui lòng nhập chức vụ
+              </div>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label for="editEmployeeSalary" class="col-3 col-form-label">Lương</label>
+            <div class="col-9">
+              <div class="input-group">
+                <span class="input-group-text">VND</span>
+                <input type="number" formControlName="salary" class="form-control" id="editEmployeeSalary"
+                  placeholder="Nhập lương">
+              </div>
+              <div *ngIf="employeeForm.get('salary')?.invalid && employeeForm.get('salary')?.touched"
+                class="text-danger mt-1">
+                Vui lòng nhập lương hợp lệ
+              </div>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label for="editEmployeeStatus" class="col-3 col-form-label">Trạng thái</label>
+            <div class="col-9">
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" formControlName="status" id="editEmployeeStatus">
+                <label class="form-check-label" for="editEmployeeStatus">
+                  Đang hoạt động
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label for="editEmployeeImage" class="col-3 col-form-label">Ảnh đại diện</label>
+            <div class="col-9">
+              <input type="file" class="form-control" id="editEmployeeImage" (change)="uploadFileDetail($event)"
+                formControlName="image">
+            </div>
+          </div>
+          <div class="row mb-3" *ngIf="imagePreviewUrl">
+            <div class="col-3"></div>
+            <div class="col-9">
+              <div class="image-preview">
+                <img [src]="imagePreviewUrl" alt="Preview" class="img-thumbnail">
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Hủy</button>
+        <button type="button" (click)="updateEmployee(employeeForm)" class="btn btn-primary">
+          <i class="mdi mdi-content-save me-1"></i> Lưu thay đổi
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Loading Spinner -->
+<div class="loading-overlay" *ngIf="isLoading">
+  <div class="spinner-container">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Đang tải...</span>
+    </div>
+    <p class="mt-2">Đang xử lý...</p>
+  </div>
+</div>
+
+<!-- Confirmation Dialog -->
+<div class="modal fade" id="delete-confirmation-modal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Xác nhận xóa</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Bạn có chắc chắn muốn xóa nhân viên này không? Hành động này không thể hoàn tác.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+        <button type="button" class="btn btn-danger" (click)="deleteEmployee()" data-bs-dismiss="modal">Xóa</button>
+      </div>
+    </div>
+  </div>
+</div>

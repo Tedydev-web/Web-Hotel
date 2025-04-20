@@ -12,4 +12,9 @@ export class Staff {
    emailConfirmed!: string
    lockoutEnabled!: string
    accessFailedCount!: string
+   
+   // Thêm các thuộc tính mở rộng cho component Employee
+   department?: string        // Phòng ban
+   position?: string          // Chức vụ
+   salary?: number            // Lương
 }

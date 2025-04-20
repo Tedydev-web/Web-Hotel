@@ -1,4 +1,4 @@
-<div class="wrapper room-services-page">
+<div class="wrapper roomservices-page">
   <app-sidebar></app-sidebar>
   <div class="content-page">
     <div class="content content-wrapper">
@@ -20,7 +20,7 @@
                   </ol>
                 </nav>
               </div>
-              <button data-bs-toggle="modal" data-bs-target="#service-modal"
+              <button data-bs-toggle="modal" data-bs-target="#modal-detail"
                 class="btn btn-primary rounded-pill d-flex align-items-center">
                 <i class="mdi mdi-plus-circle me-1"></i> Thêm dịch vụ mới
               </button>
@@ -37,7 +37,7 @@
                 <div class="card-icon bg-primary-lighten text-primary">
                   <i class="mdi mdi-room-service mdi-24px"></i>
                 </div>
-                <h2 class="card-number">{{getTotalServices()}}</h2>
+                <h2 class="card-number">{{roomType?.length || 0}}</h2>
                 <p class="card-label mb-0">Tổng số dịch vụ</p>
               </div>
             </div>
@@ -48,8 +48,8 @@
                 <div class="card-icon bg-success-lighten text-success">
                   <i class="mdi mdi-check-circle mdi-24px"></i>
                 </div>
-                <h2 class="card-number">{{getActiveServices()}}</h2>
-                <p class="card-label mb-0">Dịch vụ đang hoạt động</p>
+                <h2 class="card-number">{{countActiveServices()}}</h2>
+                <p class="card-label mb-0">Dịch vụ hoạt động</p>
               </div>
             </div>
           </div>
@@ -57,10 +57,10 @@
             <div class="card dashboard-card">
               <div class="card-body">
                 <div class="card-icon bg-info-lighten text-info">
-                  <i class="mdi mdi-file-document mdi-24px"></i>
+                  <i class="mdi mdi-star mdi-24px"></i>
                 </div>
-                <h2 class="card-number">{{roomServices.length > 0 ? roomServices.length : 0}}</h2>
-                <p class="card-label mb-0">Dịch vụ có sẵn</p>
+                <h2 class="card-number">{{getFeaturedServicesCount()}}</h2>
+                <p class="card-label mb-0">Dịch vụ nổi bật</p>
               </div>
             </div>
           </div>
@@ -78,14 +78,24 @@
               </div>
 
               <div class="row g-3" *ngIf="showFilters">
-                <div class="col-md-4">
+                <div class="col-md-6">
                   <div class="form-group">
                     <label class="form-label">Tìm kiếm</label>
                     <div class="input-group">
                       <span class="input-group-text"><i class="mdi mdi-magnify"></i></span>
-                      <input type="text" [(ngModel)]="searchTerm" class="form-control filter-control"
+                      <input type="text" [(ngModel)]="searchService" class="form-control filter-control"
                         placeholder="Tìm theo tên, mô tả...">
                     </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label class="form-label">Trạng thái</label>
+                    <select class="form-select filter-control" [(ngModel)]="statusFilter">
+                      <option value="all">Tất cả trạng thái</option>
+                      <option value="active">Đang hoạt động</option>
+                      <option value="featured">Dịch vụ nổi bật</option>
+                    </select>
                   </div>
                 </div>
                 <div class="col-12 d-flex justify-content-end mt-3">
@@ -107,14 +117,14 @@
             <div class="d-flex justify-content-between align-items-center">
               <div class="view-toggle">
                 <button class="btn" [ngClass]="{'active': viewMode === 'card'}" (click)="setViewMode('card')">
-                  <i class="mdi mdi-view-grid-outline me-1"></i> Thẻ
+                  <i class="mdi mdi-view-grid-outline me-1"></i> Card
                 </button>
                 <button class="btn" [ngClass]="{'active': viewMode === 'table'}" (click)="setViewMode('table')">
                   <i class="mdi mdi-table me-1"></i> Bảng
                 </button>
               </div>
               <div class="d-flex align-items-center">
-                <button type="button" class="btn btn-light btn-sm me-2" (click)="exportToExcel()">
+                <button type="button" class="btn btn-light btn-sm me-2" (click)="exportData()">
                   <i class="mdi mdi-download me-1"></i> Xuất Excel
                 </button>
                 <div class="dropdown">
@@ -133,42 +143,38 @@
           </div>
         </div>
 
-        <!-- Loading spinner -->
-        <div class="text-center py-5" *ngIf="isLoading">
-          <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Đang tải...</span>
-          </div>
-          <p class="mt-2">Đang tải dữ liệu...</p>
-        </div>
-
         <!-- Card View Mode -->
-        <div class="row" *ngIf="viewMode === 'card' && filteredServices && filteredServices.length > 0 && !isLoading">
-          <div class="col-md-4 col-xl-3 mb-4" *ngFor="let service of filteredServices">
+        <div class="row" *ngIf="viewMode === 'card' && filteredServices && filteredServices.length > 0">
+          <div class="col-md-4 col-xl-3 mb-4" *ngFor="let item of filteredServices">
             <div class="service-card">
               <div class="card h-100">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                  <span class="service-id">#{{service.id}}</span>
+                  <span class="service-id">#{{item.id}}</span>
+                  <span class="status-badge status-active">
+                    <i class="mdi mdi-check-circle"></i>
+                    Hoạt động
+                  </span>
                 </div>
                 <div class="card-body service-details">
-                  <div class="mb-3">
-                    <div class="service-icon mb-3 text-primary">
-                      <i class="mdi {{service.icon}} mdi-36px"></i>
+                  <div class="mb-3 text-center">
+                    <div class="service-icon">
+                      <i class="mdi {{item.icon}} mdi-36px"></i>
                     </div>
-                    <h5 class="mb-1">{{service.name}}</h5>
-                    <p class="text-muted mb-0">{{service.description}}</p>
+                    <h5 class="mb-1 mt-3">{{item.name}}</h5>
+                  </div>
+
+                  <div class="service-description mb-3">
+                    <p>{{item.description}}</p>
                   </div>
                 </div>
-                <div class="card-footer">
-                  <div class="d-flex">
-                    <button type="button" class="btn btn-sm btn-outline-primary flex-grow-1 me-1" data-bs-toggle="modal"
-                      data-bs-target="#edit-modal" (click)="getServiceById(service.id)">
-                      <i class="mdi mdi-pencil me-1"></i> Sửa
-                    </button>
-                    <button type="button" class="btn btn-sm btn-outline-danger flex-grow-1"
-                      (click)="deleteService(service.id)">
-                      <i class="mdi mdi-delete me-1"></i> Xóa
-                    </button>
-                  </div>
+                <div class="card-footer d-flex">
+                  <button type="button" class="btn btn-sm btn-primary flex-grow-1 me-1" data-bs-toggle="modal"
+                    data-bs-target="#modal-detail2" (click)="editService(item)">
+                    <i class="mdi mdi-pencil me-1"></i> Chỉnh sửa
+                  </button>
+                  <button type="button" class="btn btn-sm btn-danger flex-grow-1" (click)="confirmDelete(item.id)">
+                    <i class="mdi mdi-delete me-1"></i> Xóa
+                  </button>
                 </div>
               </div>
             </div>
@@ -176,10 +182,10 @@
         </div>
 
         <!-- Empty state when no data -->
-        <div class="row" *ngIf="filteredServices && filteredServices.length === 0 && !isLoading">
+        <div class="row" *ngIf="filteredServices && filteredServices.length === 0">
           <div class="col-12">
             <div class="text-center py-5">
-              <i class="mdi mdi-emoticon-sad-outline text-muted" style="font-size: 4rem;"></i>
+              <i class="mdi mdi-room-service-off text-muted" style="font-size: 4rem;"></i>
               <h5 class="mt-3">Không tìm thấy dữ liệu dịch vụ</h5>
               <p class="text-muted">Không có dịch vụ nào phù hợp với các tiêu chí tìm kiếm của bạn.</p>
               <button class="btn btn-primary" (click)="clearFilters()">Đặt lại bộ lọc</button>
@@ -188,7 +194,7 @@
         </div>
 
         <!-- Table View Mode -->
-        <div class="row" *ngIf="viewMode === 'table' && !isLoading">
+        <div class="row" *ngIf="viewMode === 'table'">
           <div class="col-12">
             <div class="card">
               <div class="card-body">
@@ -196,34 +202,34 @@
                   <table class="table table-centered table-hover">
                     <thead class="table-light">
                       <tr>
-                        <th style="width: 50px;">ID</th>
-                        <th style="width: 70px;">Icon</th>
+                        <th style="width: 80px;">ID</th>
                         <th>Tên dịch vụ</th>
+                        <th>Icon</th>
                         <th>Mô tả</th>
-                        <th style="width: 120px;">Thao tác</th>
+                        <th style="width: 150px;">Thao tác</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr *ngFor="let service of filteredServices">
+                      <tr *ngFor="let item of filteredServices">
                         <td>
-                          <span class="fw-bold">#{{service.id}}</span>
+                          <span class="fw-bold">#{{item.id}}</span>
                         </td>
                         <td>
-                          <i class="mdi {{service.icon}} mdi-24px text-primary"></i>
+                          <span class="fw-bold">{{item.name}}</span>
                         </td>
                         <td>
-                          {{service.name}}
+                          <i class="mdi {{item.icon}} mdi-24px"></i>
                         </td>
                         <td>
-                          {{service.description}}
+                          {{item.description}}
                         </td>
                         <td>
                           <div class="d-flex">
                             <button type="button" class="btn btn-sm btn-light me-1" data-bs-toggle="modal"
-                              data-bs-target="#edit-modal" (click)="getServiceById(service.id)">
+                              data-bs-target="#modal-detail2" (click)="editService(item)">
                               <i class="mdi mdi-pencil"></i>
                             </button>
-                            <button type="button" class="btn btn-sm btn-light" (click)="deleteService(service.id)">
+                            <button type="button" class="btn btn-sm btn-danger" (click)="confirmDelete(item.id)">
                               <i class="mdi mdi-delete"></i>
                             </button>
                           </div>
@@ -234,7 +240,7 @@
                 </div>
 
                 <!-- Pagination -->
-                <div class="custom-pagination mt-4">
+                <div class="custom-pagination mt-4" *ngIf="totalPages > 1">
                   <nav>
                     <ul class="pagination">
                       <li class="page-item" [ngClass]="{'disabled': currentPage === 1}">
@@ -263,48 +269,51 @@
   </div>
 </div>
 
-<!-- Add Service Modal -->
-<div class="modal fade custom-modal" id="service-modal" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog">
+<!-- Modal Add Service -->
+<div id="modal-detail" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-top modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">Thêm dịch vụ phòng mới</h4>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"
-          id="service-modal-close"></button>
+        <h4 class="modal-title" id="topModalLabel">Thêm dịch vụ phòng</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
       </div>
       <div class="modal-body">
-        <form [formGroup]="serviceForm">
-          <div class="row g-3">
-            <div class="col-12">
-              <div class="form-group">
-                <label class="form-label">Tên dịch vụ <span class="text-danger">*</span></label>
-                <input type="text" formControlName="name" class="form-control" placeholder="Nhập tên dịch vụ">
-                <div class="invalid-feedback d-block"
-                  *ngIf="serviceForm.get('name')?.invalid && serviceForm.get('name')?.touched">
-                  Vui lòng nhập tên dịch vụ
-                </div>
+        <form class="form-horizontal" [formGroup]="serviceForm">
+          <div class="row mb-3">
+            <label for="serviceName" class="col-3 col-form-label">Tên dịch vụ</label>
+            <div class="col-9">
+              <input type="text" formControlName="name" class="form-control" id="serviceName"
+                placeholder="Nhập tên dịch vụ">
+              <div *ngIf="serviceForm.get('name')?.invalid && serviceForm.get('name')?.touched"
+                class="text-danger mt-1">
+                Vui lòng nhập tên dịch vụ
               </div>
             </div>
-            <div class="col-12">
-              <div class="form-group">
-                <label class="form-label">Icon <span class="text-danger">*</span></label>
-                <input type="text" formControlName="icon" class="form-control" placeholder="Ví dụ: mdi-wifi">
-                <div class="invalid-feedback d-block"
-                  *ngIf="serviceForm.get('icon')?.invalid && serviceForm.get('icon')?.touched">
-                  Vui lòng nhập icon
-                </div>
-                <small class="form-text text-muted">Nhập mã icon từ thư viện Material Design Icons</small>
+          </div>
+          <div class="row mb-3">
+            <label for="serviceIcon" class="col-3 col-form-label">Icon</label>
+            <div class="col-9">
+              <div class="input-group">
+                <span class="input-group-text"><i
+                    class="mdi {{serviceForm.get('icon')?.value || 'mdi-help-circle'}}"></i></span>
+                <input type="text" formControlName="icon" class="form-control" id="serviceIcon"
+                  placeholder="Ví dụ: mdi-wifi, mdi-food">
+              </div>
+              <small class="text-muted">Nhập tên icon từ Material Design Icons</small>
+              <div *ngIf="serviceForm.get('icon')?.invalid && serviceForm.get('icon')?.touched"
+                class="text-danger mt-1">
+                Vui lòng nhập icon
               </div>
             </div>
-            <div class="col-12">
-              <div class="form-group">
-                <label class="form-label">Mô tả <span class="text-danger">*</span></label>
-                <textarea formControlName="description" class="form-control" rows="3"
-                  placeholder="Nhập mô tả dịch vụ"></textarea>
-                <div class="invalid-feedback d-block"
-                  *ngIf="serviceForm.get('description')?.invalid && serviceForm.get('description')?.touched">
-                  Vui lòng nhập mô tả
-                </div>
+          </div>
+          <div class="row mb-3">
+            <label for="serviceDesc" class="col-3 col-form-label">Mô tả</label>
+            <div class="col-9">
+              <textarea formControlName="description" class="form-control" id="serviceDesc" rows="3"
+                placeholder="Nhập mô tả dịch vụ"></textarea>
+              <div *ngIf="serviceForm.get('description')?.invalid && serviceForm.get('description')?.touched"
+                class="text-danger mt-1">
+                Vui lòng nhập mô tả dịch vụ
               </div>
             </div>
           </div>
@@ -312,54 +321,59 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-light" data-bs-dismiss="modal">Hủy</button>
-        <button type="button" class="btn btn-primary" (click)="createService()">Lưu dịch vụ</button>
+        <button type="button" (click)="createRoomType(serviceForm)" class="btn btn-primary">
+          <i class="mdi mdi-plus-circle me-1"></i> Thêm dịch vụ
+        </button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Edit Service Modal -->
-<div class="modal fade custom-modal" id="edit-modal" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog">
+<!-- Modal Edit Service -->
+<div id="modal-detail2" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-top modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">Cập nhật dịch vụ phòng</h4>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"
-          id="edit-modal-close"></button>
+        <h4 class="modal-title" id="topModalLabel">Cập nhật dịch vụ phòng</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
       </div>
-      <div class="modal-body" *ngIf="selectedService">
-        <form [formGroup]="editServiceForm">
-          <div class="row g-3">
-            <div class="col-12">
-              <div class="form-group">
-                <label class="form-label">Tên dịch vụ <span class="text-danger">*</span></label>
-                <input type="text" formControlName="name" class="form-control" placeholder="Nhập tên dịch vụ">
-                <div class="invalid-feedback d-block"
-                  *ngIf="editServiceForm.get('name')?.invalid && editServiceForm.get('name')?.touched">
-                  Vui lòng nhập tên dịch vụ
-                </div>
+      <div class="modal-body">
+        <form class="form-horizontal" [formGroup]="serviceForm">
+          <div class="row mb-3">
+            <label for="editServiceName" class="col-3 col-form-label">Tên dịch vụ</label>
+            <div class="col-9">
+              <input type="text" formControlName="name" class="form-control" id="editServiceName"
+                placeholder="Nhập tên dịch vụ">
+              <div *ngIf="serviceForm.get('name')?.invalid && serviceForm.get('name')?.touched"
+                class="text-danger mt-1">
+                Vui lòng nhập tên dịch vụ
               </div>
             </div>
-            <div class="col-12">
-              <div class="form-group">
-                <label class="form-label">Icon <span class="text-danger">*</span></label>
-                <input type="text" formControlName="icon" class="form-control" placeholder="Ví dụ: mdi-wifi">
-                <div class="invalid-feedback d-block"
-                  *ngIf="editServiceForm.get('icon')?.invalid && editServiceForm.get('icon')?.touched">
-                  Vui lòng nhập icon
-                </div>
-                <small class="form-text text-muted">Nhập mã icon từ thư viện Material Design Icons</small>
+          </div>
+          <div class="row mb-3">
+            <label for="editServiceIcon" class="col-3 col-form-label">Icon</label>
+            <div class="col-9">
+              <div class="input-group">
+                <span class="input-group-text"><i
+                    class="mdi {{serviceForm.get('icon')?.value || 'mdi-help-circle'}}"></i></span>
+                <input type="text" formControlName="icon" class="form-control" id="editServiceIcon"
+                  placeholder="Ví dụ: mdi-wifi, mdi-food">
+              </div>
+              <small class="text-muted">Nhập tên icon từ Material Design Icons</small>
+              <div *ngIf="serviceForm.get('icon')?.invalid && serviceForm.get('icon')?.touched"
+                class="text-danger mt-1">
+                Vui lòng nhập icon
               </div>
             </div>
-            <div class="col-12">
-              <div class="form-group">
-                <label class="form-label">Mô tả <span class="text-danger">*</span></label>
-                <textarea formControlName="description" class="form-control" rows="3"
-                  placeholder="Nhập mô tả dịch vụ"></textarea>
-                <div class="invalid-feedback d-block"
-                  *ngIf="editServiceForm.get('description')?.invalid && editServiceForm.get('description')?.touched">
-                  Vui lòng nhập mô tả
-                </div>
+          </div>
+          <div class="row mb-3">
+            <label for="editServiceDesc" class="col-3 col-form-label">Mô tả</label>
+            <div class="col-9">
+              <textarea formControlName="description" class="form-control" id="editServiceDesc" rows="3"
+                placeholder="Nhập mô tả dịch vụ"></textarea>
+              <div *ngIf="serviceForm.get('description')?.invalid && serviceForm.get('description')?.touched"
+                class="text-danger mt-1">
+                Vui lòng nhập mô tả dịch vụ
               </div>
             </div>
           </div>
@@ -367,18 +381,39 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-light" data-bs-dismiss="modal">Hủy</button>
-        <button type="button" class="btn btn-primary" (click)="updateService()">Cập nhật</button>
+        <button type="button" (click)="update(serviceForm)" class="btn btn-primary">
+          <i class="mdi mdi-content-save me-1"></i> Lưu thay đổi
+        </button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Loading Overlay -->
+<!-- Loading Spinner -->
 <div class="loading-overlay" *ngIf="isLoading">
   <div class="spinner-container">
     <div class="spinner-border text-primary" role="status">
       <span class="visually-hidden">Đang tải...</span>
     </div>
     <p class="mt-2">Đang xử lý...</p>
+  </div>
+</div>
+
+<!-- Confirmation Dialog -->
+<div class="modal fade" id="delete-confirmation-modal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Xác nhận xóa</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Bạn có chắc chắn muốn xóa dịch vụ này không? Hành động này không thể hoàn tác.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+        <button type="button" class="btn btn-danger" (click)="deleteService()" data-bs-dismiss="modal">Xóa</button>
+      </div>
+    </div>
   </div>
 </div>

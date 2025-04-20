@@ -1,86 +1,314 @@
-<div class="wrapper">
+<div class="wrapper roomservices-page">
     <app-sidebar></app-sidebar>
     <div class="content-page">
-        <div class="content">
+        <div class="content content-wrapper">
             <app-header></app-header>
-            <div class="container-fluid">
+            <div class="container-fluid py-4">
                 <!-- start page title -->
-                <div class="row">
+                <div class="row mb-4">
                     <div class="col-12">
-                        <div class="page-title-box">
-                            <div class="page-title-right">
-                                <ol class="breadcrumb m-0">
-                                    <li class="breadcrumb-item"><a href="javascript: void(0);">Beyond</a></li>
-                                    <li class="breadcrumb-item"><a href="javascript: void(0);">Managements</a></li>
-                                    <li class="breadcrumb-item active">Room Service Type</li>
-                                </ol>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h4 class="page-title mb-0">Quản lý dịch vụ phòng</h4>
+                                <nav aria-label="breadcrumb">
+                                    <ol class="breadcrumb m-0 mt-2">
+                                        <li class="breadcrumb-item"><a href="javascript: void(0);"
+                                                class="text-decoration-none">Trang
+                                                chủ</a></li>
+                                        <li class="breadcrumb-item"><a href="javascript: void(0);"
+                                                class="text-decoration-none">Quản lý</a>
+                                        </li>
+                                        <li class="breadcrumb-item active">Dịch vụ phòng</li>
+                                    </ol>
+                                </nav>
                             </div>
-                            <h4 class="page-title">Room Service Type</h4>
+                            <button data-bs-toggle="modal" data-bs-target="#modal-create"
+                                class="btn btn-primary rounded-pill d-flex align-items-center">
+                                <i class="mdi mdi-plus-circle me-1"></i> Thêm dịch vụ phòng mới
+                            </button>
                         </div>
                     </div>
                 </div>
                 <!-- end page title -->
-                <div class="row">
+
+                <!-- Dashboard cards -->
+                <div class="row mb-4 fade-in">
+                    <div class="col-md-3">
+                        <div class="card dashboard-card">
+                            <div class="card-body">
+                                <div class="card-icon bg-primary-lighten text-primary">
+                                    <i class="mdi mdi-food-variant mdi-24px"></i>
+                                </div>
+                                <h2 class="card-number">{{getTotalRoomTypeServices()}}</h2>
+                                <p class="card-label mb-0">Tổng số dịch vụ phòng</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card dashboard-card">
+                            <div class="card-body">
+                                <div class="card-icon bg-success-lighten text-success">
+                                    <i class="mdi mdi-check-circle mdi-24px"></i>
+                                </div>
+                                <h2 class="card-number">{{getActiveServicesCount()}}</h2>
+                                <p class="card-label mb-0">Dịch vụ hoạt động</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card dashboard-card">
+                            <div class="card-body">
+                                <div class="card-icon bg-info-lighten text-info">
+                                    <i class="mdi mdi-sale mdi-24px"></i>
+                                </div>
+                                <h2 class="card-number">{{getDiscountedServicesCount()}}</h2>
+                                <p class="card-label mb-0">Dịch vụ có khuyến mãi</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card dashboard-card">
+                            <div class="card-body">
+                                <div class="card-icon bg-warning-lighten text-warning">
+                                    <i class="mdi mdi-currency-usd mdi-24px"></i>
+                                </div>
+                                <h2 class="card-number">{{getTotalValue() | number:'1.0-0'}}</h2>
+                                <p class="card-label mb-0">Tổng giá trị (VND)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Advanced filter section -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="filter-section fade-in">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="m-0">Bộ lọc nâng cao</h5>
+                                <button class="btn btn-sm btn-outline-secondary" (click)="toggleFilterSection()">
+                                    <i class="mdi" [ngClass]="showFilters ? 'mdi-chevron-up' : 'mdi-chevron-down'"></i>
+                                </button>
+                            </div>
+
+                            <div class="row g-3" *ngIf="showFilters">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Tìm kiếm</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="mdi mdi-magnify"></i></span>
+                                            <input type="text" [(ngModel)]="searchTerm"
+                                                class="form-control filter-control"
+                                                placeholder="Tìm theo tên dịch vụ phòng...">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Khoảng giá</label>
+                                        <select class="form-select filter-control" [(ngModel)]="priceFilter">
+                                            <option value="all">Tất cả mức giá</option>
+                                            <option value="low">Dưới 500,000đ</option>
+                                            <option value="medium">500,000đ - 1,000,000đ</option>
+                                            <option value="high">Trên 1,000,000đ</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-12 d-flex justify-content-end mt-3">
+                                    <button type="button" class="btn btn-outline-secondary me-2"
+                                        (click)="clearFilters()">
+                                        <i class="mdi mdi-refresh me-1"></i> Đặt lại
+                                    </button>
+                                    <button type="button" class="btn btn-primary" (click)="applyFilters()">
+                                        <i class="mdi mdi-filter me-1"></i> Áp dụng bộ lọc
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- View toggle buttons -->
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="view-toggle">
+                                <button class="btn" [ngClass]="{'active': viewMode === 'card'}"
+                                    (click)="setViewMode('card')">
+                                    <i class="mdi mdi-view-grid-outline me-1"></i> Card
+                                </button>
+                                <button class="btn" [ngClass]="{'active': viewMode === 'table'}"
+                                    (click)="setViewMode('table')">
+                                    <i class="mdi mdi-table me-1"></i> Bảng
+                                </button>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <button type="button" class="btn btn-light btn-sm me-2" (click)="exportData()">
+                                    <i class="mdi mdi-download me-1"></i> Xuất Excel
+                                </button>
+                                <div class="dropdown">
+                                    <button class="btn btn-light btn-sm dropdown-toggle" type="button" id="sortDropdown"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="mdi mdi-sort me-1"></i> Sắp xếp
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="sortDropdown">
+                                        <li><a class="dropdown-item" href="javascript:void(0);"
+                                                (click)="sortBy('nameAsc')">Tên A-Z</a></li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);"
+                                                (click)="sortBy('nameDesc')">Tên Z-A</a>
+                                        </li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);"
+                                                (click)="sortBy('priceAsc')">Giá thấp-cao</a>
+                                        </li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);"
+                                                (click)="sortBy('priceDesc')">Giá cao-thấp</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card View Mode -->
+                <div class="row" *ngIf="viewMode === 'card' && filteredServices && filteredServices.length > 0">
+                    <div class="col-md-4 col-xl-3 mb-4" *ngFor="let item of filteredServices">
+                        <div class="service-card">
+                            <div class="card h-100">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <span class="service-id">#{{item.id}}</span>
+                                    <span class="status-badge" [ngClass]="{'status-active': true}">
+                                        <i class="mdi mdi-check-circle"></i>
+                                        Hoạt động
+                                    </span>
+                                </div>
+                                <div class="card-body service-details">
+                                    <div class="mb-3 text-center">
+                                        <div class="service-icon">
+                                            <i class="mdi mdi-food-variant mdi-36px"></i>
+                                        </div>
+                                        <h5 class="mb-1 mt-3">{{item.name}}</h5>
+                                        <div class="price-tag mt-2">
+                                            <span class="current-price">{{item.price | number:'1.0-0'}} VND</span>
+                                            <span class="discount-price" *ngIf="item.priceDiscount">{{item.priceDiscount
+                                                | number:'1.0-0'}} VND</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="service-info mt-3">
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span>Số lượng:</span>
+                                            <span class="fw-bold">{{item.amount}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer d-flex">
+                                    <button type="button" class="btn btn-sm btn-primary flex-grow-1 me-1"
+                                        data-bs-toggle="modal" data-bs-target="#modal-update"
+                                        (click)="editService(item)">
+                                        <i class="mdi mdi-pencil me-1"></i> Chỉnh sửa
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-danger flex-grow-1"
+                                        (click)="confirmDelete(+item.id)">
+                                        <i class="mdi mdi-delete me-1"></i> Xóa
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Empty state when no data -->
+                <div class="row" *ngIf="filteredServices && filteredServices.length === 0">
+                    <div class="col-12">
+                        <div class="text-center py-5">
+                            <i class="mdi mdi-food-off text-muted" style="font-size: 4rem;"></i>
+                            <h5 class="mt-3">Không tìm thấy dữ liệu dịch vụ phòng</h5>
+                            <p class="text-muted">Không có dịch vụ phòng nào phù hợp với các tiêu chí tìm kiếm của bạn.
+                            </p>
+                            <button class="btn btn-primary" (click)="clearFilters()">Đặt lại bộ lọc</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Table View Mode -->
+                <div class="row" *ngIf="viewMode === 'table'">
                     <div class="col-12">
                         <div class="card">
                             <div class="card-body">
-                                <div class="row mb-2">
-                                    <div class="col-xl-8">
-                                        <div class="row gy-2 gx-2 align-items-center justify-content-xl-start justify-content-between">
-                                            <div class="col-auto">
-                                                <label for="inputPassword2" class="visually-hidden">Search</label>
-                                                <input type="search" [(ngModel)]="searchTerm" class="form-control" id="inputPassword2"
-                                                    placeholder="Search...">
-
-                                                </div>
-                                                <div class="col-auto">
-                                                    <button type="submit" class="btn btn-primary" (click)="searchBookings()">Search</button>
-                                                </div>
-                                                <div class="col-auto">
-                                                    <button type="button" class="btn btn-secondary" (click)="clearSearch()">Clear</button>
-                                                  </div>
-                                          
-                                        </div>
-                                    </div>
-                                    <div class="col-xl-4">
-                                        <div class="text-xl-end mt-xl-0 mt-2">
-                                            <button type="button" data-bs-toggle="modal" data-bs-target="#modal-detail"
-                                                class="btn btn-danger mb-2 me-2"><i class="mdi mdi-basket me-1"></i> Add
-                                                New</button>
-                                        </div>
-                                    </div><!-- end col-->
-                                </div>
-
                                 <div class="table-responsive">
-                                    <table class="table table-centered mb-0">
-                                        <thead class="table-light align-middle text-center">
+                                    <table class="table table-centered table-hover">
+                                        <thead class="table-light">
                                             <tr>
-                                               
-                                                <!-- <th>Picture</th> -->
-                                                <th>Room service type</th>
-                                                <th>Price</th>
-                                                <th>Amount</th>
-                                                <th>Price discount</th>
-                                                <th>Action
-                                                <th>
+                                                <th style="width: 60px;">ID</th>
+                                                <th>Tên dịch vụ phòng</th>
+                                                <th>Giá</th>
+                                                <th>Số lượng</th>
+                                                <th>Giá khuyến mãi</th>
+                                                <th style="width: 150px;">Thao tác</th>
                                             </tr>
                                         </thead>
-                                        <tbody *ngFor="let item of roomType  | filter: searchTerm; let i = index "  (click)="toggleSelection(item.id)"
-                                            class="align-middle text-center">
-                                            <tr>
-                                                <!-- <td><img src={{item.picture}} alt=""></td> -->
-                                                <td><span class="text-body fw-bold">{{item.name}}</span> </td>
-                                                <td>{{item.price | vndCurrency}}</td>
-                                                <td>{{item.amount }}</td>
-                                                <td>{{item.priceDiscount }}</td>
+                                        <tbody>
+                                            <tr *ngFor="let item of filteredServices">
                                                 <td>
-                                                    <a href="javascript:void(0);" class="action-icon"
-                                                        data-bs-toggle="modal" data-bs-target="#modal-detail2">
-                                                        <i class=" mdi mdi-update"></i></a>
-                                                    <a (click)="deleteService(item.id)" class="action-icon"><i class="mdi mdi-delete"></i></a>
+                                                    <span class="fw-bold">#{{item.id}}</span>
                                                 </td>
+                                                <td>
+                                                    <span class="fw-bold">{{item.name}}</span>
+                                                </td>
+                                                <td>
+                                                    {{item.price | number:'1.0-0'}} VND
+                                                </td>
+                                                <td>
+                                                    {{item.amount}}
+                                                </td>
+                                                <td>
+                                                    <span
+                                                        *ngIf="item.priceDiscount && item.priceDiscount > 0">{{item.priceDiscount
+                                                        | number:'1.0-0'}} VND</span>
+                                                    <span
+                                                        *ngIf="!item.priceDiscount || item.priceDiscount <= 0">--</span>
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex">
+                                                        <button type="button" class="btn btn-sm btn-light me-1"
+                                                            data-bs-toggle="modal" data-bs-target="#modal-update"
+                                                            (click)="editService(item)">
+                                                            <i class="mdi mdi-pencil"></i>
+                                                        </button>
+                                                        <button type="button" class="btn btn-sm btn-danger"
+                                                            (click)="confirmDelete(+item.id)">
+                                                            <i class="mdi mdi-delete"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
                                         </tbody>
                                     </table>
+                                </div>
+
+                                <!-- Pagination -->
+                                <div class="custom-pagination mt-4" *ngIf="totalPages > 1">
+                                    <nav>
+                                        <ul class="pagination">
+                                            <li class="page-item" [ngClass]="{'disabled': currentPage === 1}">
+                                                <a class="page-link" href="javascript:void(0);"
+                                                    (click)="goToPage(currentPage - 1)">
+                                                    <i class="mdi mdi-chevron-left"></i>
+                                                </a>
+                                            </li>
+                                            <li class="page-item" *ngFor="let page of getPageNumbers()"
+                                                [ngClass]="{'active': page === currentPage}">
+                                                <a class="page-link" href="javascript:void(0);"
+                                                    (click)="goToPage(page)">{{page}}</a>
+                                            </li>
+                                            <li class="page-item" [ngClass]="{'disabled': currentPage === totalPages}">
+                                                <a class="page-link" href="javascript:void(0);"
+                                                    (click)="goToPage(currentPage + 1)">
+                                                    <i class="mdi mdi-chevron-right"></i>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </nav>
                                 </div>
                             </div>
                         </div>
@@ -91,107 +319,177 @@
     </div>
 </div>
 
-<!-- Modal detail -->
-<div id="modal-detail" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+<!-- Modal Add Service -->
+<div id="modal-create" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-top modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="topModalLabel">Add room service type</h4>
+                <h4 class="modal-title" id="topModalLabel">Thêm dịch vụ phòng mới</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
             </div>
             <div class="modal-body">
-                <form class="form-horizontal" [formGroup]="serviceForm2">
+                <form class="form-horizontal" [formGroup]="serviceForm">
                     <div class="row mb-3">
-                        <label for="inputEmail3" class="col-3 col-form-label">Name service</label>
+                        <label for="serviceName" class="col-3 col-form-label">Tên dịch vụ phòng</label>
                         <div class="col-9">
-                            <input type="text" formControlName="name" class="form-control" id="inputEmail3"
-                                placeholder="Name service">
+                            <input type="text" formControlName="name" class="form-control" id="serviceName"
+                                placeholder="Nhập tên dịch vụ phòng">
+                            <div *ngIf="serviceForm.get('name')?.invalid && serviceForm.get('name')?.touched"
+                                class="text-danger mt-1">
+                                Vui lòng nhập tên dịch vụ phòng
+                            </div>
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <label for="inputEmail3" class="col-3 col-form-label">Price</label>
+                        <label for="servicePrice" class="col-3 col-form-label">Giá</label>
                         <div class="col-9">
-                            <input type="text" formControlName="price" class="form-control" id="inputEmail3"
-                                placeholder="Price">
+                            <div class="input-group">
+                                <span class="input-group-text">VND</span>
+                                <input type="number" formControlName="price" class="form-control" id="servicePrice"
+                                    placeholder="Nhập giá dịch vụ">
+                            </div>
+                            <div *ngIf="serviceForm.get('price')?.invalid && serviceForm.get('price')?.touched"
+                                class="text-danger mt-1">
+                                Vui lòng nhập giá dịch vụ hợp lệ
+                            </div>
                         </div>
                     </div>
-                    <div class="row mb-9">
-                        <label for="inputEmail3" class="col-3 col-form-label">Amount</label>
-                        <div class="col-3">
-                            <input type="text"  maxlength="500"  formControlName="amount" class="form-control" id="inputEmail3"
-                                placeholder="Amount">
+                    <div class="row mb-3">
+                        <label for="serviceAmount" class="col-3 col-form-label">Số lượng</label>
+                        <div class="col-9">
+                            <input type="number" formControlName="amount" class="form-control" id="serviceAmount"
+                                placeholder="Nhập số lượng">
+                            <div *ngIf="serviceForm.get('amount')?.invalid && serviceForm.get('amount')?.touched"
+                                class="text-danger mt-1">
+                                Vui lòng nhập số lượng hợp lệ
+                            </div>
                         </div>
                     </div>
-                    <br>
-                    <div class="row mb-9">
-                        <label for="serviceImage" class="col-3 col-form-label">Image</label>
+                    <div class="row mb-3">
+                        <label for="servicePicture" class="col-3 col-form-label">Hình ảnh</label>
                         <div class="col-9">
-                            <input type="file" id="serviceImage" class="form-control"
+                            <input type="file" class="form-control" id="servicePicture"
                                 (change)="uploadFileDetail($event)" formControlName="picture">
                         </div>
                     </div>
-                    <div class="row mb-9">
-                        <div *ngIf="imagePreviewUrl">
-                            <img [src]="imagePreviewUrl" alt="Preview Image">
+                    <div class="row mb-3" *ngIf="imagePreviewUrl">
+                        <div class="col-3"></div>
+                        <div class="col-9">
+                            <div class="image-preview">
+                                <img [src]="imagePreviewUrl" alt="Preview" class="img-thumbnail">
+                            </div>
                         </div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button (click)="createRoomType(serviceForm2)" type="submit" class="btn btn-info">Add </button>
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" (click)="createRoomType(serviceForm)" class="btn btn-primary">
+                    <i class="mdi mdi-plus-circle me-1"></i> Thêm dịch vụ phòng
+                </button>
             </div>
         </div>
     </div>
 </div>
-<div id="modal-detail2" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+
+<!-- Modal Edit Service -->
+<div id="modal-update" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-top modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="topModalLabel">Update room service type</h4>
+                <h4 class="modal-title">Chỉnh sửa dịch vụ phòng</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
             </div>
             <div class="modal-body">
-                <form class="form-horizontal" [formGroup]="serviceForm2">
+                <form class="form-horizontal" [formGroup]="serviceForm">
                     <div class="row mb-3">
-                        <label for="inputEmail3" class="col-3 col-form-label">Name service</label>
+                        <label for="editServiceName" class="col-3 col-form-label">Tên dịch vụ phòng</label>
                         <div class="col-9">
-                            <input type="text" formControlName="name" class="form-control" id="inputEmail3"
-                                placeholder="Name service">
+                            <input type="text" formControlName="name" class="form-control" id="editServiceName"
+                                placeholder="Nhập tên dịch vụ phòng">
+                            <div *ngIf="serviceForm.get('name')?.invalid && serviceForm.get('name')?.touched"
+                                class="text-danger mt-1">
+                                Vui lòng nhập tên dịch vụ phòng
+                            </div>
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <label for="inputEmail3" class="col-3 col-form-label">Price</label>
+                        <label for="editServicePrice" class="col-3 col-form-label">Giá</label>
                         <div class="col-9">
-                            <input type="text" formControlName="price" class="form-control" id="inputEmail3"
-                                placeholder="Price">
+                            <div class="input-group">
+                                <span class="input-group-text">VND</span>
+                                <input type="number" formControlName="price" class="form-control" id="editServicePrice"
+                                    placeholder="Nhập giá dịch vụ">
+                            </div>
+                            <div *ngIf="serviceForm.get('price')?.invalid && serviceForm.get('price')?.touched"
+                                class="text-danger mt-1">
+                                Vui lòng nhập giá dịch vụ hợp lệ
+                            </div>
                         </div>
                     </div>
-                    <div class="row mb-9">
-                        <label for="inputEmail3" class="col-3 col-form-label">Amount</label>
-                        <div class="col-3">
-                            <input type="text" formControlName="amount" class="form-control" id="inputEmail3"
-                                placeholder="Amount">
+                    <div class="row mb-3">
+                        <label for="editServiceAmount" class="col-3 col-form-label">Số lượng</label>
+                        <div class="col-9">
+                            <input type="number" formControlName="amount" class="form-control" id="editServiceAmount"
+                                placeholder="Nhập số lượng">
+                            <div *ngIf="serviceForm.get('amount')?.invalid && serviceForm.get('amount')?.touched"
+                                class="text-danger mt-1">
+                                Vui lòng nhập số lượng hợp lệ
+                            </div>
                         </div>
                     </div>
-                    <br>
-                    <div class="row mb-9">
-                        <label for="serviceImage" class="col-3 col-form-label">Image</label>
+                    <div class="row mb-3">
+                        <label for="editServicePicture" class="col-3 col-form-label">Hình ảnh</label>
                         <div class="col-9">
-                            <input type="file" id="serviceImage" class="form-control"
+                            <input type="file" class="form-control" id="editServicePicture"
                                 (change)="uploadFileDetail($event)" formControlName="picture">
                         </div>
                     </div>
-                    <div class="row mb-9">
-                        <div *ngIf="imagePreviewUrl">
-                            <img [src]="imagePreviewUrl" alt="Preview Image">
+                    <div class="row mb-3" *ngIf="imagePreviewUrl">
+                        <div class="col-3"></div>
+                        <div class="col-9">
+                            <div class="image-preview">
+                                <img [src]="imagePreviewUrl" alt="Preview" class="img-thumbnail">
+                            </div>
                         </div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button (click)="updateRoomType(serviceForm2)" type="submit" class="btn btn-info">Add </button>
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" (click)="updateRoomType(serviceForm)" class="btn btn-primary">
+                    <i class="mdi mdi-content-save me-1"></i> Lưu thay đổi
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Spinner -->
+<div class="loading-overlay" *ngIf="isLoading">
+    <div class="spinner-container">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Đang tải...</span>
+        </div>
+        <p class="mt-2">Đang xử lý...</p>
+    </div>
+</div>
+
+<!-- Confirmation Dialog -->
+<div class="modal fade" id="delete-confirmation-modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Xác nhận xóa</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Bạn có chắc chắn muốn xóa dịch vụ phòng này không? Hành động này không thể hoàn tác.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-danger" (click)="deleteService()"
+                    data-bs-dismiss="modal">Xóa</button>
             </div>
         </div>
     </div>

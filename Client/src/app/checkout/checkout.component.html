@@ -1,15 +1,17 @@
 <app-header></app-header>
 
-<div class="breadcrumb-area breadcrumb-padding">
+<!-- Enhanced breadcrumb area with consistent styling -->
+<div class="breadcrumb-area section-bg-2 breadcrumb-padding">
   <div class="container custom-container-one">
     <div class="row">
       <div class="col-lg-12">
         <div class="breadcrumb-contents">
-          <h4 class="breadcrumb-contents-title"> Checkout Details </h4>
+          <h4 class="breadcrumb-contents-title">Chi tiết thanh toán</h4>
           <ul class="breadcrumb-contents-list list-style-none">
-            <li class="breadcrumb-contents-list-item"> <a href="index.html" class="breadcrumb-contents-list-item-link">
-                Home </a> </li>
-            <li class="breadcrumb-contents-list-item"> Checkout </li>
+            <li class="breadcrumb-contents-list-item">
+              <a routerLink="/" class="breadcrumb-contents-list-item-link">Trang chủ</a>
+            </li>
+            <li class="breadcrumb-contents-list-item">Thanh toán</li>
           </ul>
         </div>
       </div>
@@ -17,73 +19,118 @@
   </div>
 </div>
 
-
-<section class="Checkout-area section-bg-2 pat-100 pab-100">
+<!-- Checkout section with updated styling -->
+<section class="checkout-area section-bg-2 pat-100 pab-100">
   <div class="container">
     <div class="row g-4">
+      <!-- Left column - Booking information form -->
       <div class="col-xl-8 col-lg-7">
         <div class="checkout-wrapper">
-          <div class="checkout-single bg-white radius-10">
-            <h4 class="checkout-title"> Booking Information </h4>
-            <div class="checkout-contents mt-3">
+          <div class="checkout-single card-shadow bg-white radius-10">
+            <div class="checkout-header">
+              <div class="checkout-header-flex">
+                <div class="checkout-header-icon">
+                  <i class="las la-user-circle"></i>
+                </div>
+                <h4 class="checkout-title">Thông tin đặt phòng</h4>
+              </div>
+              <p class="checkout-subtitle">Vui lòng nhập thông tin của bạn để hoàn tất việc đặt phòng</p>
+            </div>
+
+            <div class="checkout-contents mt-4">
               <div class="checkout-form custom-form">
-                <form action="" [formGroup]="bookForm" (ngSubmit)="OnSubmit()">
+                <form [formGroup]="bookForm" (ngSubmit)="OnSubmit()">
                   <div class="input-flex-item">
-                    <div class="single-input mt-4">
-                      <label class="label-title"> Name </label>
-                      <input class="form--control" type="text" formControlName="name" placeholder="Type Name">
+                    <div class="single-input mt-3">
+                      <label class="label-title">
+                        <i class="las la-user"></i> Họ tên
+                      </label>
+                      <input class="form--control" type="text" formControlName="name" placeholder="Nhập họ tên của bạn">
                     </div>
-                    <div class="single-input mt-4">
-                      <label class="label-title"> Phone Number </label>
-                      <input class="form--control" type="number" formControlName="phoneNumber" placeholder="Type Phone Number">
-                    </div>
-                  </div>
-                  <div class="input-flex-item">
-                    <div class="single-input mt-4">
-                      <label class="label-title"> Email Address </label>
-                      <input class="form--control" type="text" formControlName="email" placeholder="Type Email" required>
-                    </div>
-                  </div>
-                  <div class="input-flex-item">
-                    <div class="single-input mt-4">
-                      <label class="label-title"> Address </label>
-                      <input class="form--control" type="text" formControlName="address" placeholder="Type Address">
+                    <div class="single-input mt-3">
+                      <label class="label-title">
+                        <i class="las la-phone"></i> Số điện thoại
+                      </label>
+                      <input class="form--control" type="number" formControlName="phoneNumber"
+                        placeholder="Nhập số điện thoại">
                     </div>
                   </div>
                   <div class="input-flex-item">
-                    <div class="single-input mt-4">
-                      <label class="label-title"> Number of people </label>
-                      <input class="form--control form-control input" min="0" placeholder="Guest"
-                      [(ngModel)]="numberOfPeople" tabindex="0" max="9" type="number" style="padding: 14px 16px;"
-                      formControlName="numberOfPeople"
-                      [ngClass]="{ 'is-invalid':  f['numberOfPeople'].errors }" required="">
+                    <div class="single-input mt-3">
+                      <label class="label-title">
+                        <i class="las la-envelope"></i> Email
+                      </label>
+                      <input class="form--control" type="text" formControlName="email" placeholder="Nhập email"
+                        required>
+                    </div>
+                  </div>
+                  <div class="input-flex-item">
+                    <div class="single-input mt-3">
+                      <label class="label-title">
+                        <i class="las la-map-marker"></i> Địa chỉ
+                      </label>
+                      <input class="form--control" type="text" formControlName="address" placeholder="Nhập địa chỉ">
+                    </div>
+                  </div>
+                  <div class="input-flex-item">
+                    <div class="single-input mt-3">
+                      <label class="label-title">
+                        <i class="las la-users"></i> Số người
+                      </label>
+                      <input class="form--control" min="1" placeholder="Số người" [(ngModel)]="numberOfPeople" max="9"
+                        type="number" formControlName="numberOfPeople"
+                        [ngClass]="{ 'is-invalid':  f['numberOfPeople'].errors }">
 
                       <div *ngIf="f['numberOfPeople'].errors" class="invalid-feedback">
-                        <div *ngIf="f['numberOfPeople'].errors['required']">People is required</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="single-input mt-2">
-                    <div class="custom-radio custom-radio-inline">
-                      <div class="custom-radio-single active">
-                        <input class="radio-input" type="radio" formControlName="paymentMethod" value="momo" id="momoRadio"
-                          name="paymentMethod" checked="checked">
-                        <label for="momoRadio"> <img src="../../assets/img/logo-momo-inkythuatso/logo-momo-png-1.png" alt="card"
-                            style="width: 50px;">Pay with MOMO</label>
-                      </div>
-                      <div class="custom-radio-single">
-                        <input class="radio-input" type="radio" name="paymentMethod" formControlName="paymentMethod" value="vnpay"
-                          id="vnpayRadio">
-                        <label for="vnpayRadio"> <img src="../../assets/img/vnpay-logo-inkythuatso/vnpay-logo-inkythuatso-01.png"
-                            alt="Paypal" style="width: 50px;">VN Pay</label>
+                        <div *ngIf="f['numberOfPeople'].errors['required']">Vui lòng nhập số người</div>
+                        <div *ngIf="f['numberOfPeople'].errors['min']">Số người phải lớn hơn 0</div>
                       </div>
                     </div>
                   </div>
 
-                  <div class="input-flex-item">
-                    <div class="btn-wrapper mt-4">
-                      <button type="submit" class="cmn-btn btn-bg-1 btn-small"> Booking </button>
+                  <!-- Payment method selection with enhanced styling -->
+                  <div class="payment-selection mt-4">
+                    <label class="label-title">
+                      <i class="las la-credit-card"></i> Phương thức thanh toán
+                    </label>
+                    <div class="payment-methods">
+                      <!-- MoMo payment option -->
+                      <div class="payment-method-item" [class.active]="bookForm.get('paymentMethod')?.value === 'momo'">
+                        <input class="radio-input" type="radio" formControlName="paymentMethod" value="momo"
+                          id="momoRadio" name="paymentMethod">
+                        <label for="momoRadio" class="payment-method-label">
+                          <div class="payment-logo">
+                            <img src="../../assets/img/logo-momo-inkythuatso/logo-momo-png-1.png" alt="MoMo">
+                          </div>
+                          <div class="payment-info">
+                            <div class="payment-name">MoMo</div>
+                            <div class="payment-desc">Thanh toán bằng ví điện tử MoMo</div>
+                          </div>
+                        </label>
+                      </div>
+                      <!-- VNPay payment option -->
+                      <div class="payment-method-item"
+                        [class.active]="bookForm.get('paymentMethod')?.value === 'vnpay'">
+                        <input class="radio-input" type="radio" formControlName="paymentMethod" value="vnpay"
+                          id="vnpayRadio" name="paymentMethod">
+                        <label for="vnpayRadio" class="payment-method-label">
+                          <div class="payment-logo">
+                            <img src="../../assets/img/vnpay-logo-inkythuatso/vnpay-logo-inkythuatso-01.png"
+                              alt="VNPay">
+                          </div>
+                          <div class="payment-info">
+                            <div class="payment-name">VNPay</div>
+                            <div class="payment-desc">Thanh toán qua cổng VNPay</div>
+                          </div>
+                        </label>
+                      </div>
                     </div>
+                  </div>
+
+                  <div class="btn-wrapper mt-4">
+                    <button type="submit" class="checkout-btn">
+                      <i class="las la-check-circle"></i> Xác nhận đặt phòng
+                    </button>
                   </div>
                 </form>
               </div>
@@ -91,78 +138,143 @@
           </div>
         </div>
       </div>
+
+      <!-- Right column - Booking details summary -->
       <div class="col-xl-4 col-lg-5" *ngIf="room != undefined">
         <div class="sticky-top">
-          <div class="checkout-widget checkout-widget-padding widget bg-white radius-10">
+          <!-- Room details card -->
+          <div class="checkout-widget checkout-widget-padding widget bg-white radius-10 card-shadow">
             <div class="checkout-sidebar">
-              <h4 class="checkout-sidebar-title"> Booking Details </h4>
+              <div class="checkout-header-flex mb-4">
+                <div class="checkout-header-icon">
+                  <i class="las la-hotel"></i>
+                </div>
+                <h4 class="checkout-sidebar-title">Thông tin phòng</h4>
+              </div>
+
               <div class="checkout-sidebar-contents">
-                <ul class="checkout-flex-list list-style-none checkout-border-top pt-3 mt-3">
-                  <li class="list"> <span class="regular"> Room name </span> <span class="strong"> {{room.name}}
-                    </span>
-                  </li>
-                  <li class="list"> <span class="regular"> Room number </span> <span class="strong"> {{room.roomNumber}}
-                    </span>
-                  </li>
-                  <li class="list"> <span class="regular"> Room type </span> <span class="strong"> {{room.roomTypeName}}
-                    </span>
-                  </li>
-                  <li class="list"> <span class="regular"> Room Price </span> <span class="strong">
-                      {{(room.discountPrice==0?room.currentPrice:room.discountPrice) | vndCurrency}}
-                    </span>
-                  </li>
-                  <li class="list"> <span class="regular me-4"> Service attachs </span>
-                    <span *ngFor="let item of room.serviceAttachs; let i = index; let length = count">
-                      <span class="strong">{{item.name}}</span>
-                    </span>
-                  </li>
-                  <li class="list" style="border-top: 1px solid var(--input-color); padding-top:20px;"> <span class="regular"> Checking In </span> <span class="strong strongdate"
-                      [innerHTML]="reservationGet.startDate | date:'yyyy/MM/dd'">
-                    </span> </li>
-                  <li class="list"> <span class="regular"> Checking Out </span> <span class="strong strongdate"
-                      [innerHTML]="reservationGet.endDate | date:'yyyy/MM/dd'">
-                    </span> </li>
-                    <li class="list"> <span class="regular"> Number of people </span> <span class="strong strongdate"
-                        [innerHTML]="reservationGet.numberOfPeople">
-                      </span> </li>
+                <!-- Room image -->
+                <div class="room-image-container mb-4">
+                  <img [src]="room.roomPicture" [alt]="room.name" class="room-thumbnail">
+                  <div class="room-badge" *ngIf="room.discount > 0">-{{room.discount}}%</div>
+                </div>
 
-                  <li class="list"> <span class="regular"> Total Stay </span> <span class="strong"> <span
-                        [innerHTML]="reservationGet.numberOfDay + 1  "></span> Days, <span
-                        [innerHTML]="reservationGet.numberOfDay"></span> Nights
-                    </span> </li>
+                <ul class="checkout-details-list">
+                  <li class="checkout-details-item">
+                    <span class="detail-label">Tên phòng</span>
+                    <span class="detail-value">{{room.name}}</span>
+                  </li>
+                  <li class="checkout-details-item">
+                    <span class="detail-label">Số phòng</span>
+                    <span class="detail-value">{{room.roomNumber}}</span>
+                  </li>
+                  <li class="checkout-details-item">
+                    <span class="detail-label">Loại phòng</span>
+                    <span class="detail-value">{{room.roomTypeName}}</span>
+                  </li>
+                  <li class="checkout-details-item">
+                    <span class="detail-label">Giá phòng</span>
+                    <span
+                      class="detail-value price-value">{{(room.discountPrice==0?room.currentPrice:room.discountPrice) |
+                      vndCurrency}}</span>
+                  </li>
 
-
+                  <!-- Services/Amenities -->
+                  <li class="checkout-details-item amenities-item">
+                    <span class="detail-label">Tiện nghi</span>
+                    <div class="amenities-list">
+                      <span class="amenity-tag"
+                        *ngFor="let item of room.serviceAttachs; let i = index; let length = count">
+                        <i [class]="item.icon"></i> {{item.name}}
+                      </span>
+                    </div>
+                  </li>
                 </ul>
               </div>
             </div>
           </div>
-          <div class="checkout-widget checkout-widget-padding widget bg-white radius-10">
+
+          <!-- Stay details card -->
+          <div class="checkout-widget checkout-widget-padding widget bg-white radius-10 card-shadow mt-4">
             <div class="checkout-sidebar">
-              <h4 class="checkout-sidebar-title"> Invoice </h4>
+              <div class="checkout-header-flex mb-4">
+                <div class="checkout-header-icon">
+                  <i class="las la-calendar"></i>
+                </div>
+                <h4 class="checkout-sidebar-title">Thời gian lưu trú</h4>
+              </div>
+
               <div class="checkout-sidebar-contents">
-                <ul class="checkout-flex-list list-style-none checkout-border-top pt-3 mt-3">
-                  <li class="list"> <span class="regular"> Charge </span> <span class="strong">
-                      {{room.currentPrice * reservationGet.numberOfDay | vndCurrency }} </span> </li>
-                  <li class="list"> <span class="regular"> Discount </span> <span class="strong">
-                      -0 </span> </li>
-                  <li class="list"> <span class="regular"> Vat </span> <span class="strong">
-                      (+8%) {{(room.currentPrice * reservationGet.numberOfDay)*0.08| vndCurrency }} </span> </li>
-                </ul>
-                <ul class="checkout-flex-list list-style-none checkout-border-top pt-3 mt-3">
-                  <li class="list"> <span class="regular"> Total </span> <span class="strong color-one fs-20">
-                      {{(room.currentPrice * reservationGet.numberOfDay)
-                      *1.08 | vndCurrency }}
-                    </span> </li>
+                <ul class="checkout-details-list">
+                  <li class="checkout-details-item">
+                    <span class="detail-label">Nhận phòng</span>
+                    <span class="detail-value date-value">
+                      <i class="las la-calendar-check"></i>
+                      {{reservationGet.startDate | date:'dd/MM/yyyy'}}
+                    </span>
+                  </li>
+                  <li class="checkout-details-item">
+                    <span class="detail-label">Trả phòng</span>
+                    <span class="detail-value date-value">
+                      <i class="las la-calendar-times"></i>
+                      {{reservationGet.endDate | date:'dd/MM/yyyy'}}
+                    </span>
+                  </li>
+                  <li class="checkout-details-item">
+                    <span class="detail-label">Số người</span>
+                    <span class="detail-value">
+                      <i class="las la-user"></i> {{reservationGet.numberOfPeople}} người
+                    </span>
+                  </li>
+                  <li class="checkout-details-item">
+                    <span class="detail-label">Tổng thời gian</span>
+                    <span class="detail-value">
+                      <i class="las la-clock"></i> {{reservationGet.numberOfDay + 1}} ngày,
+                      {{reservationGet.numberOfDay}} đêm
+                    </span>
+                  </li>
                 </ul>
               </div>
             </div>
           </div>
-          <div class="checkout-widget checkout-widget-padding widget bg-white radius-10">
-            <div class="checkout-car-shape">
-              <img src="assets/img/single-page/car-shape.svg" alt="shapes">
-            </div>
-            <div class="checkout-sidebar">
 
+          <!-- Invoice card -->
+          <div class="checkout-widget checkout-widget-padding widget bg-white radius-10 card-shadow mt-4">
+            <div class="checkout-sidebar">
+              <div class="checkout-header-flex mb-4">
+                <div class="checkout-header-icon">
+                  <i class="las la-file-invoice-dollar"></i>
+                </div>
+                <h4 class="checkout-sidebar-title">Hóa đơn</h4>
+              </div>
+
+              <div class="checkout-sidebar-contents">
+                <ul class="checkout-details-list">
+                  <li class="checkout-details-item">
+                    <span class="detail-label">Tiền phòng</span>
+                    <span class="detail-value">{{room.currentPrice * reservationGet.numberOfDay | vndCurrency}}</span>
+                  </li>
+                  <li class="checkout-details-item">
+                    <span class="detail-label">Giảm giá</span>
+                    <span class="detail-value discount-value">-0</span>
+                  </li>
+                  <li class="checkout-details-item">
+                    <span class="detail-label">VAT</span>
+                    <span class="detail-value">(+8%) {{(room.currentPrice * reservationGet.numberOfDay)*0.08|
+                      vndCurrency}}</span>
+                  </li>
+                  <li class="checkout-details-item total-row">
+                    <span class="detail-label">Tổng cộng</span>
+                    <span class="detail-value total-price">{{(room.currentPrice * reservationGet.numberOfDay)*1.08 |
+                      vndCurrency}}</span>
+                  </li>
+                </ul>
+
+                <div class="secure-payment-note mt-4">
+                  <i class="las la-lock"></i>
+                  <span>Thanh toán an toàn & bảo mật</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -170,4 +282,5 @@
     </div>
   </div>
 </section>
+
 <app-footer></app-footer>

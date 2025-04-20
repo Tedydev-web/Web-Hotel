@@ -191,6 +191,27 @@ export class ApiService {
         );
     }
 
+    // Các phương thức mới cho Component Employee
+    updateEmployee(data: any, id: string): Observable<any> {
+        return this.http.post(
+            environment.BASE_URL_API + `/v2/admin/account/update-employee?id=${id}`,
+            data
+        );
+    }
+
+    deleteEmployee(id: string): Observable<any> {
+        return this.http.get(
+            environment.BASE_URL_API + `/v2/admin/account/delete-employee?id=${id}`
+        );
+    }
+
+    updateEmployeeStatus(id: string, status: string): Observable<any> {
+        return this.http.post(
+            environment.BASE_URL_API + `/v2/admin/account/update-employee-status?id=${id}`,
+            { status }
+        );
+    }
+
     /////////////////////////////////////////////////////////////////////////////////////// Discount API
 
     getAllDiscount(): Observable<Discount[]> {
@@ -342,6 +363,38 @@ export class ApiService {
         return this.http.get<any[]>(
             environment.BASE_URL_API +
                 `/v2/admin/revenue/get-for-type-room?year=${year}`
+        );
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////// Salary API
+    getAllSalaries(): Observable<Salary[]> {
+        return this.http.get<Salary[]>(
+            environment.BASE_URL_API + "/v2/admin/salaries/get-all"
+        );
+    }
+
+    getSalaryById(id: number): Observable<Salary> {
+        return this.http.get<Salary>(
+            environment.BASE_URL_API + `/v2/admin/salaries/get-by-id?id=${id}`
+        );
+    }
+
+    updateSalary(data: any, id: number | undefined): Observable<any> {
+        return this.http.post(
+            environment.BASE_URL_API + `/v2/admin/salaries/update?id=${id}`,
+            data
+        );
+    }
+
+    deleteSalary(id: number): Observable<any> {
+        return this.http.get(
+            environment.BASE_URL_API + `/v2/admin/salaries/delete?id=${id}`
+        );
+    }
+    
+    getSalariesByEmployeeId(employeeId: string): Observable<Salary[]> {
+        return this.http.get<Salary[]>(
+            environment.BASE_URL_API + `/v2/admin/salaries/get-by-employee?id=${employeeId}`
         );
     }
 }
