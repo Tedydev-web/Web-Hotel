@@ -34,6 +34,7 @@ export class ReservationComponent implements OnInit {
     reservationGetAll: ReservationModel[] = [];
     reservationFilter: ReservationModel[] = [];
     filteredReservations: ReservationModel[] = [];
+    paginatedReservations: ReservationModel[] = []; // New property to store the current page items
     reservationGetById!: ReservationModel;
     searchReservation: string = '';
     pageSize: number = 10;
@@ -336,16 +337,33 @@ export class ReservationComponent implements OnInit {
         this.http.get<ReservationModel[]>(environment.BASE_URL_API+"/v2/admin/reservation/get-all")
         .subscribe(
             (res: any)=>{
-                this.reservationGetAll = res;
-                this.reservationFilter = res;
-                this.filteredReservations = res;
-                this.totalPages = Math.ceil(this.filteredReservations.length / this.pageSize);
+                console.log("Reservations fetched:", res);
+                this.reservationGetAll = res || [];
+                this.reservationFilter = res || [];
+                this.filteredReservations = res || [];
+                
+                // Process reservation status to handle reservations without payment records
+                this.processReservationsStatus();
+                
+                // Ensure all reservations are included
+                console.log("Total reservations:", this.filteredReservations.length);
+                
+                // Calculate total pages
+                this.totalPages = Math.ceil(this.filteredReservations.length / this.pageSize) || 1;
+                
+                // Apply pagination to populate paginatedReservations
                 this.applyPagination();
+                
                 this.isLoading = false;
             },
             (err) => {
-                console.log(err);
+                console.error('Error fetching reservations:', err);
                 this.isLoading = false;
+                // Initialize with empty arrays to prevent null reference errors
+                this.reservationGetAll = [];
+                this.reservationFilter = [];
+                this.filteredReservations = [];
+                this.paginatedReservations = [];
             }
         )
     }
@@ -484,7 +502,13 @@ export class ReservationComponent implements OnInit {
 
     applyPagination() {
         const startIndex = (this.currentPage - 1) * this.pageSize;
-        this.filteredReservations = this.reservationFilter.slice(startIndex, startIndex + this.pageSize);
+        const endIndex = startIndex + this.pageSize;
+        
+        // Make sure all reservations are included, regardless of payment status
+        this.paginatedReservations = this.filteredReservations.slice(startIndex, Math.min(endIndex, this.filteredReservations.length));
+        
+        // Print the length of paginatedReservations to check if data is properly populated
+        console.log("Paginated reservations count:", this.paginatedReservations.length);
     }
 
     setViewMode(mode: 'card' | 'table') {
@@ -809,6 +833,31 @@ export class ReservationComponent implements OnInit {
         this.hasSearched = false;
         this.isSearching = false;
         this.numberOfDays = 1;
+    }
+
+    // Initializing status value for reservations without ReservationPayment
+    processReservationsStatus() {
+        // Make sure all reservations have a status property, even if they don't have payment records
+        if (this.filteredReservations) {
+            this.filteredReservations = this.filteredReservations.map(item => {
+                // If status is undefined (which can happen for admin-created reservations without payment),
+                // set it to false (unpaid) by default
+                if (item.status === undefined || item.status === null) {
+                    item.status = false;
+                }
+                return item;
+            });
+        }
+        
+        // Apply the same processing to paginatedReservations
+        if (this.paginatedReservations) {
+            this.paginatedReservations = this.paginatedReservations.map(item => {
+                if (item.status === undefined || item.status === null) {
+                    item.status = false;
+                }
+                return item;
+            });
+        }
     }
 }
 

@@ -178,8 +178,9 @@
                 </div>
 
                 <!-- Card View Mode -->
-                <div class="row" *ngIf="viewMode === 'card' && filteredReservations && filteredReservations.length > 0">
-                    <div class="col-md-4 col-xl-3 mb-4" *ngFor="let item of filteredReservations">
+                <div class="row"
+                    *ngIf="viewMode === 'card' && paginatedReservations && paginatedReservations.length > 0">
+                    <div class="col-md-4 col-xl-3 mb-4" *ngFor="let item of paginatedReservations">
                         <div class="reservation-card">
                             <div class="card h-100">
                                 <div class="card-header d-flex justify-content-between align-items-center">
@@ -235,6 +236,29 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Pagination for Card View -->
+                    <div class="custom-pagination mt-4">
+                        <nav>
+                            <ul class="pagination justify-content-center">
+                                <li class="page-item" [ngClass]="{'disabled': currentPage === 1}">
+                                    <a class="page-link" href="javascript:void(0);" (click)="goToPage(currentPage - 1)">
+                                        <i class="mdi mdi-chevron-left"></i>
+                                    </a>
+                                </li>
+                                <li class="page-item" *ngFor="let page of getPageNumbers()"
+                                    [ngClass]="{'active': page === currentPage}">
+                                    <a class="page-link" href="javascript:void(0);"
+                                        (click)="goToPage(page)">{{page}}</a>
+                                </li>
+                                <li class="page-item" [ngClass]="{'disabled': currentPage === totalPages}">
+                                    <a class="page-link" href="javascript:void(0);" (click)="goToPage(currentPage + 1)">
+                                        <i class="mdi mdi-chevron-right"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
                 </div>
 
                 <!-- Empty state when no data -->
@@ -271,7 +295,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr *ngFor="let item of filteredReservations">
+                                            <tr *ngFor="let item of paginatedReservations">
                                                 <td>
                                                     <span class="fw-bold">#{{item.id.substring(0, 8)}}</span>
                                                 </td>
@@ -370,7 +394,7 @@
                 <div id="detail-modal" class="modal fade custom-modal" tabindex="-1" role="dialog" aria-hidden="true">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
-                            <div class="modal-header">
+                            <div class="modal-header" style="background-color: #FF8C31 !important;">
                                 <h4 class="modal-title">Chi tiết đặt phòng</h4>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" id="detail-modal-close"
                                     aria-hidden="true"></button>

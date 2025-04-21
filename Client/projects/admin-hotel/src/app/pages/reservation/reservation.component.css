@@ -121,7 +121,7 @@
 .search-button:hover {
     transform: translateY(-1px);
     box-shadow: 0 6px 16px rgba(114, 124, 245, 0.35);
-    background: linear-gradient(135deg, #5968f3 0%, #4254f2 100%);
+    background: linear-gradient(135deg, #FF8C32 0%, #fca561 100%);
 }
 
 .search-button i {
@@ -543,11 +543,11 @@
 
 /* Card phòng đã chọn */
 .selected-room-card {
-    border: 2px solid #3b7ddd;
+    border: 2px solid #FF8C31;
 }
 
 .selected-room-card .card-header {
-    background-color: #3b7ddd;
+    background-color: #FF8C31;
     color: white;
 }
 
@@ -569,7 +569,7 @@
 
 /* Section titles */
 .section-title {
-    color: #3b7ddd;
+    color: #FF8C31;
     font-weight: 600;
     margin-bottom: 15px;
     position: relative;
@@ -583,8 +583,8 @@
 
 /* Button styles */
 .btn-primary {
-    background-color: #3b7ddd;
-    border-color: #3b7ddd;
+    background-color: #FF8C31;
+    border-color: #FF8C31;
 }
 
 .btn-primary:hover {

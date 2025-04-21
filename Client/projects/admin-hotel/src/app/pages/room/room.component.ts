@@ -62,6 +62,7 @@ export class RoomComponent implements OnInit {
         return this.roomForm.controls;
     }
     filteredRooms: any[] = [];
+    paginatedRooms: any[] = []; // New property to store the current page items
     viewMode: 'card' | 'table' = 'table';
     showFilters: boolean = false;
     statusFilter: string = 'all';
@@ -536,7 +537,7 @@ export class RoomComponent implements OnInit {
     applyPagination(): void {
         const startIndex = (this.currentPage - 1) * this.pageSize;
         const endIndex = startIndex + this.pageSize;
-        this.filteredRooms = this.rooms.slice(startIndex, Math.min(endIndex, this.rooms.length));
+        this.paginatedRooms = this.filteredRooms.slice(startIndex, Math.min(endIndex, this.filteredRooms.length));
     }
 
     exportData(): void {

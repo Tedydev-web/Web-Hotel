@@ -25,7 +25,7 @@
         <!--- Sidemenu -->
         <ul class="side-nav">
 
-            <li class="side-nav-title side-nav-item">Navigation</li>
+            <li class="side-nav-title side-nav-item">Điều hướng</li>
 
             <li class="side-nav-item">
                 <a data-bs-toggle="collapse" routerLinkActive="active" routerLink="/dashboard" aria-expanded="false"
@@ -37,12 +37,12 @@
 
             </li>
 
-            <li class="side-nav-title side-nav-item">Options</li>
+            <li class="side-nav-title side-nav-item">Tính năng</li>
 
             <li class="side-nav-item" routerLinkActive="active">
                 <a routerLink="/room" class="side-nav-link">
                     <i class="uil-calender"></i>
-                    <span> Rooms </span>
+                    <span> Phòng </span>
                 </a>
             </li>
             <!-- 
@@ -55,19 +55,19 @@
             <li class="side-nav-item" routerLinkActive="active">
                 <a routerLink="/reservation" class="side-nav-link">
                     <i class=" dripicons-box"></i>
-                    <span> Reservations </span>
+                    <span>Đặt chỗ </span>
                 </a>
             </li>
             <li class="side-nav-item" routerLinkActive="active">
                 <a routerLink="/blog" class="side-nav-link">
                     <i class="dripicons-blog"></i>
-                    <span> Blogs </span>
+                    <span> Bài viết </span>
                 </a>
             </li>
             <li class="side-nav-item" routerLinkActive="active">
                 <a routerLink="/room-booked" class="side-nav-link">
                     <i class="dripicons-conversation"></i>
-                    <span> Room Serving </span>
+                    <span> Dịch vụ phòng </span>
                 </a>
             </li>
 
@@ -75,38 +75,38 @@
                 <a routerLinkActive="active" data-bs-toggle="collapse" href="#sidebarEcommerce" aria-expanded="false"
                     aria-controls="sidebarEcommerce" class="side-nav-link">
                     <i class="dripicons-view-thumb"></i>
-                    <span> Managements</span>
+                    <span> Quản lý </span>
                     <span class="menu-arrow"></span>
                 </a>
                 <div class="collapse" id="sidebarEcommerce">
                     <ul class="side-nav-second-level">
                         <li routerLinkActive="active" *ngIf="roleValue == 'Admin'">
-                            <a routerLink="/roomtype">Room Type</a>
+                            <a routerLink="/roomtype">Loại phòng</a>
                         </li>
                         <li routerLinkActive="active" *ngIf="roleValue == 'Admin'">
-                            <a routerLink="/typeservice"> Attached Service</a>
+                            <a routerLink="/typeservice"> Dịch vụ kèm theo</a>
                         </li>
                         <li routerLinkActive="active">
-                            <a routerLink="/roomservice">Room Service</a>
+                            <a routerLink="/roomservice">Dịch vụ phòng</a>
                         </li>
                         <li routerLinkActive="active">
-                            <a routerLink="/customer">Customer</a>
+                            <a routerLink="/customer">Khách hàng</a>
                         </li>
                         <li routerLinkActive="active" *ngIf="roleValue == 'Admin'">
-                            <a routerLink="/employee">Employee</a>
+                            <a routerLink="/employee">Nhân viên</a>
                         </li>
                         <li routerLinkActive="active" *ngIf="roleValue == 'Admin'">
-                            <a routerLink="/discount">Discount</a>
+                            <a routerLink="/discount">Giảm giá</a>
                         </li>
                         <li routerLinkActive="active">
-                            <a routerLink="/invoice">Invoice</a>
+                            <a routerLink="/invoice">Hóa đơn</a>
                         </li>
 
                         <li routerLinkActive="active" *ngIf="roleValue == 'Admin'">
-                            <a routerLink="/salary">Salary</a>
+                            <a routerLink="/salary">Lương</a>
                         </li>
                         <li routerLinkActive="active" *ngIf="roleValue == 'Admin'">
-                            <a routerLink="/role">Roles</a>
+                            <a routerLink="/role">Vai trò</a>
                         </li>
                     </ul>
                 </div>
