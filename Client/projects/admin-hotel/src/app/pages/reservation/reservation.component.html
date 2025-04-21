@@ -17,7 +17,7 @@
                                         <li class="breadcrumb-item"><a href="javascript: void(0);"
                                                 class="text-decoration-none">Quản lý</a></li>
                                         <li class="breadcrumb-item active">Đặt phòng</li>
-                                </ol>
+                                    </ol>
                                 </nav>
                             </div>
                             <button data-bs-toggle="modal" data-bs-target="#reservation-modal"
@@ -136,7 +136,7 @@
                             </div>
                         </div>
                     </div>
-                                            </div>
+                </div>
 
                 <!-- View toggle buttons -->
                 <div class="row mb-3">
@@ -175,7 +175,7 @@
                             </div>
                         </div>
                     </div>
-                                            </div>
+                </div>
 
                 <!-- Card View Mode -->
                 <div class="row" *ngIf="viewMode === 'card' && filteredReservations && filteredReservations.length > 0">
@@ -197,7 +197,7 @@
                                         <div class="reservation-user">
                                             <i class="mdi mdi-account text-muted me-1"></i> {{item.name}}
                                         </div>
-                                            </div>
+                                    </div>
 
                                     <div class="d-flex justify-content-between mb-3">
                                         <div>
@@ -248,7 +248,7 @@
                             <button class="btn btn-primary" (click)="clearFilters()">Đặt lại bộ lọc</button>
                         </div>
                     </div>
-                                </div>
+                </div>
 
                 <!-- Table View Mode -->
                 <div class="row" *ngIf="viewMode === 'table'">
@@ -317,7 +317,7 @@
                                                             <button class="btn btn-sm btn-light" type="button"
                                                                 data-bs-toggle="dropdown">
                                                                 <i class="mdi mdi-dots-vertical"></i>
-                                                    </button>
+                                                            </button>
                                                             <ul class="dropdown-menu dropdown-menu-end">
                                                                 <li><a class="dropdown-item" href="javascript:void(0);"
                                                                         (click)="printReservation(item.id)">
@@ -569,103 +569,290 @@
                             <div class="modal-header">
                                 <h4 class="modal-title">Tạo đơn đặt phòng mới</h4>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    id="reservation-modal-close" aria-hidden="true"></button>
+                                    id="reservation-modal-close" aria-hidden="true" (click)="resetForms()"></button>
                             </div>
                             <div class="modal-body">
-                                <form [formGroup]="reservationForm">
+                                <!-- Tìm kiếm phòng -->
+                                <div class="row mb-4" *ngIf="!selectedRoom">
+                                    <div class="col-12">
+                                        <div class="card">
+                                            <div class="card-header bg-primary text-white">
+                                                <h5 class="mb-0"><i class="mdi mdi-magnify me-2"></i>Tìm kiếm phòng
+                                                    trống</h5>
+                                            </div>
+                                            <div class="card-body">
+                                                <form [formGroup]="searchRoomForm">
+                                                    <div class="row g-3">
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label class="form-label">Ngày nhận phòng <span
+                                                                        class="text-danger">*</span></label>
+                                                                <input type="date" formControlName="checkIn"
+                                                                    class="form-control" [min]="minDate">
+                                                                <div *ngIf="searchRoomForm.get('checkIn')?.invalid && searchRoomForm.get('checkIn')?.touched"
+                                                                    class="text-danger mt-1">
+                                                                    <small>Vui lòng chọn ngày nhận phòng</small>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label class="form-label">Ngày trả phòng <span
+                                                                        class="text-danger">*</span></label>
+                                                                <input type="date" formControlName="checkOut"
+                                                                    class="form-control"
+                                                                    [min]="searchRoomForm.get('checkIn')?.value">
+                                                                <div *ngIf="searchRoomForm.get('checkOut')?.invalid && searchRoomForm.get('checkOut')?.touched"
+                                                                    class="text-danger mt-1">
+                                                                    <small>Vui lòng chọn ngày trả phòng</small>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label class="form-label">Số người <span
+                                                                        class="text-danger">*</span></label>
+                                                                <select class="form-select"
+                                                                    formControlName="peopleNumber">
+                                                                    <option value="">Chọn số người</option>
+                                                                    <option *ngFor="let num of maxPersonArray"
+                                                                        [value]="num">{{num}} người</option>
+                                                                </select>
+                                                                <div *ngIf="searchRoomForm.get('peopleNumber')?.invalid && searchRoomForm.get('peopleNumber')?.touched"
+                                                                    class="text-danger mt-1">
+                                                                    <small>Vui lòng chọn số người</small>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label class="form-label">Loại phòng</label>
+                                                                <select class="form-select"
+                                                                    formControlName="roomTypeId">
+                                                                    <option value="">Tất cả loại phòng</option>
+                                                                    <option *ngFor="let type of roomTypes"
+                                                                        [value]="type.id">{{type.typeName}}</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-12 mt-3">
+                                                            <button type="button" class="btn btn-primary w-100"
+                                                                [disabled]="searchRoomForm.invalid || isSearching"
+                                                                (click)="searchAvailableRooms()">
+                                                                <i class="mdi"
+                                                                    [ngClass]="isSearching ? 'mdi-loading mdi-spin' : 'mdi-magnify'"></i>
+                                                                Tìm kiếm phòng trống
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Hiển thị kết quả tìm kiếm phòng -->
+                                <div class="row" *ngIf="searchedRooms.length > 0 && !selectedRoom">
+                                    <div class="col-12 mb-3">
+                                        <h5 class="section-title">Danh sách phòng phù hợp ({{searchedRooms.length}}
+                                            phòng)</h5>
+                                    </div>
+                                    <div class="col-md-4 mb-3" *ngFor="let room of searchedRooms">
+                                        <div class="card h-100 room-card">
+                                            <div class="card-header d-flex justify-content-between align-items-center">
+                                                <span class="room-number">{{room.roomNumber}}</span>
+                                                <span class="badge bg-primary rounded-pill">{{room.roomTypeName}}</span>
+                                            </div>
+                                            <div class="card-body">
+                                                <h5 class="card-title mb-3">{{room.name}}</h5>
+                                                <div class="room-details">
+                                                    <p><i class="mdi mdi-account-multiple me-1"></i> Sức chứa:
+                                                        {{room.peopleNumber}} người</p>
+                                                    <p><i class="mdi mdi-currency-usd me-1"></i> Giá:
+                                                        {{room.currentPrice | vndCurrency}}/đêm</p>
+                                                    <p *ngIf="room.discountPrice > 0" class="text-danger">
+                                                        <i class="mdi mdi-sale me-1"></i> Giảm giá: {{room.discountPrice
+                                                        | vndCurrency}}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div class="card-footer">
+                                                <button type="button" class="btn btn-primary w-100"
+                                                    (click)="selectRoom(room)">
+                                                    <i class="mdi mdi-check-circle-outline me-1"></i> Chọn phòng này
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="alert alert-info"
+                                    *ngIf="searchedRooms.length === 0 && hasSearched && !selectedRoom">
+                                    <i class="mdi mdi-information-outline me-2"></i>
+                                    Không tìm thấy phòng phù hợp với tiêu chí của bạn. Vui lòng thử lại với các tiêu chí
+                                    khác.
+                                </div>
+
+                                <!-- Form đặt phòng -->
+                                <form [formGroup]="reservationForm" *ngIf="selectedRoom">
                                     <div class="row g-3">
-                                        <!-- Room Information -->
-                                        <div class="col-12">
-                                            <h5 class="section-title">Thông tin phòng</h5>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label class="form-label">Chọn phòng</label>
-                                                <select class="form-select filter-control" formControlName="roomId">
-                                                    <option value="">Chọn phòng</option>
-                                                    <option *ngFor="let room of availableRooms" [value]="room.id">
-                                                        {{room.roomNumber}} - {{room.name}} ({{room.currentPrice |
-                                                        vndCurrency}})
-                                                    </option>
-                                                </select>
+                                        <!-- Thông tin phòng đã chọn -->
+                                        <div class="col-12 mb-2">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <h5 class="section-title mb-0">Thông tin phòng đã chọn</h5>
+                                                <button type="button" class="btn btn-sm btn-outline-secondary"
+                                                    (click)="clearSelectedRoom()">
+                                                    <i class="mdi mdi-refresh me-1"></i> Chọn phòng khác
+                                                </button>
                                             </div>
+                                            <hr class="mt-2">
                                         </div>
+
                                         <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label class="form-label">Số ngày</label>
-                                                <input type="number" formControlName="numberOfDay"
-                                                    class="form-control filter-control" placeholder="Nhập số ngày">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label class="form-label">Ngày bắt đầu</label>
-                                                <input type="datetime-local" formControlName="startDate"
-                                                    class="form-control filter-control">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label class="form-label">Ngày kết thúc</label>
-                                                <input type="datetime-local" formControlName="endDate"
-                                                    class="form-control filter-control" readonly>
+                                            <div class="card h-100 selected-room-card">
+                                                <div
+                                                    class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                                                    <span>Phòng {{selectedRoom.roomNumber}}</span>
+                                                    <span
+                                                        class="badge bg-light text-primary rounded-pill">{{selectedRoom.roomTypeName}}</span>
+                                                </div>
+                                                <div class="card-body">
+                                                    <h5 class="card-title mb-3">{{selectedRoom.name}}</h5>
+                                                    <p class="mb-2"><i
+                                                            class="mdi mdi-account-multiple me-1"></i><strong>Sức
+                                                            chứa:</strong> {{selectedRoom.peopleNumber}} người</p>
+                                                    <p class="mb-2"><i class="mdi mdi-currency-usd me-1"></i><strong>Giá
+                                                            phòng:</strong> {{selectedRoom.currentPrice |
+                                                        vndCurrency}}/đêm</p>
+                                                    <p class="mb-0" *ngIf="selectedRoom.discountPrice > 0"><i
+                                                            class="mdi mdi-tag-outline me-1"></i><strong>Giá khuyến
+                                                            mãi:</strong> <span
+                                                            class="text-danger">{{selectedRoom.discountPrice |
+                                                            vndCurrency}}/đêm</span></p>
+                                                </div>
                                             </div>
                                         </div>
 
-                                        <!-- Customer Information -->
+                                        <div class="col-md-6">
+                                            <div class="card h-100">
+                                                <div class="card-header bg-light">
+                                                    <h5 class="mb-0">Chi tiết đặt phòng</h5>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="d-flex justify-content-between mb-2">
+                                                        <span>Ngày nhận phòng:</span>
+                                                        <strong>{{searchRoomForm.get('checkIn')?.value | date:
+                                                            'dd/MM/yyyy'}}</strong>
+                                                    </div>
+                                                    <div class="d-flex justify-content-between mb-2">
+                                                        <span>Ngày trả phòng:</span>
+                                                        <strong>{{searchRoomForm.get('checkOut')?.value | date:
+                                                            'dd/MM/yyyy'}}</strong>
+                                                    </div>
+                                                    <div class="d-flex justify-content-between mb-2">
+                                                        <span>Số ngày:</span>
+                                                        <strong>{{numberOfDays}} ngày</strong>
+                                                    </div>
+                                                    <div class="d-flex justify-content-between mb-2">
+                                                        <span>Giá phòng:</span>
+                                                        <strong>{{getDisplayPrice() | vndCurrency}}/đêm</strong>
+                                                    </div>
+                                                    <hr>
+                                                    <div class="d-flex justify-content-between">
+                                                        <span class="fw-bold">Tổng tiền:</span>
+                                                        <strong class="text-primary fs-5">{{calculateTotal() |
+                                                            vndCurrency}}</strong>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Thông tin khách hàng -->
                                         <div class="col-12 mt-4">
                                             <h5 class="section-title">Thông tin khách hàng</h5>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label class="form-label">Họ và tên</label>
+                                                <label class="form-label">Họ và tên <span
+                                                        class="text-danger">*</span></label>
                                                 <input type="text" formControlName="name"
                                                     class="form-control filter-control"
                                                     placeholder="Nhập họ tên khách hàng">
+                                                <div *ngIf="reservationForm.get('name')?.invalid && reservationForm.get('name')?.touched"
+                                                    class="text-danger mt-1">
+                                                    <small *ngIf="reservationForm.get('name')?.errors?.['required']">Vui
+                                                        lòng nhập họ tên</small>
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label class="form-label">Email</label>
+                                                <label class="form-label">Email <span
+                                                        class="text-danger">*</span></label>
                                                 <input type="email" formControlName="email"
                                                     class="form-control filter-control" placeholder="Nhập email">
+                                                <div *ngIf="reservationForm.get('email')?.invalid && reservationForm.get('email')?.touched"
+                                                    class="text-danger mt-1">
+                                                    <small
+                                                        *ngIf="reservationForm.get('email')?.errors?.['required']">Vui
+                                                        lòng nhập email</small>
+                                                    <small *ngIf="reservationForm.get('email')?.errors?.['email']">Email
+                                                        không hợp lệ</small>
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label class="form-label">Số điện thoại</label>
+                                                <label class="form-label">Số điện thoại <span
+                                                        class="text-danger">*</span></label>
                                                 <input type="text" formControlName="phoneNumber"
                                                     class="form-control filter-control"
                                                     placeholder="Nhập số điện thoại">
+                                                <div *ngIf="reservationForm.get('phoneNumber')?.invalid && reservationForm.get('phoneNumber')?.touched"
+                                                    class="text-danger mt-1">
+                                                    <small
+                                                        *ngIf="reservationForm.get('phoneNumber')?.errors?.['required']">Vui
+                                                        lòng nhập số điện thoại</small>
+                                                    <small
+                                                        *ngIf="reservationForm.get('phoneNumber')?.errors?.['pattern']">Số
+                                                        điện thoại chỉ được chứa các chữ số</small>
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label class="form-label">Địa chỉ</label>
+                                                <label class="form-label">Địa chỉ <span
+                                                        class="text-danger">*</span></label>
                                                 <input type="text" formControlName="address"
                                                     class="form-control filter-control" placeholder="Nhập địa chỉ">
+                                                <div *ngIf="reservationForm.get('address')?.invalid && reservationForm.get('address')?.touched"
+                                                    class="text-danger mt-1">
+                                                    <small
+                                                        *ngIf="reservationForm.get('address')?.errors?.['required']">Vui
+                                                        lòng nhập địa chỉ</small>
+                                                </div>
                                             </div>
                                         </div>
 
-                                        <!-- Payment Information -->
+                                        <!-- Thông tin thanh toán -->
                                         <div class="col-12 mt-4">
                                             <h5 class="section-title">Thông tin thanh toán</h5>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label class="form-label">Phương thức thanh toán</label>
+                                                <label class="form-label">Phương thức thanh toán <span
+                                                        class="text-danger">*</span></label>
                                                 <select class="form-select filter-control"
                                                     formControlName="paymentMethod">
+                                                    <option value="cash">Tiền mặt tại quầy</option>
                                                     <option value="momo">MoMo</option>
                                                     <option value="vnpay">VNPay</option>
-                                                    <option value="cash">Tiền mặt tại quầy</option>
-                                                    <option value="card">Thẻ tín dụng</option>
                                                 </select>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label class="form-label">Tổng tiền dự kiến</label>
+                                                <label class="form-label">Tổng tiền</label>
                                                 <div class="input-group">
                                                     <input type="text" class="form-control filter-control"
                                                         [value]="calculateTotal() | vndCurrency" readonly>
@@ -674,13 +861,54 @@
                                                 </div>
                                             </div>
                                         </div>
+
+                                        <!-- Thông tin phương thức thanh toán -->
+                                        <div class="col-12 mt-3"
+                                            *ngIf="reservationForm.get('paymentMethod')?.value === 'cash'">
+                                            <div class="alert alert-info d-flex align-items-center">
+                                                <i class="mdi mdi-information-outline me-2 fs-5"></i>
+                                                <div>
+                                                    Thanh toán tiền mặt: Khách hàng sẽ thanh toán tại quầy. Trạng thái
+                                                    đơn đặt phòng sẽ là "Chưa thanh toán" cho đến khi được cập nhật.
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12 mt-3"
+                                            *ngIf="reservationForm.get('paymentMethod')?.value === 'momo'">
+                                            <div class="alert alert-primary d-flex align-items-center">
+                                                <i class="mdi mdi-wallet-outline me-2 fs-5"></i>
+                                                <div>
+                                                    Thanh toán bằng MoMo: Sau khi tạo đơn, bạn sẽ được chuyển hướng tới
+                                                    trang thanh toán MoMo để hoàn tất giao dịch.
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12 mt-3"
+                                            *ngIf="reservationForm.get('paymentMethod')?.value === 'vnpay'">
+                                            <div class="alert alert-primary d-flex align-items-center">
+                                                <i class="mdi mdi-credit-card-outline me-2 fs-5"></i>
+                                                <div>
+                                                    Thanh toán bằng VNPay: Sau khi tạo đơn, bạn sẽ được chuyển hướng tới
+                                                    trang thanh toán VNPay để hoàn tất giao dịch.
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </form>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Hủy</button>
-                                <button type="button" class="btn btn-primary" (click)="createReservation()">Tạo đơn đặt
-                                    phòng</button>
+                                <button type="button" class="btn btn-light" data-bs-dismiss="modal"
+                                    (click)="resetForms()">Hủy</button>
+                                <button *ngIf="!selectedRoom" type="button" class="btn btn-primary"
+                                    [disabled]="searchRoomForm.invalid || isSearching" (click)="searchAvailableRooms()">
+                                    <i class="mdi mdi-magnify me-1"></i> Tìm kiếm phòng
+                                </button>
+                                <button *ngIf="selectedRoom" type="button" class="btn btn-primary"
+                                    [disabled]="reservationForm.invalid || isLoading" (click)="createReservation()">
+                                    <i class="mdi mdi-check-circle me-1"></i> Tạo đơn đặt phòng
+                                </button>
                             </div>
                         </div>
                     </div>

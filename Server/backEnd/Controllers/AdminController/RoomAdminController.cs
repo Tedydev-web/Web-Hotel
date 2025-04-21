@@ -1,7 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Database.Data;
 using WebHotel.DTO.RoomDtos;
 using WebHotel.Repository.AdminRepository.RoomRepository;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace WebHotel.Controllers.AdminController;
 
@@ -12,9 +18,12 @@ namespace WebHotel.Controllers.AdminController;
 public class RoomAdminController : ControllerBase
 {
     private readonly IRoomAdminRepository _roomAdminRepository;
-    public RoomAdminController(IRoomAdminRepository roomAdminRepository)
+    private readonly MyDBContext _context;
+
+    public RoomAdminController(IRoomAdminRepository roomAdminRepository, MyDBContext context)
     {
         _roomAdminRepository = roomAdminRepository;
+        _context = context;
     }
 
     [HttpPost]
@@ -79,5 +88,41 @@ public class RoomAdminController : ControllerBase
             return Ok(result);
         }
         return BadRequest(result);
+    }
+
+    [HttpGet]
+    [Route("get-available-rooms")]
+    public async Task<IActionResult> GetAvailableRooms()
+    {
+        try
+        {
+            // Lấy danh sách các ID phòng đang được đặt
+            var currentDate = DateTime.Now;
+            var bookedRoomIds = await _context.Reservations
+                .Where(r => r.EndDate > currentDate) // Chỉ xem xét các đặt phòng chưa kết thúc
+                .Select(r => r.RoomId)
+                .ToListAsync();
+
+            // Lấy danh sách các phòng không nằm trong danh sách đã đặt
+            var availableRooms = await _context.Rooms
+                .Include(r => r.RoomType)
+                .Where(r => !bookedRoomIds.Contains(r.Id))
+                .Select(r => new
+                {
+                    id = r.Id,
+                    roomNumber = r.RoomNumber,
+                    name = r.Name,
+                    currentPrice = r.CurrentPrice,
+                    capacity = r.PeopleNumber,
+                    roomType = r.RoomType.TypeName
+                })
+                .ToListAsync();
+
+            return Ok(availableRooms);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
     }
 }

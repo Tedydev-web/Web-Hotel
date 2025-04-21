@@ -512,3 +512,111 @@
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
   text-align: center;
 }
+
+/* Thêm CSS cho các thành phần mới */
+
+/* Cards phòng tìm kiếm */
+.room-card {
+    transition: all 0.3s ease;
+    border: 1px solid #e9ecef;
+}
+
+.room-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.room-card .card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.room-number {
+    font-weight: 600;
+    color: #495057;
+}
+
+.room-details p {
+    margin-bottom: 8px;
+    color: #6c757d;
+}
+
+/* Card phòng đã chọn */
+.selected-room-card {
+    border: 2px solid #3b7ddd;
+}
+
+.selected-room-card .card-header {
+    background-color: #3b7ddd;
+    color: white;
+}
+
+/* Chi tiết đặt phòng */
+.booking-details .detail-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.booking-details .detail-label {
+    color: #6c757d;
+}
+
+.booking-details .detail-value {
+    font-weight: 500;
+    color: #212529;
+}
+
+/* Section titles */
+.section-title {
+    color: #3b7ddd;
+    font-weight: 600;
+    margin-bottom: 15px;
+    position: relative;
+}
+
+/* Form controls */
+.form-control:focus, .form-select:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Button styles */
+.btn-primary {
+    background-color: #3b7ddd;
+    border-color: #3b7ddd;
+}
+
+.btn-primary:hover {
+    background-color: #2e6ac1;
+    border-color: #2e6ac1;
+}
+
+.btn-outline-secondary {
+    color: #6c757d;
+    border-color: #6c757d;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    color: white;
+}
+
+/* Thêm animation */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .modal-dialog {
+        max-width: 95%;
+        margin: 10px auto;
+    }
+}

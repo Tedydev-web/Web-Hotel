@@ -11,6 +11,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment.development';
 import { ServiceAttach } from '../../models/serviceAttach.model';
 import * as XLSX from 'xlsx';
+import { formatDate } from "@angular/common";
 
 @Component({
     selector: "app-reservation",
@@ -21,6 +22,7 @@ export class ReservationComponent implements OnInit {
     formReservation!: FormGroup;
     formSearch!: FormGroup;
     reservationForm!: FormGroup;
+    searchRoomForm!: FormGroup;
     rooms!: Room[];
     dataSearch: any = {
         maxPerson: "",
@@ -44,6 +46,16 @@ export class ReservationComponent implements OnInit {
     viewMode: 'card' | 'table' = 'card';
     availableRooms: any[] = [];
     isLoading: boolean = false;
+    selectedRoom: any = null;
+    
+    // Thêm các thuộc tính mới cho tìm kiếm phòng
+    searchedRooms: any[] = [];
+    isSearching: boolean = false;
+    hasSearched: boolean = false;
+    roomTypes: any[] = [];
+    maxPersonArray: number[] = [];
+    numberOfDays: number = 1;
+    minDate: string = '';
 
     constructor(
         private reservation: ReservationApi,
@@ -54,6 +66,10 @@ export class ReservationComponent implements OnInit {
         private room: RoomApi,
         private http: HttpClient
     ) {
+        // Lấy ngày hiện tại để làm giá trị tối thiểu cho ngày bắt đầu
+        const today = new Date();
+        this.minDate = formatDate(today, 'yyyy-MM-dd', 'en-US');
+        
         this.formReservation = this.fb.group({
             roomId: ["", [Validators.required]],
             roomPrice: ["", [Validators.required]],
@@ -75,17 +91,23 @@ export class ReservationComponent implements OnInit {
             serviceAttachs: [""],
         });
         
+        // Form tìm kiếm phòng
+        this.searchRoomForm = this.fb.group({
+            checkIn: [formatDate(today, 'yyyy-MM-dd', 'en-US'), Validators.required],
+            checkOut: [formatDate(new Date(today.getTime() + 24 * 60 * 60 * 1000), 'yyyy-MM-dd', 'en-US'), Validators.required],
+            peopleNumber: ['', Validators.required],
+            roomTypeId: [''],
+        });
+        
+        // Form đặt phòng
         this.reservationForm = this.fb.group({
             roomId: ['', Validators.required],
-            startDate: [new Date(), Validators.required],
-            numberOfDay: [1, [Validators.required, Validators.min(1)]],
-            numberOfPeople: [1, [Validators.required, Validators.min(1)]],
-            endDate: [new Date(new Date().setDate(new Date().getDate() + 1)), Validators.required],
             name: ['', Validators.required],
             email: ['', [Validators.required, Validators.email]],
             phoneNumber: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
             address: ['', Validators.required],
-            payType: ['VNPAY', Validators.required]
+            paymentMethod: ['cash', Validators.required],
+            numberOfPeople: [1, [Validators.required, Validators.min(1)]],
         });
     }
 
@@ -94,15 +116,134 @@ export class ReservationComponent implements OnInit {
         this.getRooms();
         this.getDataAddSearch();
         this.GetReservationAll();
-        this.loadAvailableRooms();
+        this.loadRoomTypes();
         
-        this.reservationForm.get('startDate')?.valueChanges.subscribe(() => {
-            this.updateEndDate();
+        // Lắng nghe sự kiện khi ngày bắt đầu hoặc kết thúc thay đổi
+        this.searchRoomForm.get('checkIn')?.valueChanges.subscribe(() => {
+            this.updateCheckOutMinDate();
+            this.calculateNumberOfDays();
         });
         
-        this.reservationForm.get('numberOfDay')?.valueChanges.subscribe(() => {
-            this.updateEndDate();
+        this.searchRoomForm.get('checkOut')?.valueChanges.subscribe(() => {
+            this.calculateNumberOfDays();
         });
+        
+        // Lắng nghe sự kiện đóng modal
+        document.addEventListener('hidden.bs.modal', (event: any) => {
+            if (event.target.id === 'reservation-modal') {
+                this.resetForms();
+            }
+        });
+    }
+
+    // Tải danh sách loại phòng và số người tối đa
+    loadRoomTypes() {
+        this.http.get<any>(environment.BASE_URL_API + '/user/search-room')
+            .subscribe(
+                (res) => {
+                    this.roomTypes = res.roomTypes || [];
+                    const maxPerson = res.maxPerson || 10;
+                    this.maxPersonArray = Array.from({length: maxPerson}, (_, i) => i + 1);
+                },
+                (err) => {
+                    console.error('Error loading room types:', err);
+                }
+            );
+    }
+    
+    // Cập nhật ngày trả phòng tối thiểu
+    updateCheckOutMinDate() {
+        const checkInDate = this.searchRoomForm.get('checkIn')?.value;
+        if (checkInDate) {
+            const nextDay = new Date(checkInDate);
+            nextDay.setDate(nextDay.getDate() + 1);
+            const formattedDate = formatDate(nextDay, 'yyyy-MM-dd', 'en-US');
+            
+            // Nếu ngày trả phòng < ngày nhận phòng + 1 thì cập nhật
+            const currentCheckOut = this.searchRoomForm.get('checkOut')?.value;
+            if (!currentCheckOut || new Date(currentCheckOut) <= new Date(checkInDate)) {
+                this.searchRoomForm.get('checkOut')?.setValue(formattedDate);
+            }
+        }
+    }
+    
+    // Tính số ngày giữa ngày nhận và trả phòng
+    calculateNumberOfDays() {
+        const checkInDate = this.searchRoomForm.get('checkIn')?.value;
+        const checkOutDate = this.searchRoomForm.get('checkOut')?.value;
+        
+        if (checkInDate && checkOutDate) {
+            const startDate = new Date(checkInDate);
+            const endDate = new Date(checkOutDate);
+            const timeDiff = endDate.getTime() - startDate.getTime();
+            this.numberOfDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+            
+            if (this.numberOfDays <= 0) {
+                this.numberOfDays = 1;
+            }
+        } else {
+            this.numberOfDays = 1;
+        }
+    }
+    
+    // Tìm kiếm phòng theo tiêu chí
+    searchAvailableRooms() {
+        if (this.searchRoomForm.invalid) {
+            Object.keys(this.searchRoomForm.controls).forEach(key => {
+                const control = this.searchRoomForm.get(key);
+                control?.markAsTouched();
+            });
+            return;
+        }
+        
+        this.isSearching = true;
+        this.hasSearched = true;
+        
+        const searchData = {
+            checkIn: new Date(this.searchRoomForm.get('checkIn')?.value),
+            checkOut: new Date(this.searchRoomForm.get('checkOut')?.value),
+            peopleNumber: this.searchRoomForm.get('peopleNumber')?.value,
+            typeRoomId: this.searchRoomForm.get('roomTypeId')?.value || 0,
+            price: 0,
+            star: 0
+        };
+        
+        this.room.getRoomBySearch(searchData).subscribe(
+            (res: any) => {
+                this.searchedRooms = res;
+                this.isSearching = false;
+            },
+            (err) => {
+                console.error('Error searching rooms:', err);
+                this.isSearching = false;
+                this.searchedRooms = [];
+            }
+        );
+    }
+    
+    // Chọn phòng từ kết quả tìm kiếm
+    selectRoom(room: any) {
+        this.selectedRoom = room;
+        
+        // Cập nhật form đặt phòng
+        this.reservationForm.patchValue({
+            roomId: room.id,
+            numberOfPeople: this.searchRoomForm.get('peopleNumber')?.value
+        });
+    }
+    
+    // Xóa phòng đã chọn để chọn lại
+    clearSelectedRoom() {
+        this.selectedRoom = null;
+    }
+    
+    // Lấy giá hiển thị (ưu tiên giá khuyến mãi nếu có)
+    getDisplayPrice(): number {
+        if (!this.selectedRoom) return 0;
+        
+        return this.selectedRoom.discountPrice > 0 
+            ? this.selectedRoom.discountPrice 
+            : this.selectedRoom.currentPrice;
     }
 
     reservationCreate(idRoom: any) {
@@ -395,78 +536,223 @@ export class ReservationComponent implements OnInit {
     }
 
     loadAvailableRooms() {
-        this.http.get(environment.BASE_URL_API + '/v2/admin/room/available-rooms')
-            .subscribe(
-                (res: any) => {
-                    this.availableRooms = res;
-                },
-                err => console.log(err)
-            );
-    }
-
-    updateEndDate() {
-        const startDate = this.reservationForm.get('startDate')?.value;
-        const numberOfDays = this.reservationForm.get('numberOfDay')?.value;
-        
-        if (startDate && numberOfDays) {
-            const start = new Date(startDate);
-            const end = new Date(start);
-            end.setDate(start.getDate() + parseInt(numberOfDays));
-            
-            this.reservationForm.get('endDate')?.setValue(end.toISOString().slice(0, 16));
-        }
+        this.isLoading = true;
+        this.http.get<any[]>(environment.BASE_URL_API+"/v2/admin/room/get-available-rooms")
+        .subscribe(
+            (res) => {
+                this.availableRooms = res;
+                this.isLoading = false;
+            },
+            (err) => {
+                console.error('Error loading available rooms:', err);
+                this.isLoading = false;
+            }
+        );
     }
 
     calculateTotal(): number {
-        const roomId = this.reservationForm.get('roomId')?.value;
-        const numberOfDays = this.reservationForm.get('numberOfDay')?.value || 0;
+        if (!this.selectedRoom) {
+            return 0;
+        }
         
-        if (!roomId || !numberOfDays) return 0;
-        
-        const selectedRoom = this.availableRooms.find(room => room.id === roomId);
-        if (!selectedRoom) return 0;
-        
-        return selectedRoom.currentPrice * numberOfDays;
+        const price = this.getDisplayPrice();
+        return this.numberOfDays * price;
     }
 
     createReservation() {
-        if (this.reservationForm.invalid) {
+        if (this.reservationForm.invalid || !this.selectedRoom) {
+            // Đánh dấu tất cả các trường là đã chạm vào để hiển thị lỗi
             Object.keys(this.reservationForm.controls).forEach(key => {
                 const control = this.reservationForm.get(key);
-                if (control) {
-                    control.markAsTouched();
-                }
+                control?.markAsTouched();
             });
             return;
         }
         
         this.isLoading = true;
-        this.http.post(environment.BASE_URL_API + '/v2/admin/reservation/create', this.reservationForm.value)
-            .subscribe(
-                (res: any) => {
-                    this.isLoading = false;
-                    alert('Đặt phòng thành công');
-                    this.GetReservationAll();
-                    this.reservationForm.reset();
-                    this.reservationForm = this.fb.group({
-                        startDate: [new Date().toISOString().slice(0, 16), Validators.required],
-                        endDate: [{value: '', disabled: true}],
-                        roomId: ['', Validators.required],
-                        numberOfDay: [1, [Validators.required, Validators.min(1)]],
-                        email: ['', [Validators.required, Validators.email]],
-                        name: ['', Validators.required],
-                        phoneNumber: ['', Validators.required],
-                        address: ['', Validators.required],
-                        payType: ['VNPAY', Validators.required],
-                    });
+        
+        const paymentMethod = this.reservationForm.get('paymentMethod')?.value;
+        
+        // Lấy ngày từ form tìm kiếm
+        const startDate = new Date(this.searchRoomForm.get('checkIn')?.value);
+        const endDate = new Date(this.searchRoomForm.get('checkOut')?.value);
+        
+        const reservationData = {
+            roomId: this.selectedRoom.id,
+            startDate: startDate,
+            endDate: endDate,
+            numberOfDay: this.numberOfDays,
+            numberOfPeople: this.reservationForm.get('numberOfPeople')?.value,
+            name: this.reservationForm.get('name')?.value,
+            email: this.reservationForm.get('email')?.value,
+            phoneNumber: this.reservationForm.get('phoneNumber')?.value,
+            address: this.reservationForm.get('address')?.value,
+        };
+        
+        this.reservation.reservationCreate(reservationData).subscribe(
+            (res) => {
+                if (paymentMethod === 'momo' || paymentMethod === 'vnpay') {
+                    this.processPayment(res.reservationId, paymentMethod);
+                } else if (paymentMethod === 'cash') {
+                    // Xử lý thanh toán tiền mặt
+                    this.processCashPayment(res.reservationId);
+                } else {
+                    // Đóng modal
                     document.getElementById('reservation-modal-close')?.click();
-                },
-                err => {
-                    console.log(err);
+                    
+                    // Tải lại danh sách đặt phòng
+                    this.GetReservationAll();
                     this.isLoading = false;
-                    alert('Đã xảy ra lỗi khi đặt phòng');
+                    
+                    // Hiển thị thông báo thành công
+                    alert('Tạo đơn đặt phòng thành công!');
+                }
+            },
+            (err) => {
+                console.error('Error creating reservation:', err);
+                this.isLoading = false;
+                alert('Có lỗi xảy ra khi tạo đơn đặt phòng: ' + (err.message || 'Không xác định'));
+            }
+        );
+    }
+    
+    processPayment(reservationId: string, paymentMethod: string) {
+        const totalAmount = this.calculateTotal();
+        
+        if (paymentMethod === 'momo') {
+            this.processMomoPayment(reservationId, totalAmount);
+        } else if (paymentMethod === 'vnpay') {
+            this.processVnPayPayment(reservationId, totalAmount);
+        }
+    }
+    
+    processMomoPayment(reservationId: string, amount: number) {
+        const momoData = {
+            amount: amount.toString(),
+            orderInfo: `Thanh toán đặt phòng #${reservationId.substring(0, 8)}`
+        };
+        
+        this.http.post<any>(environment.BASE_URL_API + '/user/payment/momoQR', momoData)
+            .subscribe(
+                (res) => {
+                    // Lưu thông tin thanh toán
+                    this.savePaymentInfo(reservationId, 'MOMO', amount);
+                    
+                    // Mở URL thanh toán MoMo trong cửa sổ mới
+                    window.open(res.payUrl, '_blank');
+                    
+                    // Đóng modal
+                    document.getElementById('reservation-modal-close')?.click();
+                    
+                    // Tải lại danh sách đặt phòng
+                    this.GetReservationAll();
+                    this.isLoading = false;
+                },
+                (err) => {
+                    console.error('Error processing MoMo payment:', err);
+                    this.isLoading = false;
+                    alert('Có lỗi xảy ra khi xử lý thanh toán MoMo: ' + (err.message || 'Không xác định'));
                 }
             );
+    }
+    
+    processVnPayPayment(reservationId: string, amount: number) {
+        const vnpayData = {
+            amount: amount,
+            orderDescription: `Thanh toán đặt phòng #${reservationId.substring(0, 8)}`,
+            name: this.reservationForm.get('name')?.value || 'Khách hàng'
+        };
+        
+        this.http.post<any>(environment.BASE_URL_API + '/user/vn-pay/create', vnpayData)
+            .subscribe(
+                (res) => {
+                    // Lưu thông tin thanh toán
+                    this.savePaymentInfo(reservationId, 'VNPAY', amount);
+                    
+                    // Mở URL thanh toán VNPay trong cửa sổ mới
+                    window.open(res.url, '_blank');
+                    
+                    // Đóng modal
+                    document.getElementById('reservation-modal-close')?.click();
+                    
+                    // Tải lại danh sách đặt phòng
+                    this.GetReservationAll();
+                    this.isLoading = false;
+                },
+                (err) => {
+                    console.error('Error processing VNPay payment:', err);
+                    this.isLoading = false;
+                    alert('Có lỗi xảy ra khi xử lý thanh toán VNPay: ' + (err.message || 'Không xác định'));
+                }
+            );
+    }
+    
+    savePaymentInfo(reservationId: string, payType: string, amount: number) {
+        const paymentInfo = {
+            priceTotal: amount,
+            orderInfo: `Thanh toán đặt phòng #${reservationId.substring(0, 8)}`,
+            orderType: payType,
+            payType: payType,
+            status: 0, // Trạng thái ban đầu là chưa thanh toán
+            message: 'Đang chờ thanh toán',
+            reservationId: reservationId
+        };
+        
+        this.payment.invoiceCreate(paymentInfo).subscribe(
+            (res) => {
+                console.log('Payment info saved successfully', res);
+            },
+            (err) => {
+                console.error('Error saving payment info:', err);
+            }
+        );
+    }
+
+    processCashPayment(reservationId: string) {
+        const totalAmount = this.calculateTotal();
+        
+        // Lưu thông tin thanh toán với trạng thái là "Chưa thanh toán" (status = 0)
+        const paymentInfo = {
+            priceTotal: totalAmount,
+            orderInfo: `Thanh toán đặt phòng #${reservationId.substring(0, 8)}`,
+            orderType: 'CASH',
+            payType: 'CASH',
+            status: 0, // Trạng thái 0 = Chưa thanh toán
+            message: 'Chưa thanh toán - Thanh toán tiền mặt tại quầy',
+            reservationId: reservationId
+        };
+        
+        this.payment.invoiceCreate(paymentInfo).subscribe(
+            (res) => {
+                console.log('Cash payment info saved', res);
+                
+                // Đóng modal
+                document.getElementById('reservation-modal-close')?.click();
+                
+                // Reset form
+                this.selectedRoom = null;
+                this.searchedRooms = [];
+                this.hasSearched = false;
+                this.searchRoomForm.reset({
+                    checkIn: formatDate(new Date(), 'yyyy-MM-dd', 'en-US'),
+                    checkOut: formatDate(new Date(new Date().getTime() + 24 * 60 * 60 * 1000), 'yyyy-MM-dd', 'en-US'),
+                    roomTypeId: '',
+                    peopleNumber: ''
+                });
+                
+                // Tải lại danh sách đặt phòng
+                this.GetReservationAll();
+                this.isLoading = false;
+                
+                // Hiển thị thông báo thành công
+                alert('Tạo đơn đặt phòng thành công! Trạng thái: Chưa thanh toán');
+            },
+            (err) => {
+                console.error('Error saving cash payment info:', err);
+                this.isLoading = false;
+                alert('Có lỗi xảy ra khi lưu thông tin thanh toán: ' + (err.message || 'Không xác định'));
+            }
+        );
     }
 
     updateStatus(id: string, newStatus: boolean) {
@@ -495,6 +781,34 @@ export class ReservationComponent implements OnInit {
         return this.reservationFilter
             .filter(item => item.status === true)
             .reduce((total, item) => total + item.reservationPrice, 0);
+    }
+
+    resetForms() {
+        // Reset tất cả biểu mẫu
+        const today = new Date();
+        this.searchRoomForm.reset({
+            checkIn: formatDate(today, 'yyyy-MM-dd', 'en-US'),
+            checkOut: formatDate(new Date(today.getTime() + 24 * 60 * 60 * 1000), 'yyyy-MM-dd', 'en-US'),
+            roomTypeId: '',
+            peopleNumber: ''
+        });
+        
+        this.reservationForm.reset({
+            name: '',
+            email: '',
+            phoneNumber: '',
+            address: '',
+            paymentMethod: 'cash',
+            numberOfPeople: 1,
+            roomId: ''
+        });
+        
+        // Reset các trạng thái
+        this.selectedRoom = null;
+        this.searchedRooms = [];
+        this.hasSearched = false;
+        this.isSearching = false;
+        this.numberOfDays = 1;
     }
 }
 
