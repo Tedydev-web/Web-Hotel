@@ -21,7 +21,7 @@ public class ReservationUserRepository : IReservationUserRepository
     private async Task HandleTimer(string id)
     {
         var optionsBuilder = new DbContextOptionsBuilder<MyDBContext>();
-        optionsBuilder.UseSqlServer("Data Source=localhost,1433;Initial Catalog=WebHotel;User ID=sa;Password=TedyDev@23105;Encrypt=True;TrustServerCertificate=True;");
+        optionsBuilder.UseSqlServer("Data Source=s103-d186.interdata.vn;Initial Catalog=WebHotel;User ID=WebHotel;Password=TedyDev@23105;Encrypt=True;TrustServerCertificate=True;");
 
         using (MyDBContext context1 = new MyDBContext(optionsBuilder.Options))
         {

@@ -143,6 +143,11 @@ export class ApiService {
             environment.BASE_URL_API + "/v2/admin/service-attach/get-all"
         );
     }
+    getServiceById(id: number): Observable<ServiceAttach> {
+        return this.http.get<ServiceAttach>(
+            environment.BASE_URL_API + `/v2/admin/service-attach/get-by-id?id=${id}`
+        );
+    }
     createService(typeName: string) {
         return this.http.post(
             environment.BASE_URL_API + "/v2/admin/service-attach/create",
