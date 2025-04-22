@@ -342,9 +342,6 @@ export class ReservationComponent implements OnInit {
                 this.reservationFilter = res || [];
                 this.filteredReservations = res || [];
                 
-                // Process reservation status to handle reservations without payment records
-                this.processReservationsStatus();
-                
                 // Ensure all reservations are included
                 console.log("Total reservations:", this.filteredReservations.length);
                 
