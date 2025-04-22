@@ -1,0 +1,262 @@
+/* Main layout styles */
+.roles-page {
+  background-color: #f6f8fa;
+  min-height: 100vh;
+  transition: all 0.3s;
+}
+
+.content-wrapper {
+  padding: 20px;
+}
+
+/* Dashboard card styles */
+.dashboard-card {
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.card-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 15px;
+}
+
+.card-number {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.card-label {
+  color: #6c757d;
+  font-size: 14px;
+}
+
+.bg-primary-lighten {
+  background-color: rgba(64, 81, 255, 0.15);
+}
+
+.bg-success-lighten {
+  background-color: rgba(10, 179, 156, 0.15);
+}
+
+.bg-danger-lighten {
+  background-color: rgba(242, 46, 46, 0.15);
+}
+
+.bg-info-lighten {
+  background-color: rgba(57, 175, 209, 0.15);
+}
+
+.bg-warning-lighten {
+  background-color: rgba(255, 188, 0, 0.15);
+}
+
+/* Filter section styles */
+.filter-section {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+}
+
+.filter-control {
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+  padding: 10px 15px;
+  box-shadow: none;
+  transition: all 0.3s;
+}
+
+.filter-control:focus {
+  border-color: #4051ff;
+  box-shadow: 0 0 0 0.2rem rgba(64, 81, 255, 0.25);
+}
+
+/* View toggle styles */
+.view-toggle .btn {
+  border-radius: 6px;
+  padding: 8px 15px;
+  background-color: #f8f9fa;
+  border: 1px solid #e2e8f0;
+  color: #6c757d;
+  margin-right: 10px;
+}
+
+.view-toggle .btn.active {
+  background-color: #4051ff;
+  border-color: #4051ff;
+  color: #fff;
+}
+
+/* Role card styles */
+.role-card .card {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s;
+}
+
+.role-card .card:hover {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.role-card .card-header {
+  background-color: #fff;
+  border-bottom: 1px solid #f1f1f1;
+  border-top-left-radius: 12px !important;
+  border-top-right-radius: 12px !important;
+  padding: 15px;
+}
+
+.role-id {
+  font-size: 12px;
+  color: #6c757d;
+  font-weight: 600;
+}
+
+.status-badge {
+  padding: 5px 10px;
+  font-size: 12px;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.status-badge i {
+  margin-right: 5px;
+  font-size: 14px;
+}
+
+.status-active {
+  background-color: rgba(10, 179, 156, 0.15);
+  color: #0ab39c;
+}
+
+.status-inactive {
+  background-color: rgba(57, 175, 209, 0.15);
+  color: #39afd1;
+}
+
+.role-details {
+  padding: 20px;
+}
+
+.role-icon {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background-color: #f6f8fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  color: #4051ff;
+}
+
+.role-info {
+  font-size: 14px;
+  color: #6c757d;
+}
+
+/* Table styles */
+.table-centered td, .table-centered th {
+  vertical-align: middle;
+}
+
+/* Pagination styles */
+.custom-pagination .pagination {
+  justify-content: center;
+  margin-bottom: 0;
+}
+
+.page-link {
+  color: #4051ff;
+  border: 1px solid #e2e8f0;
+  min-width: 36px;
+  text-align: center;
+}
+
+.page-item.active .page-link {
+  background-color: #4051ff;
+  border-color: #4051ff;
+}
+
+/* Modal styles */
+.modal-content {
+  border: none;
+  border-radius: 12px;
+}
+
+.modal-header {
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  background-color: #fff;
+  border-bottom: 1px solid #f1f1f1;
+}
+
+.modal-footer {
+  border-top: 1px solid #f1f1f1;
+}
+
+/* Loading overlay */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.spinner-container {
+  text-align: center;
+}
+
+/* Animation */
+.fade-in {
+  animation: fadeIn 0.5s;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .dashboard-card {
+    margin-bottom: 15px;
+  }
+
+  .view-toggle .btn {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+
+  .filter-section {
+    padding: 15px;
+  }
+}

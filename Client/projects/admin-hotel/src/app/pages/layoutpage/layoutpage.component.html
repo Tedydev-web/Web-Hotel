@@ -1,311 +1,364 @@
 <div *ngIf="loading" class="loading-container">
-    <div class="spinner-border text-primary" role="status">
-        <span class="visually-hidden">Đang tải...</span>
+    <div class="spinner-container">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Đang tải...</span>
+        </div>
+        <p class="mt-2">Đang xử lý...</p>
     </div>
 </div>
 
 <div class="wrapper" [ngClass]="{'content-loading': loading}">
     <app-sidebar></app-sidebar>
-
     <div class="content-page">
-        <div class="content">
+        <div class="content content-wrapper">
             <app-header></app-header>
-            <div class="container-fluid">
+            <div class="container-fluid py-4">
                 <!-- start page title -->
-                <div class="row">
-                    <div class="col-12">
-                        <div class="page-title-box">
-                            <div class="page-title-right">
-                                <form class="d-flex">
-                                    <div class="input-group">
-                                        <input type="text" class="form-control form-control-light" id="dash-daterange">
-                                        <span class="input-group-text bg-primary border-primary text-white">
-                                            <i class="mdi mdi-calendar-range font-13"></i>
-                                        </span>
-                                    </div>
-                                    <a (click)="reload()" class="btn btn-primary ms-2">
-                                        <i class="mdi mdi-autorenew"></i>
-                                    </a>
-                                    
-                                </form>
+                <div class="header-section mb-4">
+                    <div class="row align-items-center">
+                        <div class="col-6">
+                            <h1 class="dashboard-title">Dashboard</h1>
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb breadcrumb-light m-0">
+                                    <li class="breadcrumb-item"><a href="javascript: void(0);"
+                                            class="text-decoration-none">Trang chủ</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+                                </ol>
+                            </nav>
+                        </div>
+                        <div class="col-6 text-end">
+                            <div class="d-flex justify-content-end align-items-center">
+                                <div class="input-group text-center" style="margin-right: .76rem; width: fit-content">
+                                    <input type="text" class="form-control" id="dash-daterange">
+                                    <span class="input-group-text bg-primary border-primary text-white">
+                                        <i class="mdi mdi-calendar-range font-13"></i>
+                                    </span>
+                                </div>
+                                <button (click)="reload()" class="btn btn-refresh">
+                                    <i class="mdi mdi-refresh"></i>
+                                    <span>Cập nhật</span>
+                                </button>
                             </div>
-                            <h4 class="page-title">Dashboard</h4>
                         </div>
                     </div>
                 </div>
-                <div class="row" *ngIf="!loading && revenueByServiceRoomResponse">
-                    <div class="card">
-                        <div class="card-body">
-                            <h4 class="header-title mb-3">Revenue</h4>
-                            <div class="chart-content-bg">
-                                <div class="row text-center">
-                                    <div class="col-md-6">
-                                        <p class="text-muted mb-0 mt-3">Service</p>
-                                        <h2 class="fw-normal mb-3">
-                                            <small class="mdi mdi-checkbox-blank-circle text-primary align-middle me-1"></small>
-                                            <span>{{revenueByServiceRoomResponse[0]?.priceService | vndCurrency}}</span>
-                                        </h2>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <p class="text-muted mb-0 mt-3">Room</p>
-                                        <h2 class="fw-normal mb-3">
-                                            <small class="mdi mdi-checkbox-blank-circle text-success align-middle me-1"></small>
-                                            <span>{{revenueByServiceRoomResponse[0]?.priceRoom | vndCurrency}}</span>
-                                        </h2>
+                <!-- end page title -->
+
+                <!-- Revenue cards -->
+                <div class="row mb-4 fade-in" *ngIf="!loading && revenueByServiceRoomResponse">
+                    <div class="col-12">
+                        <div class="card dashboard-card">
+                            <div class="card-body">
+                                <h4 class="header-title mb-3">Tổng doanh thu</h4>
+                                <div class="chart-content-bg">
+                                    <div class="row text-center">
+                                        <div class="col-md-6">
+                                            <div class="p-3">
+                                                <div class="card-icon bg-primary-lighten text-primary mb-3 mx-auto">
+                                                    <i class="mdi mdi-food-fork-drink mdi-24px"></i>
+                                                </div>
+                                                <h5>Dịch vụ</h5>
+                                                <h2 class="fw-normal">{{revenueByServiceRoomResponse[0]?.priceService |
+                                                    vndCurrency}}</h2>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="p-3">
+                                                <div class="card-icon bg-success-lighten text-success mb-3 mx-auto">
+                                                    <i class="mdi mdi-bed mdi-24px"></i>
+                                                </div>
+                                                <h5>Phòng</h5>
+                                                <h2 class="fw-normal">{{revenueByServiceRoomResponse[0]?.priceRoom |
+                                                    vndCurrency}}</h2>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div> <!-- end card-->
+                    </div>
                 </div>
-                <!-- end page title -->
-                <div class="row" *ngIf="!loading && getSumResponse">
-                    <div class="col-xl-5 col-lg-6">
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="card widget-flat">
-                                    <div class="card-body">
-                                        <div class="float-end">
-                                            <i class="mdi mdi-cart-plus widget-icon"></i>
-                                        </div>
-                                        <h6 class="text-muted text-uppercase mt-0" title="Revenue">Customer</h6>
-                                        <h3 class="mb-4 mt-2">{{getSumResponse.result?.sumCustomer || 0}}</h3>
-                                        <p class="mb-0 text-muted">
-                                            <span class="text-danger me-2"><i class="mdi mdi-arrow-down-bold"></i> 1.08%</span>
-                                            <span class="text-nowrap">Since last month</span>
-                                        </p>
-                                    </div>
 
-                                </div>
-                            </div> <!-- end col-->
-
-                            <div class="col-lg-6">
-                                <div class="card widget-flat">
-                                    <div class="card-body">
-                                        <div class="float-end">
-                                            <i class="mdi mdi-cart-plus widget-icon"></i>
-                                        </div>
-                                        <h6 class="text-muted text-uppercase mt-0" title="Number of Orders">Reservations</h6>
-                                        <h3 class="mt-3 mb-3">{{getSumResponse.result?.sumReservation || 0}}</h3>
-                                        <p class="mb-0 text-muted">
-                                            <span class="text-danger me-2"><i class="mdi mdi-arrow-down-bold"></i> 1.08%</span>
-                                            <span class="text-nowrap">Since last month</span>
-                                        </p>
-                                    </div> <!-- end card-body-->
-                                </div> <!-- end card-->
-                            </div> <!-- end col-->
-                        </div> <!-- end row -->
-
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="card widget-flat">
-                                    <div class="card-body">
-                                        <div class="float-end">
-                                            <i class="mdi mdi-currency-usd widget-icon"></i>
-                                        </div>
-                                        <h6 class="text-muted text-uppercase mt-0" title="Average Revenue">Revenue</h6>
-                                        <h3 class="mt-3 mb-3">{{getSumResponse.result?.sumRevenue | vndCurrency}}</h3>
-                                        <p class="mb-0 text-muted">
-                                            <span class="text-danger me-2"><i class="mdi mdi-arrow-down-bold"></i> 7.00%</span>
-                                            <span class="text-nowrap">Since last month</span>
-                                        </p>
-                                    </div> <!-- end card-body-->
-                                </div> <!-- end card-->
-                            </div> <!-- end col-->
-
-                            <div class="col-lg-6">  
-                                <div class="card widget-flat">
-                                    <div class="card-body">
-                                        <div class="float-end">
-                                            <i class="mdi mdi-pulse widget-icon"></i>
-                                        </div>
-                                        <h6 class="text-muted text-uppercase mt-0" title="Growth">Growth</h6>
-                                        <h3 class="mt-3 mb-3">+ 30.56%</h3>
-                                        <p class="mb-0 text-muted">
-                                            <span class="text-success me-2"><i class="mdi mdi-arrow-up-bold"></i> 4.87%</span>
-                                            <span class="text-nowrap">Since last month</span>
-                                        </p>
-                                    </div> <!-- end card-body-->
-                                </div> <!-- end card-->
-                            </div> <!-- end col-->
-                        </div> <!-- end row -->
-
-                    </div> <!-- end col -->
-
-                    <div class="col-xl-7 col-lg-6">
-                        <div class="card card-h-100">
+                <!-- Dashboard cards -->
+                <div class="row mb-4 fade-in" *ngIf="!loading && getSumResponse">
+                    <div class="col-md-3">
+                        <div class="card dashboard-card">
                             <div class="card-body">
-                                <div class="dropdown float-end">
-                                    <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown"
-                                        aria-expanded="false">
-                                        <i class="mdi mdi-dots-vertical"></i>
-                                    </a>
-                                    <div class="dropdown-menu dropdown-menu-end">
-                                        <!-- item-->
-                                        <a href="javascript:void(0);" class="dropdown-item">Sales Report</a>
-                                        <!-- item-->
-                                        <a href="javascript:void(0);" class="dropdown-item">Export Report</a>
-                                        <!-- item-->
-                                        <a href="javascript:void(0);" class="dropdown-item">Profit</a>
-                                        <!-- item-->
-                                        <a href="javascript:void(0);" class="dropdown-item">Action</a>
+                                <div class="card-icon bg-primary-lighten text-primary">
+                                    <i class="mdi mdi-account-group mdi-24px"></i>
+                                </div>
+                                <h2 class="card-number">{{getSumResponse.result?.sumCustomer || 0}}</h2>
+                                <p class="card-label mb-0">Khách hàng</p>
+                                <p class="mb-0 text-muted small">
+                                    <span class="text-danger me-2"><i class="mdi mdi-arrow-down-bold"></i> 1.08%</span>
+                                    <span class="text-nowrap">So với tháng trước</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card dashboard-card">
+                            <div class="card-body">
+                                <div class="card-icon bg-info-lighten text-info">
+                                    <i class="mdi mdi-clipboard-text mdi-24px"></i>
+                                </div>
+                                <h2 class="card-number">{{getSumResponse.result?.sumReservation || 0}}</h2>
+                                <p class="card-label mb-0">Đặt phòng</p>
+                                <p class="mb-0 text-muted small">
+                                    <span class="text-danger me-2"><i class="mdi mdi-arrow-down-bold"></i> 1.08%</span>
+                                    <span class="text-nowrap">So với tháng trước</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card dashboard-card">
+                            <div class="card-body">
+                                <div class="card-icon bg-success-lighten text-success">
+                                    <i class="mdi mdi-currency-usd mdi-24px"></i>
+                                </div>
+                                <h2 class="card-number">{{getSumResponse.result?.sumRevenue | vndCurrency}}</h2>
+                                <p class="card-label mb-0">Doanh thu</p>
+                                <p class="mb-0 text-muted small">
+                                    <span class="text-danger me-2"><i class="mdi mdi-arrow-down-bold"></i> 7.00%</span>
+                                    <span class="text-nowrap">So với tháng trước</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card dashboard-card">
+                            <div class="card-body">
+                                <div class="card-icon bg-warning-lighten text-warning">
+                                    <i class="mdi mdi-trending-up mdi-24px"></i>
+                                </div>
+                                <h2 class="card-number">+ 30.56%</h2>
+                                <p class="card-label mb-0">Tăng trưởng</p>
+                                <p class="mb-0 text-muted small">
+                                    <span class="text-success me-2"><i class="mdi mdi-arrow-up-bold"></i> 4.87%</span>
+                                    <span class="text-nowrap">So với tháng trước</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Revenue Chart -->
+                <div class="row mb-4 fade-in" *ngIf="!loading">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h4 class="header-title m-0">Biểu đồ doanh thu</h4>
+                                    <div class="dropdown">
+                                        <button class="btn btn-sm btn-light dropdown-toggle" type="button"
+                                            id="reportDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="mdi mdi-file-document-outline me-1"></i> Báo cáo
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="reportDropdown">
+                                            <li><a class="dropdown-item" href="javascript:void(0);">Báo cáo doanh
+                                                    thu</a></li>
+                                            <li><a class="dropdown-item" href="javascript:void(0);">Xuất báo cáo</a>
+                                            </li>
+                                        </ul>
                                     </div>
                                 </div>
-                                <h4 class="header-title mb-3"></h4>
                                 <app-chart></app-chart>
-                            </div> <!-- end card-body-->
-                        </div> <!-- end card-->
-
-                    </div> <!-- end col -->
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <!-- end row -->
-                <div class="row mb-3" *ngIf="!loading">
+
+                <!-- Service and Pie Chart -->
+                <div class="row mb-4 fade-in" *ngIf="!loading">
                     <div class="col-lg-7">
                         <div class="card" style="height:100%" *ngIf="getServiceRoomTopBookedResponse">
                             <div class="card-body">
-                                <h4 class="header-title mb-4">Top service booked</h4>
-                                <table class="table table-centered table-nowrap table-hover mb-0">
-                                    <tbody>
-                                        <tr *ngFor="let item of getServiceRoomTopBookedResponse">
-                                            <td>
-                                                <h5 class="font-14 my-1 fw-normal">{{item.serviceName?.name}}</h5>
-                                                <span class="text-muted font-13">Service name</span>
-                                            </td>
-                                            <td>
-                                                <h5 class="font-14 my-1 fw-normal">{{item.serviceName?.price | vndCurrency}}</h5>
-                                                <span class="text-muted font-13">Price service</span>
-                                            </td>
-                                            <td>
-                                                <h5 class="font-14 my-1 fw-normal">{{item.sum | vndCurrency}}</h5>
-                                                <span class="text-muted font-13">Amout</span>
-                                            </td>
-                                            <td>
-                                                <h5 class="font-14 my-1 fw-normal">{{item.count}}</h5>
-                                                <span class="text-muted font-13">Quantity</span>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <!-- end card-body -->
-                        </div>
-                    </div> <!-- end col-->
-                    <div class="col-lg-5">
-                        <div class="card" style="height:100%">
-                            <div class="card-body">
-                                <div class="highcharts-figure">
-                                    <app-pie-chart></app-pie-chart>
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h4 class="header-title m-0">Dịch vụ đặt nhiều nhất</h4>
+                                    <button class="btn btn-sm btn-light">
+                                        <i class="mdi mdi-refresh me-1"></i> Làm mới
+                                    </button>
                                 </div>
-                            </div> <!-- end card-->
-                        </div> <!-- end col-->
-                    </div>
-                    <!-- end row -->
-                </div>
-
-                <div class="row" *ngIf="!loading">
-                    <div class="col-6 order-lg-2 order-xl-1" *ngIf="getRoomTopBookedResponse">
-                        <div class="card" style="height:103.5%">
-                            <div class="card-body">
-                                <h4 class="header-title mt-2 mb-3">Top room booked</h4>
                                 <div class="table-responsive">
                                     <table class="table table-centered table-nowrap table-hover mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Tên dịch vụ</th>
+                                                <th>Giá dịch vụ</th>
+                                                <th>Tổng tiền</th>
+                                                <th>Số lượng</th>
+                                            </tr>
+                                        </thead>
                                         <tbody>
-                                            <tr *ngFor="let item of getRoomTopBookedResponse">
+                                            <tr *ngFor="let item of getServiceRoomTopBookedResponse">
                                                 <td>
-                                                    <h5 class="font-14 my-1 fw-normal">{{item.room?.name}}</h5>
-                                                    <span class="text-muted font-13">Name</span>
+                                                    <span class="fw-medium">{{item.serviceName?.name}}</span>
                                                 </td>
+                                                <td>{{item.serviceName?.price | vndCurrency}}</td>
+                                                <td>{{item.sum | vndCurrency}}</td>
                                                 <td>
-                                                    <h5 class="font-14 my-1 fw-normal">{{item.room?.roomTypeName}}</h5>
-                                                    <span class="text-muted font-13">Room type name</span>
-                                                </td>
-                                                <td>
-                                                    <h5 class="font-14 my-1 fw-normal">{{item.count}}</h5>
-                                                    <span class="text-muted font-13">Quantity</span>
-                                                </td>
-                                                <td>
-                                                    <h5 class="font-14 my-1 fw-normal">{{item.sum | vndCurrency}}</h5>
-                                                    <span class="text-muted font-13">Amount</span>
+                                                    <span class="badge bg-success">{{item.count}}</span>
                                                 </td>
                                             </tr>
                                         </tbody>
                                     </table>
-                                </div> <!-- end table-responsive-->
-                            </div> <!-- end card-body-->
-                        </div> <!-- end card-->
-                    </div> <!-- end col-->
-                    <div class="col-6">
-                        <div class="card" style="height:50%" *ngIf="getUserTopBookedResponse">
-                            <div class="card-body">
-                                <h4 class="header-title mb-4">Top user booked</h4>
-                                <table class="table table-centered table-nowrap table-hover mb-0">
-                                    <tbody>
-                                        <tr *ngFor="let item of getUserTopBookedResponse">
-                                            <td>
-                                                <img class="me-1 rounded-circle" height="40" [src]="item.user?.image" width="40"
-                                                    alt="Generic placeholder image">
-                                            </td>
-                                            <td>
-                                                <h5 class="font-14 my-1 fw-normal">{{item.user?.email}}</h5>
-                                                <span class="text-muted font-13">Email</span>
-                                            </td>
-                                            <td>
-                                                <h5 class="font-14 my-1 fw-normal">{{item.user?.userName}}</h5>
-                                                <span class="text-muted font-13">Username</span>
-                                            </td>
-                                            <td>
-                                                <h5 class="font-14 my-1 fw-normal">{{item.sum | vndCurrency}}</h5>
-                                                <span class="text-muted font-13">Amout</span>
-                                            </td>
-                                            <td>
-                                                <h5 class="font-14 my-1 fw-normal">{{item.count}}</h5>
-                                                <span class="text-muted font-13">Quantity</span>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                </div>
                             </div>
-                            <!-- end card-body -->
                         </div>
-                        <div class="card" style="height:50%" *ngIf="getEmployeeTopBookedResponse">
+                    </div>
+
+                    <div class="col-lg-5">
+                        <div class="card" style="height:100%">
                             <div class="card-body">
-                                <h4 class="header-title mb-4">Top employee booked</h4>
-                                <table class="table table-centered table-nowrap table-hover mb-0">
-                                    <tbody>
-                                        <tr *ngFor="let item of getEmployeeTopBookedResponse">
-                                            <td>
-                                                <img class="me-1 rounded-circle" height="40" [src]="item.user?.image" width="40"
-                                                    alt="Generic placeholder image">
-                                            </td>
-                                            <td>
-                                                <h5 class="font-14 my-1 fw-normal">{{item.user?.email}}</h5>
-                                                <span class="text-muted font-13">Email</span>
-                                            </td>
-                                            <td>
-                                                <h5 class="font-14 my-1 fw-normal">{{item.user?.userName}}</h5>
-                                                <span class="text-muted font-13">Username</span>
-                                            </td>
-                                            <td>
-                                                <h5 class="font-14 my-1 fw-normal">{{item.sum | vndCurrency}}</h5>
-                                                <span class="text-muted font-13">Amout</span>
-                                            </td>
-                                            <td>
-                                                <h5 class="font-14 my-1 fw-normal">{{item.count}}</h5>
-                                                <span class="text-muted font-13">Quantity</span>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h4 class="header-title m-0">Phân bố doanh thu</h4>
+                                </div>
+                                <div class="highcharts-figure">
+                                    <app-pie-chart></app-pie-chart>
+                                </div>
                             </div>
-                            <!-- end card-body -->
                         </div>
-                        <!-- end card-->
                     </div>
                 </div>
-                <div class="row" style="margin-top:46px" *ngIf="!loading">
-                    <div class="card">
-                        <div class="card-body">
-                            <app-bar-chart></app-bar-chart>
+
+                <!-- Room and User Bookings -->
+                <div class="row fade-in" *ngIf="!loading">
+                    <div class="col-md-6" *ngIf="getRoomTopBookedResponse">
+                        <div class="card" style="height:103.5%">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h4 class="header-title m-0">Phòng đặt nhiều nhất</h4>
+                                    <button class="btn btn-sm btn-light">
+                                        <i class="mdi mdi-refresh me-1"></i> Làm mới
+                                    </button>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-centered table-nowrap table-hover mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Tên phòng</th>
+                                                <th>Loại phòng</th>
+                                                <th>Số lượt đặt</th>
+                                                <th>Tổng tiền</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let item of getRoomTopBookedResponse">
+                                                <td>
+                                                    <span class="fw-medium">{{item.room?.name}}</span>
+                                                </td>
+                                                <td>{{item.room?.roomTypeName}}</td>
+                                                <td>
+                                                    <span class="badge bg-success">{{item.count}}</span>
+                                                </td>
+                                                <td>{{item.sum | vndCurrency}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="card mb-4" *ngIf="getUserTopBookedResponse">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h4 class="header-title m-0">Khách hàng đặt nhiều nhất</h4>
+                                    <button class="btn btn-sm btn-light">
+                                        <i class="mdi mdi-refresh me-1"></i> Làm mới
+                                    </button>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-centered table-nowrap table-hover mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th style="width:50px"></th>
+                                                <th>Email</th>
+                                                <th>Tên người dùng</th>
+                                                <th>Tổng tiền</th>
+                                                <th>Số lượng</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let item of getUserTopBookedResponse">
+                                                <td>
+                                                    <img class="rounded-circle" height="36" [src]="item.user?.image"
+                                                        width="36" alt="User avatar">
+                                                </td>
+                                                <td>{{item.user?.email}}</td>
+                                                <td>
+                                                    <span class="fw-medium">{{item.user?.userName}}</span>
+                                                </td>
+                                                <td>{{item.sum | vndCurrency}}</td>
+                                                <td>
+                                                    <span class="badge bg-success">{{item.count}}</span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card" *ngIf="getEmployeeTopBookedResponse">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h4 class="header-title m-0">Nhân viên top đặt phòng</h4>
+                                    <button class="btn btn-sm btn-light">
+                                        <i class="mdi mdi-refresh me-1"></i> Làm mới
+                                    </button>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-centered table-nowrap table-hover mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th style="width:50px"></th>
+                                                <th>Email</th>
+                                                <th>Tên nhân viên</th>
+                                                <th>Tổng tiền</th>
+                                                <th>Số lượng</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let item of getEmployeeTopBookedResponse">
+                                                <td>
+                                                    <img class="rounded-circle" height="36" [src]="item.user?.image"
+                                                        width="36" alt="Employee avatar">
+                                                </td>
+                                                <td>{{item.user?.email}}</td>
+                                                <td>
+                                                    <span class="fw-medium">{{item.user?.userName}}</span>
+                                                </td>
+                                                <td>{{item.sum | vndCurrency}}</td>
+                                                <td>
+                                                    <span class="badge bg-success">{{item.count}}</span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bar Chart -->
+                <div class="row mt-4 fade-in" *ngIf="!loading">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h4 class="header-title m-0">Phân tích doanh thu theo kỳ</h4>
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-sm btn-primary">Tuần</button>
+                                        <button type="button" class="btn btn-sm btn-light">Tháng</button>
+                                        <button type="button" class="btn btn-sm btn-light">Quý</button>
+                                    </div>
+                                </div>
+                                <app-bar-chart></app-bar-chart>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -315,21 +368,83 @@
 </div>
 
 <style>
-.loading-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: rgba(255, 255, 255, 0.8);
-    z-index: 9999;
-}
+    .loading-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: rgba(255, 255, 255, 0.8);
+        z-index: 9999;
+    }
 
-.content-loading {
-    opacity: 0.6;
-    pointer-events: none;
-}
+    .content-loading {
+        opacity: 0.6;
+        pointer-events: none;
+    }
+
+    /* Header styling */
+    .header-section {
+        background-color: #f8f9fc;
+        padding: 15px 20px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+    }
+
+    .dashboard-title {
+        font-size: 24px;
+        font-weight: 600;
+        margin-bottom: 5px;
+        color: #34395e;
+    }
+
+    .breadcrumb-light .breadcrumb-item+.breadcrumb-item::before {
+        color: #adb5bd;
+    }
+
+    .breadcrumb-light .breadcrumb-item.active {
+        color: #6c757d;
+    }
+
+    .breadcrumb-light a {
+        color: #ff7043;
+    }
+
+
+    /* .date-input {
+        background-color: #fff;
+        border-radius: 5px;
+        border: 1px solid #e4e6ef;
+        padding: 8px 15px;
+        width: 150px;
+        text-align: center;
+        cursor: pointer;
+    } */
+
+    /* Button styling */
+    .btn-refresh {
+        background-color: #FF7043;
+        color: #fff;
+        border-radius: 30px;
+        padding: 8px 20px;
+        border: none;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s;
+    }
+
+    .btn-refresh:hover {
+        background-color: #f85b28;
+        box-shadow: 0 2px 10px rgba(255, 112, 67, 0.3);
+        transform: translateY(-2px);
+    }
+
+    .btn-refresh i {
+        font-size: 18px;
+    }
 </style>

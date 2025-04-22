@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ServiceAttach } from '../../models/serviceAttach.model';
 import { ApiService } from '../../_service/api.service';
 import { ToastrService } from 'ngx-toastr';
+import { ServiceAttach } from '../../models/serviceAttach.model';
 import { HttpClient } from '@angular/common/http';
-import * as XLSX from 'xlsx';
 import { environment } from '../../environments/environment.development';
+import * as XLSX from 'xlsx';
+declare var bootstrap: any;
 
 @Component({
   selector: 'app-roomservices',
@@ -13,224 +14,196 @@ import { environment } from '../../environments/environment.development';
   styleUrls: ['./roomservices.component.css']
 })
 export class RoomservicesComponent implements OnInit {
-  // Service data
-  roomServices: ServiceAttach[] = [];
+  // Dữ liệu dịch vụ
+  roomType!: ServiceAttach[];
   filteredServices: ServiceAttach[] = [];
-  selectedService: ServiceAttach | null = null;
+  serviceCache: ServiceAttach[] = [];
+
+  // Form và ID
+  id!: number;
+  serviceForm!: FormGroup;
+  deleteId: number | null = null;
   
-  // UI state
-  isLoading: boolean = false;
-  searchTerm: string = '';
-  showFilters: boolean = false;
-  viewMode: 'card' | 'table' = 'card';
-  
-  // Filters
-  statusFilter: string = 'all';
-  
-  // Pagination
+  // Phân trang
   pageSize: number = 10;
   currentPage: number = 1;
   totalPages: number = 1;
+
+  // Bộ lọc
+  showFilters: boolean = false;
+  searchService: string = '';
+  statusFilter: string = 'all';
   
-  // Forms
-  serviceForm!: FormGroup;
-  editServiceForm!: FormGroup;
+  // Chế độ xem
+  viewMode: 'card' | 'table' = 'card';
   
+  // Loading state
+  isLoading: boolean = false;
+
   constructor(
     private api: ApiService, 
     private fb: FormBuilder, 
     private toast: ToastrService,
     private http: HttpClient
   ) {
-    this.initForms();
+    this.initServiceForm();
   }
-  
+
   ngOnInit(): void {
-    this.getAllServices();
+    this.isLoading = true;
+    this.getAll();
   }
 
-  initForms() {
+  initServiceForm() {
     this.serviceForm = this.fb.group({
-      name: ['', [Validators.required]],
-      icon: ['', [Validators.required]],
-      description: ['', [Validators.required]]
-    });
-
-    this.editServiceForm = this.fb.group({
-      name: ['', [Validators.required]],
-      icon: ['', [Validators.required]],
-      description: ['', [Validators.required]]
+      name: ['', Validators.required],
+      icon: ['', Validators.required],
+      description: ['', Validators.required],
     });
   }
 
-  getAllServices() {
-    this.isLoading = true;
-    this.api.getAllService().subscribe(
-      (res) => {
-        this.roomServices = res;
-        this.filteredServices = res;
-        this.totalPages = Math.ceil(this.filteredServices.length / this.pageSize);
-        this.applyPagination();
-        this.isLoading = false;
-      },
-      (err) => {
-        this.toast.error('Không thể tải dữ liệu dịch vụ');
-        console.error(err);
-        this.isLoading = false;
-      }
-    );
+  getAll() {
+    return this.api.getAllService().subscribe(res => {
+      this.roomType = res;
+      this.serviceCache = [...res];
+      this.applyFilters();
+      this.isLoading = false;
+    }, error => {
+      this.toast.error('Lỗi khi tải dữ liệu: ' + error.message);
+      this.isLoading = false;
+    });
   }
-  
-  createService() {
-    if (this.serviceForm.invalid) {
-      // Mark all fields as touched to display validation errors
-      Object.keys(this.serviceForm.controls).forEach(key => {
-        const control = this.serviceForm.get(key);
-        if (control) {
-          control.markAsTouched();
-        }
+
+  toggleSelection(itemId: number) {
+    this.id = itemId;
+  }
+
+  createRoomType(serviceForm: FormGroup) {
+    if (serviceForm.invalid) {
+      Object.keys(serviceForm.controls).forEach(key => {
+        serviceForm.controls[key].markAsTouched();
       });
+      this.toast.error('Vui lòng điền đầy đủ thông tin');
       return;
     }
-    
+
     this.isLoading = true;
-    this.api.createService(this.serviceForm.value).subscribe(
-      (res) => {
-        this.toast.success('Thêm dịch vụ thành công!');
-        this.getAllServices();
-        this.serviceForm.reset();
-        document.getElementById('service-modal-close')?.click();
-        this.isLoading = false;
-      },
-      (err) => {
-        this.toast.error('Lỗi khi thêm dịch vụ');
-        console.error(err);
-        this.isLoading = false;
-      }
-    );
+    return this.api.createService(serviceForm.value).subscribe(res => {
+      this.toast.success("Thêm dịch vụ thành công!");
+      this.getAll();
+      this.resetForm();
+      document.querySelector('[data-bs-dismiss="modal"]')?.dispatchEvent(new Event('click'));
+      this.isLoading = false;
+    }, err => {
+      this.toast.error("Lỗi: " + err);
+      this.isLoading = false;
+    })
   }
-  
-  getServiceById(id: number) {
-    this.isLoading = true;
-    this.api.getServiceById(id).subscribe(
-      (res: ServiceAttach) => {
-        this.selectedService = res;
-        this.editServiceForm.patchValue({
-          name: res.name,
-          icon: res.icon,
-          description: res.description
-        });
-        this.isLoading = false;
-      },
-      (err: any) => {
-        this.toast.error('Không thể tải chi tiết dịch vụ');
-        console.error(err);
-        this.isLoading = false;
-      }
-    );
-  }
-  
-  updateService() {
-    if (this.editServiceForm.invalid || !this.selectedService) {
+
+  update(serviceForm: FormGroup) {
+    if (serviceForm.invalid) {
+      Object.keys(serviceForm.controls).forEach(key => {
+        serviceForm.controls[key].markAsTouched();
+      });
+      this.toast.error('Vui lòng điền đầy đủ thông tin');
       return;
     }
+
+    this.isLoading = true;
+    this.api.updateService(serviceForm.value, this.id).subscribe(res => {
+      this.toast.success("Cập nhật thành công!");
+      this.getAll();
+      this.resetForm();
+      document.querySelector('[data-bs-dismiss="modal"]')?.dispatchEvent(new Event('click'));
+      this.isLoading = false;
+    }, err => {
+      this.toast.error("Lỗi: " + err);
+      this.isLoading = false;
+    })
+  }
+
+  confirmDelete(id: number) {
+    this.deleteId = id;
+    const modal = new bootstrap.Modal(document.getElementById('delete-confirmation-modal'));
+    modal.show();
+  }
+
+  deleteService() {
+    if (!this.deleteId) return;
     
     this.isLoading = true;
-    this.api.updateService(this.editServiceForm.value, this.selectedService.id).subscribe(
-      (res) => {
-        this.toast.success('Cập nhật dịch vụ thành công!');
-        this.getAllServices();
-        document.getElementById('edit-modal-close')?.click();
-        this.isLoading = false;
-      },
-      (err) => {
-        this.toast.error('Lỗi khi cập nhật dịch vụ');
-        console.error(err);
-        this.isLoading = false;
-      }
-    );
+    this.api.deleteService(this.deleteId).subscribe(res => {
+      this.toast.success("Xóa dịch vụ thành công!");
+      this.getAll();
+      this.deleteId = null;
+      this.isLoading = false;
+    }, err => {
+      this.toast.error("Lỗi: " + err);
+      this.isLoading = false;
+    })
   }
-  
-  deleteService(id: number) {
-    if (confirm('Bạn có chắc chắn muốn xóa dịch vụ này không?')) {
-      this.isLoading = true;
-      this.api.deleteService(id).subscribe(
-        (res) => {
-          this.toast.success('Xóa dịch vụ thành công!');
-          this.getAllServices();
-          this.isLoading = false;
-        },
-        (err) => {
-          this.toast.error('Lỗi khi xóa dịch vụ');
-          console.error(err);
-          this.isLoading = false;
-        }
-      );
-    }
+
+  // Form operations
+  editService(service: ServiceAttach) {
+    this.id = service.id;
+    this.serviceForm.patchValue({
+      name: service.name,
+      icon: service.icon,
+      description: service.description
+    });
   }
-  
-  // Search and filters
-  searchServices() {
-    if (!this.searchTerm.trim()) {
-      this.filteredServices = [...this.roomServices];
-      return;
-    }
-    
-    const searchTermLower = this.searchTerm.toLowerCase();
-    
-    this.filteredServices = this.roomServices.filter((service) =>
-      service.name.toLowerCase().includes(searchTermLower) ||
-      service.description.toLowerCase().includes(searchTermLower)
-    );
-    
-    this.totalPages = Math.ceil(this.filteredServices.length / this.pageSize);
-    this.currentPage = 1;
-    this.applyPagination();
+
+  resetForm() {
+    this.serviceForm.reset();
+    this.id = 0;
   }
-  
-  clearSearch() {
-    this.searchTerm = '';
-    this.filteredServices = [...this.roomServices];
-    this.totalPages = Math.ceil(this.filteredServices.length / this.pageSize);
-    this.currentPage = 1;
-    this.applyPagination();
-  }
-  
+
+  // Filtering and pagination
   toggleFilterSection() {
     this.showFilters = !this.showFilters;
   }
-  
+
   clearFilters() {
-    this.searchTerm = '';
+    this.searchService = '';
     this.statusFilter = 'all';
-    this.filteredServices = [...this.roomServices];
-    this.totalPages = Math.ceil(this.filteredServices.length / this.pageSize);
-    this.currentPage = 1;
-    this.applyPagination();
+    this.applyFilters();
   }
-  
+
   applyFilters() {
-    let filtered = [...this.roomServices];
+    let filtered = [...this.serviceCache];
     
-    // Apply search filter
-    if (this.searchTerm.trim()) {
-      const searchTermLower = this.searchTerm.toLowerCase();
-      filtered = filtered.filter((service) =>
-        service.name.toLowerCase().includes(searchTermLower) ||
-        service.description.toLowerCase().includes(searchTermLower)
+    // Filter by search text
+    if (this.searchService.trim()) {
+      const searchTerm = this.searchService.toLowerCase();
+      filtered = filtered.filter(service => 
+        service.name.toLowerCase().includes(searchTerm) || 
+        service.description?.toLowerCase().includes(searchTerm) ||
+        service.icon?.toLowerCase().includes(searchTerm)
       );
     }
     
-    // Apply status filter if implemented in the future
-    // This is a placeholder for potential future filter by status
+    // Filter by status - since we don't have isActive/isFeatured properties
+    // For now, we'll keep all services in all status filters
+    // In a real implementation, you might want to add these properties to your model
+    // or use other properties to determine active/featured status
     
-    this.filteredServices = filtered;
+    // Set filtered data
+    this.filteredServices = [...filtered];
     this.totalPages = Math.ceil(this.filteredServices.length / this.pageSize);
     this.currentPage = 1;
     this.applyPagination();
   }
-  
+
   // Pagination
+  applyPagination() {
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    
+    if (this.viewMode === 'table') {
+      this.filteredServices = this.filteredServices.slice(startIndex, endIndex);
+    }
+  }
+
   goToPage(page: number) {
     if (page < 1 || page > this.totalPages) {
       return;
@@ -238,13 +211,12 @@ export class RoomservicesComponent implements OnInit {
     this.currentPage = page;
     this.applyPagination();
   }
-  
+
   getPageNumbers(): number[] {
     const pages: number[] = [];
-    const totalPages = Math.ceil(this.filteredServices.length / this.pageSize);
     
-    if (totalPages <= 5) {
-      for (let i = 1; i <= totalPages; i++) {
+    if (this.totalPages <= 5) {
+      for (let i = 1; i <= this.totalPages; i++) {
         pages.push(i);
       }
     } else {
@@ -252,8 +224,8 @@ export class RoomservicesComponent implements OnInit {
         for (let i = 1; i <= 5; i++) {
           pages.push(i);
         }
-      } else if (this.currentPage >= totalPages - 2) {
-        for (let i = totalPages - 4; i <= totalPages; i++) {
+      } else if (this.currentPage >= this.totalPages - 2) {
+        for (let i = this.totalPages - 4; i <= this.totalPages; i++) {
           pages.push(i);
         }
       } else {
@@ -265,21 +237,14 @@ export class RoomservicesComponent implements OnInit {
     
     return pages;
   }
-  
-  applyPagination() {
-    const startIndex = (this.currentPage - 1) * this.pageSize;
-    const endIndex = startIndex + this.pageSize;
-    this.filteredServices = this.roomServices.slice(0, this.roomServices.length);
-    // For immediate display update
-    this.filteredServices = this.filteredServices.slice(startIndex, endIndex);
-  }
-  
+
   // View mode
   setViewMode(mode: 'card' | 'table') {
     this.viewMode = mode;
+    this.applyPagination();
   }
-  
-  // Sort function
+
+  // Sorting
   sortBy(criteria: string) {
     let sorted = [...this.filteredServices];
     
@@ -290,26 +255,20 @@ export class RoomservicesComponent implements OnInit {
       case 'nameDesc':
         sorted.sort((a, b) => b.name.localeCompare(a.name));
         break;
-      case 'newest':
-        // If your service has creation date
-        // sorted.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-        break;
-      case 'oldest':
-        // If your service has creation date
-        // sorted.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
-        break;
     }
     
     this.filteredServices = sorted;
   }
-  
-  // Export to Excel
-  exportToExcel() {
-    const data = this.roomServices.map(service => {
+
+  // Export data
+  exportData() {
+    const data = this.serviceCache.map(service => {
       return {
+        'ID': service.id,
         'Tên dịch vụ': service.name,
-        'Biểu tượng': service.icon,
-        'Mô tả': service.description
+        'Icon': service.icon,
+        'Mô tả': service.description,
+        'Trạng thái': 'Hoạt động' // Default status since we don't have isActive property
       };
     });
     
@@ -317,18 +276,19 @@ export class RoomservicesComponent implements OnInit {
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Dịch vụ phòng');
     
-    // Export Excel file
-    XLSX.writeFile(workbook, 'danh-sach-dich-vu-phong.xlsx');
+    // Export to Excel
+    XLSX.writeFile(workbook, 'danh-sach-dich-vu.xlsx');
+  }
+
+  // Dashboard metrics
+  countActiveServices(): number {
+    // Since we don't have isActive property, we'll count all services as active for now
+    return this.roomType?.length || 0;
   }
   
-  // Analytics and metrics
-  getTotalServices(): number {
-    return this.roomServices.length;
-  }
-  
-  // This would require additional implementation in your API
-  getActiveServices(): number {
-    // Replace with actual implementation if you have active/inactive status
-    return this.roomServices.length;
+  getFeaturedServicesCount(): number {
+    // Since we don't have isFeatured property, we'll return a smaller number of services 
+    // to simulate featured services
+    return Math.floor((this.roomType?.length || 0) / 3); // Just an example, returning about 1/3 of services
   }
 }

@@ -1,112 +1,322 @@
-<div class="wrapper">
+<div class="wrapper discount-page">
   <app-sidebar></app-sidebar>
   <div class="content-page">
-    <div class="content">
+    <div class="content content-wrapper">
       <app-header></app-header>
-      <div class="container-fluid">
+      <div class="container-fluid py-4">
         <!-- start page title -->
-        <div class="row">
+        <div class="row mb-4">
           <div class="col-12">
-            <div class="page-title-box">
-              <div class="page-title-right">
-                <ol class="breadcrumb m-0">
-                  <li class="breadcrumb-item"><a href="javascript: void(0);">Beyond</a></li>
-                  <li class="breadcrumb-item"><a href="javascript: void(0);">Managements</a></li>
-                  <li class="breadcrumb-item active">Discount</li>
-                </ol>
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h4 class="page-title mb-0">Quản lý mã giảm giá</h4>
+                <nav aria-label="breadcrumb">
+                  <ol class="breadcrumb m-0 mt-2">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);" class="text-decoration-none">Trang
+                        chủ</a></li>
+                    <li class="breadcrumb-item"><a href="javascript: void(0);" class="text-decoration-none">Quản lý</a>
+                    </li>
+                    <li class="breadcrumb-item active">Mã giảm giá</li>
+                  </ol>
+                </nav>
               </div>
-              <h4 class="page-title">Discount</h4>
+              <button data-bs-toggle="modal" data-bs-target="#modal-detail"
+                class="btn btn-primary rounded-pill d-flex align-items-center">
+                <i class="mdi mdi-plus-circle me-1"></i> Thêm mã giảm giá mới
+              </button>
             </div>
           </div>
         </div>
         <!-- end page title -->
-        <div class="row">
+
+        <!-- Dashboard cards -->
+        <div class="row mb-4 fade-in">
+          <div class="col-md-4">
+            <div class="card dashboard-card">
+              <div class="card-body">
+                <div class="card-icon bg-primary-lighten text-primary">
+                  <i class="mdi mdi-tag-multiple mdi-24px"></i>
+                </div>
+                <h2 class="card-number">{{discountCache?.length || 0}}</h2>
+                <p class="card-label mb-0">Tổng số mã giảm giá</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card dashboard-card">
+              <div class="card-body">
+                <div class="card-icon bg-success-lighten text-success">
+                  <i class="mdi mdi-check-circle mdi-24px"></i>
+                </div>
+                <h2 class="card-number">{{countActiveDiscounts()}}</h2>
+                <p class="card-label mb-0">Mã giảm giá đang hoạt động</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card dashboard-card">
+              <div class="card-body">
+                <div class="card-icon bg-info-lighten text-info">
+                  <i class="mdi mdi-percent mdi-24px"></i>
+                </div>
+                <h2 class="card-number">{{getAverageDiscountPercent()}}</h2>
+                <p class="card-label mb-0">Giảm giá trung bình</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Advanced filter section -->
+        <div class="row mb-4">
+          <div class="col-12">
+            <div class="filter-section fade-in">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="m-0">Bộ lọc nâng cao</h5>
+                <button class="btn btn-sm btn-outline-secondary" (click)="toggleFilterSection()">
+                  <i class="mdi" [ngClass]="showFilters ? 'mdi-chevron-up' : 'mdi-chevron-down'"></i>
+                </button>
+              </div>
+
+              <div class="row g-3" *ngIf="showFilters">
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label class="form-label">Tìm kiếm</label>
+                    <div class="input-group">
+                      <span class="input-group-text"><i class="mdi mdi-magnify"></i></span>
+                      <input type="text" [(ngModel)]="searchDiscount" class="form-control filter-control"
+                        placeholder="Tìm theo mã, tên...">
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label class="form-label">Trạng thái</label>
+                    <select class="form-select filter-control" [(ngModel)]="statusFilter">
+                      <option value="all">Tất cả trạng thái</option>
+                      <option value="active">Đang hoạt động</option>
+                      <option value="expired">Đã hết hạn</option>
+                      <option value="upcoming">Sắp tới</option>
+                      <option value="permanent">Vĩnh viễn</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label class="form-label">Loại giảm giá</label>
+                    <select class="form-select filter-control" [(ngModel)]="typeFilter" (change)="onTypeChange($event)">
+                      <option value="0">Tất cả loại</option>
+                      <option *ngFor="let type of discountTypes" [value]="type.id">{{type.name}}</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-12 d-flex justify-content-end mt-3">
+                  <button type="button" class="btn btn-outline-secondary me-2" (click)="clearFilters()">
+                    <i class="mdi mdi-refresh me-1"></i> Đặt lại
+                  </button>
+                  <button type="button" class="btn btn-primary" (click)="applyFilters()">
+                    <i class="mdi mdi-filter me-1"></i> Áp dụng bộ lọc
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- View toggle buttons -->
+        <div class="row mb-3">
+          <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="view-toggle">
+                <button class="btn" [ngClass]="{'active': viewMode === 'card'}" (click)="setViewMode('card')">
+                  <i class="mdi mdi-view-grid-outline me-1"></i> Card
+                </button>
+                <button class="btn" [ngClass]="{'active': viewMode === 'table'}" (click)="setViewMode('table')">
+                  <i class="mdi mdi-table me-1"></i> Bảng
+                </button>
+              </div>
+              <div class="d-flex align-items-center">
+                <button type="button" class="btn btn-light btn-sm me-2" (click)="exportData()">
+                  <i class="mdi mdi-download me-1"></i> Xuất Excel
+                </button>
+                <div class="dropdown">
+                  <button class="btn btn-light btn-sm dropdown-toggle" type="button" id="sortDropdown"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="mdi mdi-sort me-1"></i> Sắp xếp
+                  </button>
+                  <ul class="dropdown-menu" aria-labelledby="sortDropdown">
+                    <li><a class="dropdown-item" href="javascript:void(0);" (click)="sortBy('codeAsc')">Mã A-Z</a></li>
+                    <li><a class="dropdown-item" href="javascript:void(0);" (click)="sortBy('codeDesc')">Mã Z-A</a></li>
+                    <li><a class="dropdown-item" href="javascript:void(0);" (click)="sortBy('nameAsc')">Tên A-Z</a></li>
+                    <li><a class="dropdown-item" href="javascript:void(0);" (click)="sortBy('nameDesc')">Tên Z-A</a>
+                    </li>
+                    <li><a class="dropdown-item" href="javascript:void(0);" (click)="sortBy('percentAsc')">% Tăng
+                        dần</a></li>
+                    <li><a class="dropdown-item" href="javascript:void(0);" (click)="sortBy('percentDesc')">% Giảm
+                        dần</a></li>
+                    <li><a class="dropdown-item" href="javascript:void(0);" (click)="sortBy('dateAsc')">Ngày tăng
+                        dần</a></li>
+                    <li><a class="dropdown-item" href="javascript:void(0);" (click)="sortBy('dateDesc')">Ngày giảm
+                        dần</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card View Mode -->
+        <div class="row" *ngIf="viewMode === 'card' && filteredDiscounts && filteredDiscounts.length > 0">
+          <div class="col-md-4 col-xl-3 mb-4" *ngFor="let item of filteredDiscounts">
+            <div class="discount-card">
+              <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <span class="discount-id">#{{item.id}}</span>
+                  <span class="status-badge" [ngClass]="{
+                    'status-active': isActive(item),
+                    'status-inactive': isExpired(item),
+                    'status-upcoming': isUpcoming(item)
+                  }">
+                    <i class="mdi" [ngClass]="{
+                      'mdi-check-circle': isActive(item),
+                      'mdi-clock-alert': isExpired(item),
+                      'mdi-clock-outline': isUpcoming(item)
+                    }"></i>
+                    {{isActive(item) ? 'Đang hoạt động' : (isExpired(item) ? 'Hết hạn' : 'Sắp tới')}}
+                  </span>
+                </div>
+                <div class="card-body discount-details">
+                  <div class="mb-3 text-center">
+                    <div class="discount-icon">
+                      <i class="mdi mdi-tag-outline mdi-36px"></i>
+                    </div>
+                    <h5 class="mb-1 mt-3">{{item.name}}</h5>
+                    <div class="discount-code mb-2">
+                      <span class="badge bg-primary">{{item.discountCode}}</span>
+                    </div>
+                  </div>
+
+                  <div class="discount-info">
+                    <p class="mb-2"><span class="fw-bold">Giảm giá:</span> {{item.discountPercent}}%</p>
+                    <p class="mb-2"><span class="fw-bold">Số lượng:</span> {{item.amountUse}}</p>
+                    <p class="mb-2"><span class="fw-bold">Thời gian:</span> {{item.startAt | date:'dd/MM/yyyy'}} -
+                      {{item.endAt | date:'dd/MM/yyyy'}}</p>
+                    <p class="mb-0"><span class="fw-bold">Loại:</span> {{getDiscountTypeName(item.discountTypeId)}}</p>
+                  </div>
+                </div>
+                <div class="card-footer d-flex">
+                  <button type="button" class="btn btn-sm btn-primary flex-grow-1 me-1" data-bs-toggle="modal"
+                    data-bs-target="#modal-detail2" (click)="editDiscount(item)">
+                    <i class="mdi mdi-pencil me-1"></i> Chỉnh sửa
+                  </button>
+                  <button type="button" class="btn btn-sm btn-danger flex-grow-1" (click)="confirmDelete(item.id)">
+                    <i class="mdi mdi-delete me-1"></i> Xóa
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Empty state when no data -->
+        <div class="row" *ngIf="filteredDiscounts && filteredDiscounts.length === 0">
+          <div class="col-12">
+            <div class="text-center py-5">
+              <i class="mdi mdi-tag-off text-muted" style="font-size: 4rem;"></i>
+              <h5 class="mt-3">Không tìm thấy dữ liệu mã giảm giá</h5>
+              <p class="text-muted">Không có mã giảm giá nào phù hợp với các tiêu chí tìm kiếm của bạn.</p>
+              <button class="btn btn-primary" (click)="clearFilters()">Đặt lại bộ lọc</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Table View Mode -->
+        <div class="row" *ngIf="viewMode === 'table'">
           <div class="col-12">
             <div class="card">
               <div class="card-body">
-                <div class="row mb-2">
-                  <div class="col-xl-8">
-                    <div class="row gy-2 gx-2 align-items-center justify-content-xl-start justify-content-between">
-                      <div class="col-auto">
-                        <label for="inputPassword2" class="visually-hidden">Search</label>
-                        <input type="search" class="form-control" [(ngModel)]="searchTerm" id="inputPassword2" placeholder="Search...">
-
-                        
-                    </div>
-                    <div class="col-auto">
-                        <button type="submit" class="btn btn-primary" (click)="searchBookings()">Search</button>
-                    </div>
-                    <div class="col-auto">
-                        <button type="button" class="btn btn-secondary" (click)="clearSearch()">Clear</button>
-                      </div>
-                      
-                    </div>
-                  </div>
-                  <div class="col-xl-4">
-                    <div class="text-xl-end mt-xl-0 mt-2">
-                      <button type="button" data-bs-toggle="modal" (click)="clearModal()" data-bs-target="#modal-detail" class="btn btn-danger mb-2 me-2"><i class="mdi mdi-basket me-1"></i> Add New</button>
-                    </div>
-                  </div><!-- end col-->
-                </div>
-
                 <div class="table-responsive">
-                  <table class="table table-centered mb-0">
-                    <thead class="table-light align-middle text-center">
+                  <table class="table table-centered table-hover">
+                    <thead class="table-light">
                       <tr>
-                        
-                        <th>ID</th>
-                        <th>Discount code</th>
-                        <th>Name</th>
-                        <th>Discount percents</th>
-                        <th>Number of discounts</th>
-                        <th>Created date</th>
-                        <th>Expired date</th>
-                        <th>Permament status</th>
-                        <th>Discount Type ID</th>
-                        <th>Room type</th>
-                        <th>Roles</th>
-                        <th style="width: 135px;">Action<th>
-                        </tr>
+                        <th style="width: 50px;">ID</th>
+                        <th>Mã giảm giá</th>
+                        <th>Tên</th>
+                        <th>Phần trăm</th>
+                        <th>Số lượng</th>
+                        <th>Thời gian</th>
+                        <th>Loại</th>
+                        <th>Trạng thái</th>
+                        <th style="width: 150px;">Thao tác</th>
+                      </tr>
                     </thead>
-                    <tbody *ngFor="let item of roomType | filter: searchTerm, let i = index" class="align-middle text-center">
-                      <tr>
-                       
-                        <td><span class="text-body fw-bold">{{item.id}}</span> </td>
-                        <td>{{item.discountCode}}</td>
-                        <td>{{item.name}}</td>
-                        <td>{{item.discountPercent | percent}}</td>
-                        <td>{{item.amountUse}}</td>
+                    <tbody>
+                      <tr *ngFor="let item of filteredDiscounts">
                         <td>
-                          <h5><span class="badge badge-info-lighten">
-                              {{item.startAt | date : "yyyy/MM/dd"}}<br>
-                              {{item.startAt | date : "HH:mm:ss"}}
-                            </span></h5>
+                          <span class="fw-bold">#{{item.id}}</span>
                         </td>
                         <td>
-                          <h5><span class="badge badge-info-lighten">
-                              {{item.endAt | date : "yyyy/MM/dd"}}<br>
-                              {{item.endAt | date : "HH:mm:ss"}}
-                            </span></h5>
+                          <span class="badge bg-primary">{{item.discountCode}}</span>
                         </td>
                         <td>
-                          <div *ngIf="item.isPermanent; else inactiveBadge">
-                            <span class="badge bg-success">Active</span>
+                          <span class="fw-bold">{{item.name}}</span>
+                        </td>
+                        <td>
+                          {{item.discountPercent}}%
+                        </td>
+                        <td>
+                          {{item.amountUse}}
+                        </td>
+                        <td>
+                          {{item.startAt | date:'dd/MM/yyyy'}} - {{item.endAt | date:'dd/MM/yyyy'}}
+                        </td>
+                        <td>
+                          {{getDiscountTypeName(item.discountTypeId)}}
+                        </td>
+                        <td>
+                          <span class="badge" [ngClass]="{
+                                  'bg-success': isActive(item),
+                                  'bg-danger': isExpired(item),
+                                  'bg-warning': isUpcoming(item)
+                                }">
+                            {{isActive(item) ? 'Đang hoạt động' : (isExpired(item) ? 'Hết hạn' : 'Sắp tới')}}
+                          </span>
+                        </td>
+                        <td>
+                          <div class="d-flex">
+                            <button type="button" class="btn btn-sm btn-light me-1" data-bs-toggle="modal"
+                              data-bs-target="#modal-detail2" (click)="editDiscount(item)">
+                              <i class="mdi mdi-pencil"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-danger" (click)="confirmDelete(item.id)">
+                              <i class="mdi mdi-delete"></i>
+                            </button>
                           </div>
-
-                          <ng-template #inactiveBadge>
-                            <span class="badge bg-danger">Inactive</span>
-                          </ng-template>
                         </td>
-                        <td>{{item.discountTypeId}}</td>
-                        <td>{{item.nameType}}</td>
-                        <td>{{item.roles}}</td>
-                        <td>
-                          <a href="javascript:void(0);" class="action-icon"  (click)="loadModal(item.id)" data-bs-toggle="modal" data-bs-target="#modal-detail2">
-                            <i class=" mdi mdi-update"></i></a>
-                            <a class="action-icon" (click)="deleteDiscount(item.id)" ><i class="mdi mdi-delete"></i></a>
-                        </td>
+                      </tr>
                     </tbody>
                   </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="custom-pagination mt-4" *ngIf="totalPages > 1">
+                  <nav>
+                    <ul class="pagination">
+                      <li class="page-item" [ngClass]="{'disabled': currentPage === 1}">
+                        <a class="page-link" href="javascript:void(0);" (click)="goToPage(currentPage - 1)">
+                          <i class="mdi mdi-chevron-left"></i>
+                        </a>
+                      </li>
+                      <li class="page-item" *ngFor="let page of getPageNumbers()"
+                        [ngClass]="{'active': page === currentPage}">
+                        <a class="page-link" href="javascript:void(0);" (click)="goToPage(page)">{{page}}</a>
+                      </li>
+                      <li class="page-item" [ngClass]="{'disabled': currentPage === totalPages}">
+                        <a class="page-link" href="javascript:void(0);" (click)="goToPage(currentPage + 1)">
+                          <i class="mdi mdi-chevron-right"></i>
+                        </a>
+                      </li>
+                    </ul>
+                  </nav>
                 </div>
               </div>
             </div>
@@ -117,153 +327,254 @@
   </div>
 </div>
 
-<!-- Modal detail -->
+<!-- Modal Add Discount -->
 <div id="modal-detail" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-top modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title" id="topModalLabel">Add room service</h4>
+        <h4 class="modal-title" id="topModalLabel">Thêm mã giảm giá mới</h4>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
       </div>
       <div class="modal-body">
-        <form class="form-horizontal" [formGroup]="serviceForm">
+        <form class="form-horizontal" [formGroup]="discountForm">
           <div class="row mb-3">
-              <label for="inputEmail3" class="col-3 col-form-label">Discount Code</label>
-              <div class="col-9">
-                  <input type="text" formControlName="discountCode" class="form-control" id="discountCode" placeholder="">
+            <label for="discountCode" class="col-3 col-form-label">Mã giảm giá</label>
+            <div class="col-9">
+              <input type="text" formControlName="discountCode" class="form-control" id="discountCode"
+                placeholder="Nhập mã giảm giá">
+              <div *ngIf="discountForm.get('discountCode')?.invalid && discountForm.get('discountCode')?.touched"
+                class="text-danger mt-1">
+                Vui lòng nhập mã giảm giá
               </div>
-          </div>
-          <div class="row mb-3">
-              <label for="inputEmail3" class="col-3 col-form-label">Name</label>
-              <div class="col-9">
-                  <input type="name" formControlName="name" class="form-control" id="icon" placeholder="">
-              </div>
-          </div>
-          <div class="row mb-3">
-              <label for="inputEmail3" class="col-3 col-form-label">Percents</label>
-              <div class="col-9">
-                  <input type="text" formControlName="discountPercent" class="form-control" id="description" placeholder="">
-              </div>
+            </div>
           </div>
           <div class="row mb-3">
-              <label for="inputEmail3" class="col-3 col-form-label">Amount</label>
-              <div class="col-9">
-                  <input type="number" formControlName="amountUse" class="form-control" id="description" placeholder="">
+            <label for="discountName" class="col-3 col-form-label">Tên</label>
+            <div class="col-9">
+              <input type="text" formControlName="name" class="form-control" id="discountName"
+                placeholder="Nhập tên mã giảm giá">
+              <div *ngIf="discountForm.get('name')?.invalid && discountForm.get('name')?.touched"
+                class="text-danger mt-1">
+                Vui lòng nhập tên mã giảm giá
               </div>
+            </div>
           </div>
           <div class="row mb-3">
-              <label for="inputEmail3" class="col-3 col-form-label">Start Date</label>
-              <div class="col-9">
-                  <input type="date" formControlName="startAt" class="form-control" id="description" placeholder="">
+            <label for="discountPercent" class="col-3 col-form-label">Phần trăm giảm</label>
+            <div class="col-9">
+              <div class="input-group">
+                <input type="number" formControlName="discountPercent" class="form-control" id="discountPercent"
+                  placeholder="Nhập phần trăm giảm giá" min="0" max="100">
+                <span class="input-group-text">%</span>
               </div>
+              <div *ngIf="discountForm.get('discountPercent')?.invalid && discountForm.get('discountPercent')?.touched"
+                class="text-danger mt-1">
+                Vui lòng nhập phần trăm giảm giá hợp lệ (0-100%)
+              </div>
+            </div>
           </div>
           <div class="row mb-3">
-              <label for="inputEmail3" class="col-3 col-form-label">Expire Date</label>
-              <div class="col-9">
-                  <input type="date" formControlName="endAt" class="form-control" id="description" placeholder="">
+            <label for="amountUse" class="col-3 col-form-label">Số lượng</label>
+            <div class="col-9">
+              <input type="number" formControlName="amountUse" class="form-control" id="amountUse"
+                placeholder="Nhập số lượng mã giảm giá" min="1">
+              <div *ngIf="discountForm.get('amountUse')?.invalid && discountForm.get('amountUse')?.touched"
+                class="text-danger mt-1">
+                Vui lòng nhập số lượng mã giảm giá hợp lệ
               </div>
+            </div>
           </div>
           <div class="row mb-3">
-              <label for="inputEmail3" class="col-3 col-form-label">Discount Type </label>
-              <div class="col-9">
-                  <!-- <input type="number" formControlName="discountTypeId" class="form-control" id="description" placeholder=""> -->
-                  <select class="form-select mr-sm-2"  (change)="onServiceSelectionChange($event)">
-                      <option *ngFor="let service of discount" [value]="service.id">{{ service.name }}</option>
-                    </select>
-                </div>
-          </div>
-          <div class="row md-4">
-              <label for="inputEmail3" class="col-3 col-form-label">Permament</label>
-              <div class="col-md-4">
-                <select class="form-select mr-sm-2" formControlName="isPermanent" id="IsActive" name="IsActive">
-                  <option [ngValue]="true">Active</option>
-                  <option [ngValue]="false">Inactive</option>
-                </select>
+            <label for="startAt" class="col-3 col-form-label">Ngày bắt đầu</label>
+            <div class="col-9">
+              <input type="date" formControlName="startAt" class="form-control" id="startAt">
+              <div *ngIf="discountForm.get('startAt')?.invalid && discountForm.get('startAt')?.touched"
+                class="text-danger mt-1">
+                Vui lòng chọn ngày bắt đầu
               </div>
+            </div>
           </div>
-
-          <div class="justify-content-end row">
+          <div class="row mb-3">
+            <label for="endAt" class="col-3 col-form-label">Ngày kết thúc</label>
+            <div class="col-9">
+              <input type="date" formControlName="endAt" class="form-control" id="endAt">
+              <div *ngIf="discountForm.get('endAt')?.invalid && discountForm.get('endAt')?.touched"
+                class="text-danger mt-1">
+                Vui lòng chọn ngày kết thúc
+              </div>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label for="discountType" class="col-3 col-form-label">Loại giảm giá</label>
+            <div class="col-9">
+              <select class="form-select" formControlName="discountTypeId" id="discountType"
+                (change)="onDiscountTypeChange($event)">
+                <option [ngValue]="null" disabled>Chọn loại giảm giá</option>
+                <option *ngFor="let type of discountTypes" [ngValue]="type.id">{{type.name}}</option>
+              </select>
+              <div *ngIf="discountForm.get('discountTypeId')?.invalid && discountForm.get('discountTypeId')?.touched"
+                class="text-danger mt-1">
+                Vui lòng chọn loại giảm giá
+              </div>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label for="isPermanent" class="col-3 col-form-label">Vĩnh viễn</label>
+            <div class="col-9 d-flex align-items-center">
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="isPermanent" formControlName="isPermanent">
+                <label class="form-check-label" for="isPermanent">Mã giảm giá vĩnh viễn</label>
+              </div>
+            </div>
           </div>
         </form>
       </div>
       <div class="modal-footer">
-        <button (click)="createRoomType(serviceForm)" type="submit" class="btn btn-info">Add</button>
-        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Hủy</button>
+        <button type="button" (click)="createDiscount(discountForm)" class="btn btn-primary">
+          <i class="mdi mdi-plus-circle me-1"></i> Thêm mã giảm giá
+        </button>
       </div>
     </div>
   </div>
 </div>
-<!-- Modal update detail -->
+
+<!-- Modal Edit Discount -->
 <div id="modal-detail2" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-top modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title" id="topModalLabel">Update room type</h4>
+        <h4 class="modal-title" id="topModalLabel">Cập nhật mã giảm giá</h4>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
       </div>
       <div class="modal-body">
-        <form class="form-horizontal" [formGroup]="serviceForm">
+        <form class="form-horizontal" [formGroup]="discountForm">
           <div class="row mb-3">
-              <label for="inputEmail3" class="col-3 col-form-label">Discount Code</label>
-              <div class="col-9">
-                  <input type="text" formControlName="discountCode" class="form-control" id="discountCode" placeholder="">
+            <label for="editDiscountCode" class="col-3 col-form-label">Mã giảm giá</label>
+            <div class="col-9">
+              <input type="text" formControlName="discountCode" class="form-control" id="editDiscountCode"
+                placeholder="Nhập mã giảm giá">
+              <div *ngIf="discountForm.get('discountCode')?.invalid && discountForm.get('discountCode')?.touched"
+                class="text-danger mt-1">
+                Vui lòng nhập mã giảm giá
               </div>
-          </div>
-          <div class="row mb-3">
-              <label for="inputEmail3" class="col-3 col-form-label">Name</label>
-              <div class="col-9">
-                  <input type="name" formControlName="name" class="form-control" id="icon" placeholder="">
-              </div>
-          </div>
-          <div class="row mb-3">
-              <label for="inputEmail3" class="col-3 col-form-label">Percents</label>
-              <div class="col-9">
-                  <input type="text" formControlName="discountPercent" class="form-control" id="description" placeholder="">
-              </div>
+            </div>
           </div>
           <div class="row mb-3">
-              <label for="inputEmail3" class="col-3 col-form-label">Amount</label>
-              <div class="col-9">
-                  <input type="number" formControlName="amountUse" class="form-control" id="description" placeholder="">
+            <label for="editDiscountName" class="col-3 col-form-label">Tên</label>
+            <div class="col-9">
+              <input type="text" formControlName="name" class="form-control" id="editDiscountName"
+                placeholder="Nhập tên mã giảm giá">
+              <div *ngIf="discountForm.get('name')?.invalid && discountForm.get('name')?.touched"
+                class="text-danger mt-1">
+                Vui lòng nhập tên mã giảm giá
               </div>
+            </div>
           </div>
           <div class="row mb-3">
-              <label for="inputEmail3" class="col-3 col-form-label">Start Date</label>
-              <div class="col-9">
-                  <input type="date" formControlName="startAt" class="form-control" id="description" placeholder="">
+            <label for="editDiscountPercent" class="col-3 col-form-label">Phần trăm giảm</label>
+            <div class="col-9">
+              <div class="input-group">
+                <input type="number" formControlName="discountPercent" class="form-control" id="editDiscountPercent"
+                  placeholder="Nhập phần trăm giảm giá" min="0" max="100">
+                <span class="input-group-text">%</span>
               </div>
+              <div *ngIf="discountForm.get('discountPercent')?.invalid && discountForm.get('discountPercent')?.touched"
+                class="text-danger mt-1">
+                Vui lòng nhập phần trăm giảm giá hợp lệ (0-100%)
+              </div>
+            </div>
           </div>
           <div class="row mb-3">
-              <label for="inputEmail3" class="col-3 col-form-label">Expire Date</label>
-              <div class="col-9">
-                  <input type="date" formControlName="endAt" class="form-control" id="description" placeholder="">
+            <label for="editAmountUse" class="col-3 col-form-label">Số lượng</label>
+            <div class="col-9">
+              <input type="number" formControlName="amountUse" class="form-control" id="editAmountUse"
+                placeholder="Nhập số lượng mã giảm giá" min="1">
+              <div *ngIf="discountForm.get('amountUse')?.invalid && discountForm.get('amountUse')?.touched"
+                class="text-danger mt-1">
+                Vui lòng nhập số lượng mã giảm giá hợp lệ
               </div>
+            </div>
           </div>
           <div class="row mb-3">
-              <label for="inputEmail3" class="col-3 col-form-label">Discount Type</label>
-              <div class="col-9">
-                <select class="form-select mr-sm-2"  (change)="onServiceSelectionChange($event)">
-                    <option *ngFor="let service of discount" [value]="service.id">{{ service.name }}</option>
-                  </select>
+            <label for="editStartAt" class="col-3 col-form-label">Ngày bắt đầu</label>
+            <div class="col-9">
+              <input type="date" formControlName="startAt" class="form-control" id="editStartAt">
+              <div *ngIf="discountForm.get('startAt')?.invalid && discountForm.get('startAt')?.touched"
+                class="text-danger mt-1">
+                Vui lòng chọn ngày bắt đầu
               </div>
+            </div>
           </div>
-          <div class="row md-4">
-              <label for="inputEmail3" class="col-3 col-form-label">Permament</label>
-              <div class="col-md-4">
-                <select class="form-select mr-sm-2" formControlName="isPermanent" id="IsActive" name="IsActive">
-                  <option [ngValue]="true">Active</option>
-                  <option [ngValue]="false">Inactive</option>
-                </select>
+          <div class="row mb-3">
+            <label for="editEndAt" class="col-3 col-form-label">Ngày kết thúc</label>
+            <div class="col-9">
+              <input type="date" formControlName="endAt" class="form-control" id="editEndAt">
+              <div *ngIf="discountForm.get('endAt')?.invalid && discountForm.get('endAt')?.touched"
+                class="text-danger mt-1">
+                Vui lòng chọn ngày kết thúc
               </div>
+            </div>
           </div>
-
-          <div class="justify-content-end row">
+          <div class="row mb-3">
+            <label for="editDiscountType" class="col-3 col-form-label">Loại giảm giá</label>
+            <div class="col-9">
+              <select class="form-select" formControlName="discountTypeId" id="editDiscountType"
+                (change)="onDiscountTypeChange($event)">
+                <option [ngValue]="null" disabled>Chọn loại giảm giá</option>
+                <option *ngFor="let type of discountTypes" [ngValue]="type.id">{{type.name}}</option>
+              </select>
+              <div *ngIf="discountForm.get('discountTypeId')?.invalid && discountForm.get('discountTypeId')?.touched"
+                class="text-danger mt-1">
+                Vui lòng chọn loại giảm giá
+              </div>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label for="editIsPermanent" class="col-3 col-form-label">Vĩnh viễn</label>
+            <div class="col-9 d-flex align-items-center">
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="editIsPermanent" formControlName="isPermanent">
+                <label class="form-check-label" for="editIsPermanent">Mã giảm giá vĩnh viễn</label>
+              </div>
+            </div>
           </div>
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" (click)="update(serviceForm)" class="btn btn-info" data-bs-dismiss="modal">Add</button>
-        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Hủy</button>
+        <button type="button" (click)="update(discountForm)" class="btn btn-primary">
+          <i class="mdi mdi-content-save me-1"></i> Lưu thay đổi
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Loading Spinner -->
+<div class="loading-overlay" *ngIf="isLoading">
+  <div class="spinner-container">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Đang tải...</span>
+    </div>
+    <p class="mt-2">Đang xử lý...</p>
+  </div>
+</div>
+
+<!-- Confirmation Dialog -->
+<div class="modal fade" id="delete-confirmation-modal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Xác nhận xóa</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Bạn có chắc chắn muốn xóa mã giảm giá này không? Hành động này không thể hoàn tác.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+        <button type="button" class="btn btn-danger" (click)="deleteDiscount()" data-bs-dismiss="modal">Xóa</button>
       </div>
     </div>
   </div>

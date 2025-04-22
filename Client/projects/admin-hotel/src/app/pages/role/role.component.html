@@ -1,230 +1,403 @@
-<div class="wrapper">
-    <app-sidebar></app-sidebar>
-    <div class="content-page">
-      <div class="content">
-        <app-header></app-header>
-        <div class="container-fluid">
-          <!-- start page title -->
-          <div class="row">
-            <div class="col-12">
-              <div class="page-title-box">
-                <div class="page-title-right">
-                  <ol class="breadcrumb m-0">
-                    <li class="breadcrumb-item"><a href="javascript: void(0);">Beyond</a></li>
-                    <li class="breadcrumb-item"><a href="javascript: void(0);">Managements</a></li>
-                    <li class="breadcrumb-item active">Roles</li>
+<div class="wrapper roles-page">
+  <app-sidebar></app-sidebar>
+  <div class="content-page">
+    <div class="content content-wrapper">
+      <app-header></app-header>
+      <div class="container-fluid py-4">
+        <!-- start page title -->
+        <div class="row mb-4">
+          <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h4 class="page-title mb-0">Quản lý vai trò</h4>
+                <nav aria-label="breadcrumb">
+                  <ol class="breadcrumb m-0 mt-2">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);" class="text-decoration-none">Trang
+                        chủ</a></li>
+                    <li class="breadcrumb-item"><a href="javascript: void(0);" class="text-decoration-none">Quản lý</a>
+                    </li>
+                    <li class="breadcrumb-item active">Vai trò</li>
                   </ol>
+                </nav>
+              </div>
+              <button data-bs-toggle="modal" data-bs-target="#modal-create"
+                class="btn btn-primary rounded-pill d-flex align-items-center">
+                <i class="mdi mdi-plus-circle me-1"></i> Thêm vai trò mới
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- end page title -->
+
+        <!-- Dashboard cards -->
+        <div class="row mb-4 fade-in">
+          <div class="col-md-4">
+            <div class="card dashboard-card">
+              <div class="card-body">
+                <div class="card-icon bg-primary-lighten text-primary">
+                  <i class="mdi mdi-account-multiple mdi-24px"></i>
                 </div>
-                <h4 class="page-title">Roles</h4>
+                <h2 class="card-number">{{getTotalRoles()}}</h2>
+                <p class="card-label mb-0">Tổng số vai trò</p>
               </div>
             </div>
           </div>
-          <!-- end page title -->
-          <div class="row">
-            <div class="col-12">
-              <div class="card">
-                <div class="card-body">
-                  <div class="row mb-2">
-                    
-                      <div class="col-xl-12">
-                        <div class="text-xl-end mt-xl-0 mt-2">
-                          <button type="button" data-bs-toggle="modal" (click)="clearModal()" data-bs-target="#modal-detail" class="btn btn-danger mb-2 me-2"><i class="mdi mdi-basket me-1"></i> Add New Role</button>
-                        </div>
-                    </div><!-- end col-->
-                  </div>
-  
-                  <div class="table-responsive">
-                    <table class="table table-centered mb-0">
-                      <thead class="table-light align-middle text-center">
-                        <tr>
-                          <th style="width: 20px;">
-                            <div class="form-check">
-                              <input type="checkbox" class="form-check-input" id="customCheck1">
-                              <label class="form-check-label" for="customCheck1">&nbsp;</label>
-                            </div>
-                         </th>
-                          <th>Name</th>
-                          <th>normalizedName</th>
-                         
-                          <th style="width: 135px;">Action<th>
-                          </tr>
-                      </thead>
-                      <tbody *ngFor="let item of roomType | filter: searchTerm, let i = index" class="align-middle text-center">
-                        <tr>
-                          <td>
-                            <div class="form-check">
-                              <input type="checkbox" class="form-check-input" id="customCheck2">
-                              <label class="form-check-label" for="customCheck2">&nbsp;</label>
-                            </div>
-                          </td>
-                          <th>{{item.name}}</th>
-                          <th>{{item.normalizedName}}</th>
-                          <td>
-                            <a href="javascript:void(0);" class="action-icon"  (click)="loadModal(item.id)" data-bs-toggle="modal" data-bs-target="#modal-detail2">
-                              <i class=" mdi mdi-update"></i></a>
-                              <a class="action-icon" (click)="deleteDiscount(item.id)" ><i class="mdi mdi-delete"></i></a>
-                          </td>
-                      </tbody>
-                    </table>
-                  </div>
+          <div class="col-md-4">
+            <div class="card dashboard-card">
+              <div class="card-body">
+                <div class="card-icon bg-success-lighten text-success">
+                  <i class="mdi mdi-shield-account mdi-24px"></i>
                 </div>
+                <h2 class="card-number">{{getSystemRolesCount()}}</h2>
+                <p class="card-label mb-0">Vai trò hệ thống</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card dashboard-card">
+              <div class="card-body">
+                <div class="card-icon bg-info-lighten text-info">
+                  <i class="mdi mdi-account-group mdi-24px"></i>
+                </div>
+                <h2 class="card-number">{{getUserRolesCount()}}</h2>
+                <p class="card-label mb-0">Vai trò người dùng</p>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
-  
-  <!-- Modal detail -->
-  <div id="modal-detail" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-top modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title" id="topModalLabel">Add room service</h4>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
-        </div>
-        <div class="modal-body">
-          <form class="form-horizontal" [formGroup]="serviceForm">
-            <div class="row mb-3">
-                <label for="inputEmail3" class="col-3 col-form-label">Discount Code</label>
-                <div class="col-9">
-                    <input type="text" formControlName="discountCode" class="form-control" id="discountCode" placeholder="">
-                </div>
-            </div>
-            <div class="row mb-3">
-                <label for="inputEmail3" class="col-3 col-form-label">Name</label>
-                <div class="col-9">
-                    <input type="name" formControlName="name" class="form-control" id="icon" placeholder="">
-                </div>
-            </div>
-            <div class="row mb-3">
-                <label for="inputEmail3" class="col-3 col-form-label">Percents</label>
-                <div class="col-9">
-                    <input type="text" formControlName="discountPercent" class="form-control" id="description" placeholder="">
-                </div>
-            </div>
-            <div class="row mb-3">
-                <label for="inputEmail3" class="col-3 col-form-label">Amount</label>
-                <div class="col-9">
-                    <input type="number" formControlName="amountUse" class="form-control" id="description" placeholder="">
-                </div>
-            </div>
-            <div class="row mb-3">
-                <label for="inputEmail3" class="col-3 col-form-label">Start Date</label>
-                <div class="col-9">
-                    <input type="date" formControlName="startAt" class="form-control" id="description" placeholder="">
-                </div>
-            </div>
-            <div class="row mb-3">
-                <label for="inputEmail3" class="col-3 col-form-label">Expire Date</label>
-                <div class="col-9">
-                    <input type="date" formControlName="endAt" class="form-control" id="description" placeholder="">
-                </div>
-            </div>
-            <div class="row mb-3">
-                <label for="inputEmail3" class="col-3 col-form-label">Discount Type </label>
-                <div class="col-9">
-                    <!-- <input type="number" formControlName="discountTypeId" class="form-control" id="description" placeholder=""> -->
-                    <select class="form-select mr-sm-2"  (change)="onServiceSelectionChange($event)">
-                        <option *ngFor="let service of discount" [value]="service.id">{{ service.name }}</option>
-                      </select>
+
+        <!-- Advanced filter section -->
+        <div class="row mb-4">
+          <div class="col-12">
+            <div class="filter-section fade-in">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="m-0">Bộ lọc nâng cao</h5>
+                <button class="btn btn-sm btn-outline-secondary" (click)="toggleFilterSection()">
+                  <i class="mdi" [ngClass]="showFilters ? 'mdi-chevron-up' : 'mdi-chevron-down'"></i>
+                </button>
+              </div>
+
+              <div class="row g-3" *ngIf="showFilters">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label class="form-label">Tìm kiếm</label>
+                    <div class="input-group">
+                      <span class="input-group-text"><i class="mdi mdi-magnify"></i></span>
+                      <input type="text" [(ngModel)]="searchTerm" class="form-control filter-control"
+                        placeholder="Tìm theo tên vai trò...">
+                    </div>
                   </div>
-            </div>
-            <div class="row md-4">
-                <label for="inputEmail3" class="col-3 col-form-label">Permament</label>
-                <div class="col-md-4">
-                  <select class="form-select mr-sm-2" formControlName="isPermanent" id="IsActive" name="IsActive">
-                    <option [ngValue]="true">Active</option>
-                    <option [ngValue]="false">Inactive</option>
-                  </select>
                 </div>
-            </div>
-  
-            <div class="justify-content-end row">
-            </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button (click)="createRoomType(serviceForm)" type="submit" class="btn btn-info">Add</button>
-          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- Modal update detail -->
-  <div id="modal-detail2" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-top modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title" id="topModalLabel">Update room type</h4>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
-        </div>
-        <div class="modal-body">
-          <form class="form-horizontal" [formGroup]="serviceForm">
-            <div class="row mb-3">
-                <label for="inputEmail3" class="col-3 col-form-label">Discount Code</label>
-                <div class="col-9">
-                    <input type="text" formControlName="discountCode" class="form-control" id="discountCode" placeholder="">
-                </div>
-            </div>
-            <div class="row mb-3">
-                <label for="inputEmail3" class="col-3 col-form-label">Name</label>
-                <div class="col-9">
-                    <input type="name" formControlName="name" class="form-control" id="icon" placeholder="">
-                </div>
-            </div>
-            <div class="row mb-3">
-                <label for="inputEmail3" class="col-3 col-form-label">Percents</label>
-                <div class="col-9">
-                    <input type="text" formControlName="discountPercent" class="form-control" id="description" placeholder="">
-                </div>
-            </div>
-            <div class="row mb-3">
-                <label for="inputEmail3" class="col-3 col-form-label">Amount</label>
-                <div class="col-9">
-                    <input type="number" formControlName="amountUse" class="form-control" id="description" placeholder="">
-                </div>
-            </div>
-            <div class="row mb-3">
-                <label for="inputEmail3" class="col-3 col-form-label">Start Date</label>
-                <div class="col-9">
-                    <input type="date" formControlName="startAt" class="form-control" id="description" placeholder="">
-                </div>
-            </div>
-            <div class="row mb-3">
-                <label for="inputEmail3" class="col-3 col-form-label">Expire Date</label>
-                <div class="col-9">
-                    <input type="date" formControlName="endAt" class="form-control" id="description" placeholder="">
-                </div>
-            </div>
-            <div class="row mb-3">
-                <label for="inputEmail3" class="col-3 col-form-label">Discount Type</label>
-                <div class="col-9">
-                  <select class="form-select mr-sm-2"  (change)="onServiceSelectionChange($event)">
-                      <option *ngFor="let service of discount" [value]="service.id">{{ service.name }}</option>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label class="form-label">Loại vai trò</label>
+                    <select class="form-select filter-control" [(ngModel)]="statusFilter">
+                      <option value="all">Tất cả vai trò</option>
+                      <option value="system">Vai trò hệ thống</option>
+                      <option value="user">Vai trò người dùng</option>
                     </select>
+                  </div>
                 </div>
-            </div>
-            <div class="row md-4">
-                <label for="inputEmail3" class="col-3 col-form-label">Permament</label>
-                <div class="col-md-4">
-                  <select class="form-select mr-sm-2" formControlName="isPermanent" id="IsActive" name="IsActive">
-                    <option [ngValue]="true">Active</option>
-                    <option [ngValue]="false">Inactive</option>
-                  </select>
+                <div class="col-12 d-flex justify-content-end mt-3">
+                  <button type="button" class="btn btn-outline-secondary me-2" (click)="clearFilters()">
+                    <i class="mdi mdi-refresh me-1"></i> Đặt lại
+                  </button>
+                  <button type="button" class="btn btn-primary" (click)="applyFilters()">
+                    <i class="mdi mdi-filter me-1"></i> Áp dụng bộ lọc
+                  </button>
                 </div>
+              </div>
             </div>
-  
-            <div class="justify-content-end row">
-            </div>
-          </form>
+          </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" (click)="update(serviceForm)" class="btn btn-info" data-bs-dismiss="modal">Add</button>
-          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+
+        <!-- View toggle buttons -->
+        <div class="row mb-3">
+          <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="view-toggle">
+                <button class="btn" [ngClass]="{'active': viewMode === 'card'}" (click)="setViewMode('card')">
+                  <i class="mdi mdi-view-grid-outline me-1"></i> Card
+                </button>
+                <button class="btn" [ngClass]="{'active': viewMode === 'table'}" (click)="setViewMode('table')">
+                  <i class="mdi mdi-table me-1"></i> Bảng
+                </button>
+              </div>
+              <div class="d-flex align-items-center">
+                <button type="button" class="btn btn-light btn-sm me-2" (click)="exportData()">
+                  <i class="mdi mdi-download me-1"></i> Xuất Excel
+                </button>
+                <div class="dropdown">
+                  <button class="btn btn-light btn-sm dropdown-toggle" type="button" id="sortDropdown"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="mdi mdi-sort me-1"></i> Sắp xếp
+                  </button>
+                  <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="sortDropdown">
+                    <li><a class="dropdown-item" href="javascript:void(0);" (click)="sortBy('nameAsc')">Tên A-Z</a></li>
+                    <li><a class="dropdown-item" href="javascript:void(0);" (click)="sortBy('nameDesc')">Tên Z-A</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card View Mode -->
+        <div class="row" *ngIf="viewMode === 'card' && filteredRoles && filteredRoles.length > 0">
+          <div class="col-md-4 col-xl-3 mb-4" *ngFor="let item of filteredRoles">
+            <div class="role-card">
+              <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <span class="role-id">#{{item.id}}</span>
+                  <span class="status-badge"
+                    [ngClass]="{'status-active': item.name.startsWith('Admin') || item.name === 'SuperAdmin' || item.name === 'System', 
+                                                    'status-inactive': !item.name.startsWith('Admin') && item.name !== 'SuperAdmin' && item.name !== 'System'}">
+                    <i class="mdi"
+                      [ngClass]="{'mdi-shield': item.name.startsWith('Admin') || item.name === 'SuperAdmin' || item.name === 'System', 
+                                                                 'mdi-account-group': !item.name.startsWith('Admin') && item.name !== 'SuperAdmin' && item.name !== 'System'}"></i>
+                    {{item.name.startsWith('Admin') || item.name === 'SuperAdmin' || item.name === 'System' ? 'Hệ thống'
+                    : 'Người dùng'}}
+                  </span>
+                </div>
+                <div class="card-body role-details">
+                  <div class="mb-3 text-center">
+                    <div class="role-icon">
+                      <i class="mdi"
+                        [ngClass]="{'mdi-shield-account mdi-36px': item.name.startsWith('Admin') || item.name === 'SuperAdmin' || item.name === 'System', 
+                                                                  'mdi-account-group mdi-36px': !item.name.startsWith('Admin') && item.name !== 'SuperAdmin' && item.name !== 'System'}"></i>
+                    </div>
+                    <h5 class="mb-1 mt-3">{{item.name}}</h5>
+                  </div>
+
+                  <div class="role-info mt-3">
+                    <div class="d-flex justify-content-between mb-2">
+                      <span>Tên chuẩn hóa:</span>
+                      <span class="fw-bold">{{item.normalizedName}}</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-footer d-flex">
+                  <button type="button" class="btn btn-sm btn-primary flex-grow-1 me-1" data-bs-toggle="modal"
+                    data-bs-target="#modal-update" (click)="editRole(item)">
+                    <i class="mdi mdi-pencil me-1"></i> Chỉnh sửa
+                  </button>
+                  <button type="button" class="btn btn-sm btn-danger flex-grow-1" (click)="confirmDelete(+item.id)">
+                    <i class="mdi mdi-delete me-1"></i> Xóa
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Empty state when no data -->
+        <div class="row" *ngIf="filteredRoles && filteredRoles.length === 0">
+          <div class="col-12">
+            <div class="text-center py-5">
+              <i class="mdi mdi-account-off text-muted" style="font-size: 4rem;"></i>
+              <h5 class="mt-3">Không tìm thấy dữ liệu vai trò</h5>
+              <p class="text-muted">Không có vai trò nào phù hợp với các tiêu chí tìm kiếm của bạn.</p>
+              <button class="btn btn-primary" (click)="clearFilters()">Đặt lại bộ lọc</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Table View Mode -->
+        <div class="row" *ngIf="viewMode === 'table'">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-centered table-hover">
+                    <thead class="table-light">
+                      <tr>
+                        <th style="width: 60px;">ID</th>
+                        <th>Tên vai trò</th>
+                        <th>Tên chuẩn hóa</th>
+                        <th>Loại</th>
+                        <th style="width: 150px;">Thao tác</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let item of filteredRoles">
+                        <td>
+                          <span class="fw-bold">#{{item.id}}</span>
+                        </td>
+                        <td>
+                          <span class="fw-bold">{{item.name}}</span>
+                        </td>
+                        <td>
+                          {{item.normalizedName}}
+                        </td>
+                        <td>
+                          <span class="badge rounded-pill"
+                            [ngClass]="{'bg-success': item.name.startsWith('Admin') || item.name === 'SuperAdmin' || item.name === 'System', 
+                                                                   'bg-info': !item.name.startsWith('Admin') && item.name !== 'SuperAdmin' && item.name !== 'System'}">
+                            {{item.name.startsWith('Admin') || item.name === 'SuperAdmin' || item.name === 'System' ?
+                            'Hệ thống' : 'Người dùng'}}
+                          </span>
+                        </td>
+                        <td>
+                          <div class="d-flex">
+                            <button type="button" class="btn btn-sm btn-light me-1" data-bs-toggle="modal"
+                              data-bs-target="#modal-update" (click)="editRole(item)">
+                              <i class="mdi mdi-pencil"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-danger" (click)="confirmDelete(+item.id)">
+                              <i class="mdi mdi-delete"></i>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="custom-pagination mt-4" *ngIf="totalPages > 1">
+                  <nav>
+                    <ul class="pagination">
+                      <li class="page-item" [ngClass]="{'disabled': currentPage === 1}">
+                        <a class="page-link" href="javascript:void(0);" (click)="goToPage(currentPage - 1)">
+                          <i class="mdi mdi-chevron-left"></i>
+                        </a>
+                      </li>
+                      <li class="page-item" *ngFor="let page of getPageNumbers()"
+                        [ngClass]="{'active': page === currentPage}">
+                        <a class="page-link" href="javascript:void(0);" (click)="goToPage(page)">{{page}}</a>
+                      </li>
+                      <li class="page-item" [ngClass]="{'disabled': currentPage === totalPages}">
+                        <a class="page-link" href="javascript:void(0);" (click)="goToPage(currentPage + 1)">
+                          <i class="mdi mdi-chevron-right"></i>
+                        </a>
+                      </li>
+                    </ul>
+                  </nav>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
-  
+</div>
+
+<!-- Modal Add Role -->
+<div id="modal-create" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-top">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="topModalLabel">Thêm vai trò mới</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal" [formGroup]="roleForm">
+          <div class="row mb-3">
+            <label for="roleName" class="col-3 col-form-label">Tên vai trò</label>
+            <div class="col-9">
+              <input type="text" formControlName="name" class="form-control" id="roleName"
+                placeholder="Nhập tên vai trò">
+              <div *ngIf="roleForm.get('name')?.invalid && roleForm.get('name')?.touched" class="text-danger mt-1">
+                Vui lòng nhập tên vai trò
+              </div>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label for="normalizedName" class="col-3 col-form-label">Tên chuẩn hóa</label>
+            <div class="col-9">
+              <input type="text" formControlName="normalizedName" class="form-control" id="normalizedName"
+                placeholder="Để trống để tự động tạo">
+              <div *ngIf="roleForm.get('normalizedName')?.invalid && roleForm.get('normalizedName')?.touched"
+                class="text-danger mt-1">
+                Vui lòng nhập tên chuẩn hóa
+              </div>
+              <small class="form-text text-muted">
+                Để trống để hệ thống tự động tạo dựa trên tên vai trò
+              </small>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Hủy</button>
+        <button type="button" (click)="createRole(roleForm)" class="btn btn-primary">
+          <i class="mdi mdi-plus-circle me-1"></i> Thêm vai trò
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Edit Role -->
+<div id="modal-update" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-top">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Chỉnh sửa vai trò</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal" [formGroup]="roleForm">
+          <div class="row mb-3">
+            <label for="editRoleName" class="col-3 col-form-label">Tên vai trò</label>
+            <div class="col-9">
+              <input type="text" formControlName="name" class="form-control" id="editRoleName"
+                placeholder="Nhập tên vai trò">
+              <div *ngIf="roleForm.get('name')?.invalid && roleForm.get('name')?.touched" class="text-danger mt-1">
+                Vui lòng nhập tên vai trò
+              </div>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label for="editNormalizedName" class="col-3 col-form-label">Tên chuẩn hóa</label>
+            <div class="col-9">
+              <input type="text" formControlName="normalizedName" class="form-control" id="editNormalizedName"
+                placeholder="Tên chuẩn hóa">
+              <div *ngIf="roleForm.get('normalizedName')?.invalid && roleForm.get('normalizedName')?.touched"
+                class="text-danger mt-1">
+                Vui lòng nhập tên chuẩn hóa
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Hủy</button>
+        <button type="button" (click)="updateRole(roleForm)" class="btn btn-primary">
+          <i class="mdi mdi-content-save me-1"></i> Lưu thay đổi
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Loading Spinner -->
+<div class="loading-overlay" *ngIf="isLoading">
+  <div class="spinner-container">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Đang tải...</span>
+    </div>
+    <p class="mt-2">Đang xử lý...</p>
+  </div>
+</div>
+
+<!-- Confirmation Dialog -->
+<div class="modal fade" id="delete-confirmation-modal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Xác nhận xóa</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Bạn có chắc chắn muốn xóa vai trò này không? Hành động này không thể hoàn tác.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+        <button type="button" class="btn btn-danger" (click)="deleteRole()" data-bs-dismiss="modal">Xóa</button>
+      </div>
+    </div>
+  </div>
+</div>

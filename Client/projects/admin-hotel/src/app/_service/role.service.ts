@@ -15,7 +15,26 @@ export class RoleService implements OnInit{
     }
 
 
-    getAllRoles(): Observable<any[]>{
-        return this.http.get<any[]>(environment.BASE_URL_API + '/v2/admin/role/get-all')
+    getAllRoles(): Observable<Roles[]>{
+        return this.http.get<Roles[]>(environment.BASE_URL_API + '/v2/admin/role/get-all')
+    }
+    
+    updateRole(role: Roles, id: number): Observable<Roles> {
+        const httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            })
+        };
+        return this.http.put<Roles>(
+            `${environment.BASE_URL_API}/v2/admin/roles/update/${id}`,
+            role,
+            httpOptions
+        );
+    }
+    
+    deleteRole(id: number): Observable<any> {
+        return this.http.delete<any>(
+            `${environment.BASE_URL_API}/v2/admin/roles/delete/${id}`
+        );
     }
 }
